@@ -1,0 +1,9 @@
+#+TITLE: Biophysical variable estimation from remote sensing imagery 
+
+* Introduction
+
+* References
+
+* Actions
+
+** TODO References Weiss & Baret
