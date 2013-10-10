@@ -33,18 +33,27 @@ public:
   typedef itk::SmartPointer<Self>       Pointer;
   typedef itk::SmartPointer<const Self> ConstPointer;
 
+  //TODO: Add the acquisition geometry
+  enum IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Cdm, CwRel, Cbp, Bs};
+
+  enum DistType {GAUSSIAN, UNIFORM};
+  
 /** Standard macro */
   itkNewMacro(Self);
 
   itkTypeMacro(BVInputVariableGeneration, otb::Application);
 
-
+  typedef std::map< IVNames, double > SampleType;
 private:
   void DoInit()
   {
     SetName("BVInputVariableGeneration");
     SetDescription("Generate random input variable distribution for ... .");
 
+    AddParameter(ParameterType_Int, "samples", "Sample size");
+    SetDefaultParameterInt("samples", 1000);
+    SetParameterDescription("samples", "Number of samples to be generated");
+    
     AddParameter(ParameterType_OutputFilename, "out", "Output file");
     SetParameterDescription( "out", "Filename where the variable sets are saved." );
     MandatoryOn("out");
@@ -57,25 +66,233 @@ private:
 
   void DoUpdateParameters()
   {
-   // Nothing to do here : all parameters are independent
+    // Nothing to do here : all parameters are independent
   }
 
+  //Generates a random number of the appropriate distribution and respecting the bounds
+  double Rng(double min, double max, double mod, double std, DistType dist)
+  {
+    //TODO : why std is defined for uniform?
+    double rn;
+    if(dist == GAUSSIAN)
+      {
+      bool sampleInsideBounds = false;
+      while(!sampleInsideBounds)
+        {
+        rn = m_RNG.normal64() * std + mod;
+        if( rn >= min && rn <= max)
+          sampleInsideBounds = true;
+        }
+      }
+    else
+      rn = m_RNG.drand32(min, max);
 
+    return rn;
+  }
+
+  //Builds the map with the values of the sample
+  SampleType DrawSample()
+  {
+    SampleType s;
+//    s[MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, GAUSSIAN);
+    s[ALA] = this->Rng(m_ALA_min, m_ALA_max, m_ALA_mod, m_ALA_std, GAUSSIAN);
+    // s[CrownCover] = this->Rng(m_CrownCover_min, m_CrownCover_max, m_CrownCover_mod, m_CrownCover_std, UNIFORM);
+    // s[HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, GAUSSIAN);
+    // s[N] = this->Rng(m_N_min, m_N_max, m_N_mod, m_N_std, GAUSSIAN);
+    // s[Cab] = this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod, m_Cab_std, GAUSSIAN);
+    // s[Cdm] = this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod, m_Cdm_std, GAUSSIAN);
+    // s[CwRel] = this->Rng(m_CwRel_min, m_CwRel_max, m_CwRel_mod, m_CwRel_std, UNIFORM);
+    // s[Cbp] = this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod, m_Cbp_std, GAUSSIAN);
+    // s[Bs] = this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, m_Bs_std, GAUSSIAN);
+
+    return s;
+  }
+
+  //Checks the correlation constraints between the variables of the sample
+  bool SampleIsGood(SampleType s)
+  {
+    //TODO: check and intercorrelation constraints
+    return true;
+  }
+
+  void WriteSample(SampleType s)
+  {
+    //TODO: write the sample to the file
+    SampleType::const_iterator si = s.begin();
+    while( si != s.end())
+      {
+      std::cout << (*si) << " ";
+      ++si;
+      }
+    std::cout << std::endl;
+    std::cout.flush();
+  }
 
   void DoExecute()
   {
+    /* Variables
+     |        | Variable      | Minimum | Maximum |   Mode |    Std | Nb_Class | Law   | LAI_Conv |
+     |--------+---------------+---------+---------+--------+--------+----------+-------+----------|
+     | Canopy | MLAI          |     0.0 |     8.0 |    2.0 |    2.0 |        6 | gauss |     1000 |
+     |        | ALA (°)       |      30 |      80 |     60 |     20 |        3 | gauss |       10 |
+     |        | Crown_Cover   |     1.0 |     1.0 |    0.8 |    0.4 |        1 | uni   |       10 |
+     |        | HsD           |     0.1 |     0.5 |    0.2 |    0.5 |        1 | gauss |     1000 |
+     |--------+---------------+---------+---------+--------+--------+----------+-------+----------|
+     | Leaf   | N             |    1.20 |    1.80 |   1.50 |   0.30 |        3 | gauss |       10 |
+     |        | Cab (μg.m -2) |      20 |      90 |     45 |     30 |        4 | gauss |       10 |
+     |        | Cdm (g.m-2)   |  0.0030 |  0.0110 | 0.0050 | 0.0050 |        4 | gauss |       10 |
+     |        | Cw_Rel        |    0.60 |    0.85 |   0.75 |   0.08 |        4 | uni   |       10 |
+     |        | Cbp           |    0.00 |    2.00 |   0.00 |   0.30 |        3 | gauss |       10 |
+     |--------+---------------+---------+---------+--------+--------+----------+-------+----------|
+     | Soil   | Bs            |    0.50 |    3.50 |   1.20 |   2.00 |        4 | gauss |       10 | 
+  */
+
+    m_MLAI_min = 0.0;
+    m_MLAI_max = 8.0;
+    m_MLAI_mod = 2.0;
+    m_MLAI_std = 2.0;
+    m_MLAI_nbcl = 6;
+
+    m_ALA_min = 30.0;
+    m_ALA_max = 80.0;
+    m_ALA_mod = 60.0;
+    m_ALA_std = 20.0;
+    m_ALA_nbcl = 3.0;
+
+    m_CrownCover_min = 1.0;
+    m_CrownCover_max = 1.0;
+    m_CrownCover_mod = 0.8;
+    m_CrownCover_std = 0.4;
+    m_CrownCover_nbcl = 1;
+
+    m_HsD_min = 0.1;
+    m_HsD_max = 0.5;
+    m_HsD_mod = 0.2;
+    m_HsD_std = 0.5;
+    m_HsD_nbcl = 1;
+
+    m_N_min = 1.20;
+    m_N_max = 1.80;
+    m_N_mod = 1.50;
+    m_N_std = 0.30;
+    m_N_nbcl = 3;
+
+    m_Cab_min = 20.0;
+    m_Cab_max = 90.0;
+    m_Cab_mod = 45.0;
+    m_Cab_std = 30.0;
+    m_Cab_nbcl = 4;
+
+    m_Cdm_min = 0.0030;
+    m_Cdm_max = 0.0110;
+    m_Cdm_mod = 0.0050;
+    m_Cdm_std = 0.0050;
+    m_Cdm_nbcl = 4;
+
+    m_CwRel_min = 0.60;
+    m_CwRel_max = 0.85;
+    m_CwRel_mod = 0.75;
+    m_CwRel_std = 0.08;
+    m_CwRel_nbcl = 4;
+
+    m_Cbp_min = 0.00;
+    m_Cbp_max = 2.00;
+    m_Cbp_mod = 0.00;
+    m_Cbp_std = 0.30;
+    m_Cbp_nbcl = 3;
+
+    m_Bs_min = 0.50;
+    m_Bs_max = 3.50;
+    m_Bs_mod = 1.20;
+    m_Bs_std = 2.00;
+    m_Bs_nbcl = 4;
+
+    //TODO: use an optimal input configuration file for the constraints on the variables and parse it here
+
+    unsigned int maxSamples = GetParameterInt("samples");
+    unsigned int sampleCount = 0;
+
     //TODO: could use a particular seed if useful
-    vnl_random rng = vnl_random();
+    m_RNG = vnl_random();
+    
+    
 
-    //uniform
-    double drand32(double a, double b);
-
-    //unit, centered normal
-    double normal64();
+    while(sampleCount < maxSamples)
+      {
+      SampleType currentSample = this->DrawSample();
+      
+      if(this->SampleIsGood( currentSample ))
+        {
+        this->WriteSample( currentSample );
+        ++sampleCount;
+        }
+      }
   }
 
 
+  double m_MLAI_min;
+  double m_MLAI_max;
+  double m_MLAI_mod;
+  double m_MLAI_std;
+  unsigned short  m_MLAI_nbcl;
 
+  double m_ALA_min;
+  double m_ALA_max;
+  double m_ALA_mod;
+  double m_ALA_std;
+  unsigned short  m_ALA_nbcl;
+
+  double m_CrownCover_min;
+  double m_CrownCover_max;
+  double m_CrownCover_mod;
+  double m_CrownCover_std;
+  unsigned short  m_CrownCover_nbcl;
+
+  double m_HsD_min;
+  double m_HsD_max;
+  double m_HsD_mod;
+  double m_HsD_std;
+  unsigned short  m_HsD_nbcl;
+
+  double m_N_min;
+  double m_N_max;
+  double m_N_mod;
+  double m_N_std;
+  unsigned short  m_N_nbcl;
+
+  double m_Cab_min;
+  double m_Cab_max;
+  double m_Cab_mod;
+  double m_Cab_std;
+  unsigned short  m_Cab_nbcl;
+
+  double m_Cdm_min;
+  double m_Cdm_max;
+  double m_Cdm_mod;
+  double m_Cdm_std;
+  unsigned short  m_Cdm_nbcl;
+
+  double m_CwRel_min;
+  double m_CwRel_max;
+  double m_CwRel_mod;
+  double m_CwRel_std;
+  unsigned short  m_CwRel_nbcl;
+
+  double m_Cbp_min;
+  double m_Cbp_max;
+  double m_Cbp_mod;
+  double m_Cbp_std;
+  unsigned short  m_Cbp_nbcl;
+
+  double m_Bs_min;
+  double m_Bs_max;
+  double m_Bs_mod;
+  double m_Bs_std;
+  unsigned short  m_Bs_nbcl;
+
+  // the random number generator
+  vnl_random m_RNG;
+  
 };
 
 }
