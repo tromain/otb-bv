@@ -121,7 +121,7 @@ private:
     SampleType::const_iterator si = s.begin();
     while( si != s.end())
       {
-      std::cout << std::setprecision(4) << (*si).second << " ";
+      std::cout << std::setprecision(4) << std::setw(12) << std::left << (*si).second ;
       ++si;
       }
     std::cout << std::endl;
