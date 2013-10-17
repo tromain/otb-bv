@@ -34,20 +34,28 @@ with open(sampleFileName, 'r') as sampleFile:
         samples[varname] = []
     for line in sampleFile.readlines():
         for (variable,value) in zip(variables,string.split(line)):
-            samples[variable].append(value)
+            samples[variable].append(float(value))
 
-print samples            
+
+
+nbVariables = len(variables)
+
+for row in range(nbVariables):
+    for col in range(nbVariables):
+        ax = plt.subplot(nbVariables, nbVariables, row*nbVariables+col+1)
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        x = samples[variables[row]]
+        if row != col :
+            y = samples[variables[col]]
+            ax.scatter(x, y)
+        else :
+            ax.hist(x, bins=10)
         
-
-
-
-# # the random data
-# x = np.random.randn(1000)
-# y = np.random.randn(1000)
-
+plt.show()
 # nullfmt   = NullFormatter()         # no labels
 
-# # definitions for the axes
+# # # definitions for the axes
 # left, width = 0.1, 0.65
 # bottom, height = 0.1, 0.65
 # bottom_h = left_h = left+width+0.02
