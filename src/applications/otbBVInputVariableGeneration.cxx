@@ -17,6 +17,7 @@
 #include "otbWrapperChoiceParameter.h"
 
 #include "vnl/vnl_random.h"
+#include <fstream>
 
 namespace otb
 {
@@ -90,42 +91,61 @@ private:
     return rn;
   }
 
-  //Builds the map with the values of the sample
+
+  /**
+     The LAI_Conv parameter is used to link (cross-correlation) each
+     variable to the LAI for a given sample using:
+
+                 V* = V_mod + (V -V_mod)*(LAI_Conv - MLAI)/LAI_Conv
+
+     where V* is the value of variable V after the correlation.
+  */
+  double CorrelateValue(double v, double v_mod, double lai)
+  {
+    return v_mod + (v - v_mod)*(m_LAI_Conv - lai)/m_LAI_Conv;
+  }
+  
+  ///Builds the map with the values of the sample
   SampleType DrawSample()
   {
     SampleType s;
     s[MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, GAUSSIAN);
-    s[ALA] = this->Rng(m_ALA_min, m_ALA_max, m_ALA_mod, m_ALA_std, GAUSSIAN);
-    s[CrownCover] = this->Rng(m_CrownCover_min, m_CrownCover_max, m_CrownCover_mod, m_CrownCover_std, UNIFORM);
+    s[ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, m_ALA_mod,
+                                            m_ALA_std, GAUSSIAN),
+                                  m_ALA_mod, s[MLAI]);
+    s[CrownCover] = this->CorrelateValue(this->Rng(m_CrownCover_min, m_CrownCover_max,
+                                                   m_CrownCover_mod, m_CrownCover_std, UNIFORM),
+                                         m_CrownCover_mod, s[MLAI]);
     s[HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, GAUSSIAN);
-    s[N] = this->Rng(m_N_min, m_N_max, m_N_mod, m_N_std, GAUSSIAN);
-    s[Cab] = this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod, m_Cab_std, GAUSSIAN);
-    s[Cdm] = this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod, m_Cdm_std, GAUSSIAN);
-    s[CwRel] = this->Rng(m_CwRel_min, m_CwRel_max, m_CwRel_mod, m_CwRel_std, UNIFORM);
-    s[Cbp] = this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod, m_Cbp_std, GAUSSIAN);
-    s[Bs] = this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, m_Bs_std, GAUSSIAN);
+    s[N] = this->CorrelateValue(this->Rng(m_N_min, m_N_max, m_N_mod, m_N_std, GAUSSIAN),
+                                m_N_mod, s[MLAI]);
+    s[Cab] = this->CorrelateValue(this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod,
+                                            m_Cab_std, GAUSSIAN),
+                                  m_Cab_mod, s[MLAI]);
+    s[Cdm] = this->CorrelateValue(this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod,
+                                            m_Cdm_std, GAUSSIAN),
+                                  m_Cdm_mod, s[MLAI]);
+    s[CwRel] = this->CorrelateValue(this->Rng(m_CwRel_min, m_CwRel_max, m_CwRel_mod,
+                                              m_CwRel_std, UNIFORM),
+                                    m_CwRel_mod, s[MLAI]);
+    s[Cbp] = this->CorrelateValue(this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod,
+                                            m_Cbp_std, GAUSSIAN),
+                                  m_Cbp_mod, s[MLAI]);
+    s[Bs] = this->CorrelateValue(this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, m_Bs_std, GAUSSIAN),
+                                 m_Bs_mod, s[MLAI]);
 
     return s;
   }
 
-  //Checks the correlation constraints between the variables of the sample
-  bool SampleIsGood(SampleType s)
-  {
-    //TODO: check and intercorrelation constraints
-    return true;
-  }
-
   void WriteSample(SampleType s)
   {
-    //TODO: write the sample to the file
     SampleType::const_iterator si = s.begin();
     while( si != s.end())
       {
-      std::cout << std::setprecision(4) << std::setw(12) << std::left << (*si).second ;
+      m_SampleFile << std::setw(12) << std::left << (*si).second ;
       ++si;
       }
-    std::cout << std::endl;
-    std::cout.flush();
+    m_SampleFile << std::endl;
   }
 
   void DoExecute()
@@ -144,9 +164,24 @@ private:
      |        | Cw_Rel        |    0.60 |    0.85 |   0.75 |   0.08 |        4 | uni   |       10 |
      |        | Cbp           |    0.00 |    2.00 |   0.00 |   0.30 |        3 | gauss |       10 |
      |--------+---------------+---------+---------+--------+--------+----------+-------+----------|
-     | Soil   | Bs            |    0.50 |    3.50 |   1.20 |   2.00 |        4 | gauss |       10 | 
+     | Soil   | Bs            |    0.50 |    3.50 |   1.20 |   2.00 |        4 | gauss |       10 |
+
+     The LAI_Conv parameter is used to link (cross-correlation) each
+     variable to the LAI for a given sample using:
+
+                 V* = V_mod + (V -V_mod)*(LAI_Conv - MLAI)/LAI_Conv
+
+     where V* is the value of variable V after the correlation.
+
+     High values of LAI_Conv mean no correlation. Since, except for
+     HsDn which is not correlated, all other values are equal to 10,
+     we will only define one variable to deal with that, instead of
+     defining a value for each bv.
+     
   */
 
+    m_LAI_Conv = 10.0;
+    
     m_MLAI_min = 0.0;
     m_MLAI_max = 8.0;
     m_MLAI_mod = 2.0;
@@ -208,28 +243,44 @@ private:
     m_Bs_std = 2.00;
     m_Bs_nbcl = 4;
 
-    //TODO: use an optimal input configuration file for the constraints on the variables and parse it here
 
+    try
+      {
+      m_SampleFile.open(GetParameterString("out").c_str(), std::ofstream::out);
+      }
+    catch(...)
+      {
+      itkGenericExceptionMacro(<< "Could not open file " << GetParameterString("out"))
+        }
+
+    m_SampleFile << std::setprecision(4);
+    m_SampleFile << std::setw(12) << std::left << "MLAI";
+    m_SampleFile << std::setw(12) << std::left<< "ALA";
+    m_SampleFile << std::setw(12) << std::left    << "CrownCover";
+    m_SampleFile << std::setw(12) << std::left    << "HsD";
+    m_SampleFile << std::setw(12) << std::left    << "N";
+    m_SampleFile << std::setw(12) << std::left    << "Cab";
+    m_SampleFile << std::setw(12) << std::left    << "Cdm";
+    m_SampleFile << std::setw(12) << std::left    << "CwRel";
+    m_SampleFile << std::setw(12) << std::left    << "Cbp";
+    m_SampleFile << std::setw(12) << std::left    << "Bs" << std::endl;
+    
     unsigned int maxSamples = GetParameterInt("samples");
     unsigned int sampleCount = 0;
 
     //TODO: could use a particular seed if useful
     m_RNG = vnl_random();
     
-    
-
     while(sampleCount < maxSamples)
       {
-      SampleType currentSample = this->DrawSample();
-      
-      if(this->SampleIsGood( currentSample ))
-        {
-        this->WriteSample( currentSample );
-        ++sampleCount;
-        }
+      this->WriteSample( this->DrawSample() );
+      ++sampleCount;
       }
+
+    m_SampleFile.close();
   }
 
+  double m_LAI_Conv;
 
   double m_MLAI_min;
   double m_MLAI_max;
@@ -293,7 +344,9 @@ private:
 
   // the random number generator
   vnl_random m_RNG;
-  
+
+  // the output file
+  std::ofstream m_SampleFile;
 };
 
 }
