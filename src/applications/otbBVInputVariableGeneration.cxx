@@ -94,16 +94,16 @@ private:
   SampleType DrawSample()
   {
     SampleType s;
-//    s[MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, GAUSSIAN);
+    s[MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, GAUSSIAN);
     s[ALA] = this->Rng(m_ALA_min, m_ALA_max, m_ALA_mod, m_ALA_std, GAUSSIAN);
-    // s[CrownCover] = this->Rng(m_CrownCover_min, m_CrownCover_max, m_CrownCover_mod, m_CrownCover_std, UNIFORM);
-    // s[HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, GAUSSIAN);
-    // s[N] = this->Rng(m_N_min, m_N_max, m_N_mod, m_N_std, GAUSSIAN);
-    // s[Cab] = this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod, m_Cab_std, GAUSSIAN);
-    // s[Cdm] = this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod, m_Cdm_std, GAUSSIAN);
-    // s[CwRel] = this->Rng(m_CwRel_min, m_CwRel_max, m_CwRel_mod, m_CwRel_std, UNIFORM);
-    // s[Cbp] = this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod, m_Cbp_std, GAUSSIAN);
-    // s[Bs] = this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, m_Bs_std, GAUSSIAN);
+    s[CrownCover] = this->Rng(m_CrownCover_min, m_CrownCover_max, m_CrownCover_mod, m_CrownCover_std, UNIFORM);
+    s[HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, GAUSSIAN);
+    s[N] = this->Rng(m_N_min, m_N_max, m_N_mod, m_N_std, GAUSSIAN);
+    s[Cab] = this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod, m_Cab_std, GAUSSIAN);
+    s[Cdm] = this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod, m_Cdm_std, GAUSSIAN);
+    s[CwRel] = this->Rng(m_CwRel_min, m_CwRel_max, m_CwRel_mod, m_CwRel_std, UNIFORM);
+    s[Cbp] = this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod, m_Cbp_std, GAUSSIAN);
+    s[Bs] = this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, m_Bs_std, GAUSSIAN);
 
     return s;
   }
@@ -121,7 +121,7 @@ private:
     SampleType::const_iterator si = s.begin();
     while( si != s.end())
       {
-      std::cout << (*si) << " ";
+      std::cout << std::setprecision(4) << (*si).second << " ";
       ++si;
       }
     std::cout << std::endl;
@@ -159,8 +159,9 @@ private:
     m_ALA_std = 20.0;
     m_ALA_nbcl = 3.0;
 
-    m_CrownCover_min = 1.0;
-    m_CrownCover_max = 1.0;
+    //TODO : check that min-max values are OK since they seem to be wrong in the S2PAD doc
+    m_CrownCover_min = 0.4;
+    m_CrownCover_max = 1.2;
     m_CrownCover_mod = 0.8;
     m_CrownCover_std = 0.4;
     m_CrownCover_nbcl = 1;
