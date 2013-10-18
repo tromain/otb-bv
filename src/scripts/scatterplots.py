@@ -45,9 +45,13 @@ for row in range(nbVariables):
         ax = plt.subplot(nbVariables, nbVariables, row*nbVariables+col+1)
         ax.set_yticklabels([])
         ax.set_xticklabels([])
-        x = samples[variables[row]]
+        x = samples[variables[col]]
+        if col == 0:
+            ax.set_ylabel(variables[row])
+        if row == nbVariables-1:
+            ax.set_xlabel(variables[col])            
         if row != col :
-            y = samples[variables[col]]
+            y = samples[variables[row]]
             ax.scatter(x, y)
         else :
             ax.hist(x, bins=10)
