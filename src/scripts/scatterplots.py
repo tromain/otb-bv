@@ -27,6 +27,7 @@ sampleFileName = sys.argv[1]
 
 variables = []
 samples = {}
+bounds = {}
 
 with open(sampleFileName, 'r') as sampleFile:
     for varname in string.split(sampleFile.readline()):
@@ -36,7 +37,13 @@ with open(sampleFileName, 'r') as sampleFile:
         for (variable,value) in zip(variables,string.split(line)):
             samples[variable].append(float(value))
 
-
+for var in variables:
+    bounds[var] = {'min' : 1000, 'max' : 0}
+    for s in samples[var]:
+        if s < bounds[var]['min']:
+            bounds[var]['min'] = s
+        if s > bounds[var]['max']:
+            bounds[var]['max'] = s            
 
 nbVariables = len(variables)
 
@@ -46,15 +53,17 @@ for row in range(nbVariables):
         ax.set_yticklabels([])
         ax.set_xticklabels([])
         x = samples[variables[col]]
+        ax.set_xlim(bounds[variables[col]]['min'], bounds[variables[col]]['max'])
         if col == 0:
             ax.set_ylabel(variables[row])
         if row == nbVariables-1:
             ax.set_xlabel(variables[col])            
         if row != col :
             y = samples[variables[row]]
+            ax.set_ylim(bounds[variables[row]]['min'], bounds[variables[row]]['max'])
             ax.scatter(x, y)
         else :
-            ax.hist(x, bins=10)
+            ax.hist(x, bins=20)
         
 plt.show()
 # nullfmt   = NullFormatter()         # no labels
