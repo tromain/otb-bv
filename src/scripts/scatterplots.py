@@ -75,7 +75,7 @@ for row in range(nbVariables):
         if row != col :
             y = samples[variables[row]]
             ax.set_ylim(bounds[variables[row]]['min'], bounds[variables[row]]['max'])
-            ax.scatter(x, y)
+            ax.scatter(x, y, marker=".")
             if col == (nbVariables-1):
                 ticks = [t/float(nYTicks)*(bounds[variables[row]]['max']-bounds[variables[row]]['min'])+bounds[variables[row]]['min'] for t in range(nYTicks+1)]
                 ax.set_yticks(ticks)
