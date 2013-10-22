@@ -44,10 +44,8 @@ def parseDataFile(sampleFileName):
     return (variables, samples, bounds)
 
 
-def plotOrSaveFile(variables, samples, bounds, fileName=None):
+def plotOrSaveFile(variables, samples, bounds, fileName=None, nXTicks=2, nYTicks=3):
     nbVariables = len(variables)
-    nXTicks = 2
-    nYTicks = 3
 
     for row in range(nbVariables):
         for col in range(nbVariables):
