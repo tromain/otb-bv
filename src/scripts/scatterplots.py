@@ -49,6 +49,8 @@ for var in variables:
             bounds[var]['max'] = s            
 
 nbVariables = len(variables)
+nXTicks = 2
+nYTicks = 3
 
 for row in range(nbVariables):
     for col in range(nbVariables):
@@ -56,16 +58,30 @@ for row in range(nbVariables):
         x = samples[variables[col]]
         ax.set_xlim(bounds[variables[col]]['min'], bounds[variables[col]]['max'])
         if col == 0:
-            ax.set_ylabel(variables[row])
-            ax.set_yticklabels([bounds[variables[row]]['min'], bounds[variables[row]]['max']])
-        if row == nbVariables-1:
-            ax.set_xlabel(variables[col])
-            ax.set_xticklabels([bounds[variables[col]]['min'], bounds[variables[col]]['max']])
+             ax.set_ylabel(variables[row])
+        if row == 0:
+             ax.set_title(variables[col])
+
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        
+        ax.yaxis.set_ticks_position('right')
+        ax.xaxis.set_ticks_position('bottom')
+        if row == (nbVariables-1) :
+            ticks = [t/float(nXTicks)*(bounds[variables[col]]['max']-bounds[variables[col]]['min'])+bounds[variables[col]]['min'] for t in range(nXTicks+1)]
+            ax.set_xticks(ticks)
+            ax.set_xticklabels([("%.2f"%t) for t in ticks])
+                    
         if row != col :
             y = samples[variables[row]]
             ax.set_ylim(bounds[variables[row]]['min'], bounds[variables[row]]['max'])
             ax.scatter(x, y)
+            if col == (nbVariables-1):
+                ticks = [t/float(nYTicks)*(bounds[variables[row]]['max']-bounds[variables[row]]['min'])+bounds[variables[row]]['min'] for t in range(nYTicks+1)]
+                ax.set_yticks(ticks)
+                ax.set_yticklabels([("%.2f"%t) for t in ticks])
         else :
             ax.hist(x, bins=20)
-        
+
+plt.subplots_adjust(wspace=0.5)        
 plt.show()
