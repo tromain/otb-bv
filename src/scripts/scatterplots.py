@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import NullFormatter
 
 
-if len(sys.argv) != 2:
+if len(sys.argv) < 2 or len(sys.argv) > 3:
     sys.exit("Usage: "+sys.argv[0]+" <sample file name>\n")
 
 if not os.path.exists(sys.argv[1]):
@@ -83,5 +83,7 @@ for row in range(nbVariables):
         else :
             ax.hist(x, bins=20)
 
-plt.subplots_adjust(wspace=0.5)        
+plt.subplots_adjust(wspace=0.5)
+if len(sys.argv) == 3:
+    plt.savefig(sys.argv[2])
 plt.show()
