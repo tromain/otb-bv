@@ -86,4 +86,5 @@ for row in range(nbVariables):
 plt.subplots_adjust(wspace=0.5)
 if len(sys.argv) == 3:
     plt.savefig(sys.argv[2])
-plt.show()
+else :
+    plt.show()
