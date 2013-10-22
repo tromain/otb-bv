@@ -13,6 +13,7 @@
 # =========================================================================
 
 import sys
+import os
 import string
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,8 +21,10 @@ from matplotlib.ticker import NullFormatter
 
 
 if len(sys.argv) != 2:
-    print "Usage: "+sys.argv[0]+" <sample file name>\n"
-    exit(0)
+    sys.exit("Usage: "+sys.argv[0]+" <sample file name>\n")
+
+if not os.path.exists(sys.argv[1]):
+    sys.exit("ERROR: Configuration File path "+sys.argv[1]+" was not found!")    
 
 sampleFileName = sys.argv[1]
 
