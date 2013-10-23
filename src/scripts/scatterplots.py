@@ -79,6 +79,6 @@ if __name__ == '__main__':
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         sys.exit("Usage: "+sys.argv[0]+" <sample file name>\n")
     if not os.path.exists(sys.argv[1]):
-        sys.exit("ERROR: Configuration File path "+sys.argv[1]+" was not found!")    
+        sys.exit("ERROR: file "+sys.argv[1]+" was not found!")    
     (variables, samples, bounds) = parseDataFile(sys.argv[1])
     plotOrSaveFile(variables, samples, bounds, fileName=(None if len(sys.argv)==2 else sys.argv[2]))
