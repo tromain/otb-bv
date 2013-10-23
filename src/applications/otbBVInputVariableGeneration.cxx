@@ -19,6 +19,8 @@
 #include "vnl/vnl_random.h"
 #include <fstream>
 
+#include "otbBVTypes.h"
+
 namespace otb
 {
 
@@ -33,8 +35,6 @@ public:
   typedef Application                   Superclass;
   typedef itk::SmartPointer<Self>       Pointer;
   typedef itk::SmartPointer<const Self> ConstPointer;
-
-  enum IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Cdm, CwRel, Cbp, Bs};
 
   enum DistType {GAUSSIAN, UNIFORM};
   
