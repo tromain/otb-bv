@@ -34,7 +34,6 @@ public:
   typedef itk::SmartPointer<Self>       Pointer;
   typedef itk::SmartPointer<const Self> ConstPointer;
 
-  //TODO: Add the acquisition geometry
   enum IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Cdm, CwRel, Cbp, Bs};
 
   enum DistType {GAUSSIAN, UNIFORM};
