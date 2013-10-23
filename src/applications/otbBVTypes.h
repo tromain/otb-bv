@@ -14,6 +14,6 @@
 
 namespace otb
 {
-enum IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Cdm, CwRel, Cbp, Bs};
-enum AcquisitionParameters {HSPOT, TTS, TTO, PSI};
+enum IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Cdm, CwRel, Cbp, Bs, IVNamesEnd};
+enum AcquisitionParameters {HSPOT, TTS, TTO, PSI, AcquisitionParametersEnd};
 }
