@@ -4,6 +4,8 @@
 
 * Use
 ** Input variable generation
+
+
 *** Variable statistics
 |        | Variable         | Minimum | Maximum |   Mode |    Std | Nb_Class | Law   | LAI_Conv |
 |--------+------------------+---------+---------+--------+--------+----------+-------+----------|
@@ -20,7 +22,29 @@
 |--------+------------------+---------+---------+--------+--------+----------+-------+----------|
 | Soil   | Bs               |    0.50 |    3.50 |   1.20 |   2.00 |        4 | gauss |       10 |
 
-Acquisition angles
+
+**** Prospect OTB
+| Nom var OTB      | Description             | var bvnet  |
+|------------------+-------------------------+------------|
+| double m_Cab;    | //Chlorophyll content   | Cab        |
+| double m_Car;    | //Carotenoid content    |            |
+| double m_CBrown; | //Brown pigment content | Cbp        |
+| double m_Cw;     | //EWT                   | Cw_Rel (?) |
+| double m_Cm;     | //LMA                   | Cdm (?)    |
+| double m_N;      | //structure coef        | N          |
+
+**** Sail OTB
+| Nom var OTB     | Description                | var bvnet |
+|-----------------+----------------------------+-----------|
+| double m_LAI;   | //leaf area index          | MLAI      |
+| double m_Angl;  | //average leaf angle       | ALA       |
+| double m_PSoil; | //soil coefficient         | Bs        |
+| double m_Skyl;  | //diffuse/direct radiation |           |
+| double m_HSpot; | //hot spot                 | HsD       |
+| double m_TTS;   | //solar zenith angle       | \theta_s  |
+| double m_TTO;   | //observer zenith angle    | \theta_v  |
+| double m_PSI;   | //azimuth                  | \psi      |
+
 *** Variable correlations
 *** Results
 #+name: sample-file
