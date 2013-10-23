@@ -72,6 +72,8 @@ public:
       resp.first = static_cast<PrecisionType>((400.0+i)/1000);
       hxSpectrum.push_back(resp);
       }
+
+    //TODO: set the parameters using the maps
     ProspectType::Pointer prospect = ProspectType::New();
     //  prospect->SetInput(m_LabelParameters[ label ]);
     SailType::Pointer sail = SailType::New();
