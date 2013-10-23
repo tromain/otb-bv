@@ -24,6 +24,8 @@
 
 #include <fstream>
 
+#include "otbBVTypes.h"
+
 namespace otb
 {
 
@@ -31,7 +33,7 @@ namespace Functor
 {
 
 template <class TSatRSR, unsigned int SimNbBands = 2000>
-class ProsailSimulatorFunctor
+class ProsailSimulator
 {
 public:
   /** Standard class typedefs */
@@ -40,22 +42,22 @@ public:
   typedef typename otb::ProspectModel ProspectType;
   typedef typename otb::SailModel SailType;
 
-  typedef double PrecisionType;
+  typedef typename SatRSRType::PrecisionType PrecisionType;
   typedef std::pair<PrecisionType,PrecisionType> PairType;
   typedef typename std::vector<PairType> VectorPairType;
   typedef otb::SpectralResponse< PrecisionType, PrecisionType>  ResponseType;
-  typedef ResponseType::Pointer  ResponsePointerType;
+  typedef typename ResponseType::Pointer  ResponsePointerType;
   typedef otb::ReduceSpectralResponse < ResponseType,SatRSRType>  ReduceResponseType;
   typedef typename ReduceResponseType::Pointer  ReduceResponseTypePointerType;
   typedef typename std::vector<PrecisionType> OutputType;
   
   /** Constructor */
-  ProsailSimulatorFunctor() {
+  ProsailSimulator() {
     m_SatRSR = SatRSRType::New();
   }
 
   /** Destructor */
-  ~ProsailSimulatorFunctor() {};
+  ~ProsailSimulator() {};
   
   /** Implementation of the () operator*/
   inline OutputType operator ()()
@@ -88,7 +90,7 @@ public:
       {
       hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetHemisphericalReflectance()->GetResponse()[i].second);
       }
-    ResponseType::Pointer aResponse = ResponseType::New();
+    ResponsePointerType aResponse = ResponseType::New();
     aResponse->SetResponse( hxSpectrum );
     ReduceResponseTypePointerType  reduceResponse = ReduceResponseType::New();
     reduceResponse->SetInputSatRSR(m_SatRSR);
@@ -100,12 +102,12 @@ public:
     return pix;
   }
 
-  bool operator !=(const ProsailSimulatorFunctor& other) const
+  bool operator !=(const ProsailSimulator& other) const
   {
     return true;
   }
 
-  bool operator ==(const ProsailSimulatorFunctor& other) const
+  bool operator ==(const ProsailSimulator& other) const
   {
     return false;
   }
@@ -118,6 +120,16 @@ public:
   inline SatRSRPointerType GetRSR() const
   {
     return m_SatRSR;
+  }
+
+  inline void SetBVs(BVType bvmap)
+  {
+    //TODO: implement the method
+  }
+
+  inline void SetParameters(AcquisitionParsType apmap)
+  {
+    //TODO: implement the method
   }
   
 protected:
@@ -147,9 +159,10 @@ public:
 
   itkTypeMacro(ProSailSimulator, otb::Application);
 
-  // Parameters for the acquisition geometry
-  enum AcquisitionParameters {HSPOT, TTS, TTO, PSI};
-  typedef  std::map< AcquisitionParameters, double > AcquisitionParsType;
+  typedef double PrecisionType;
+  typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
+  typedef Functor::ProsailSimulator<SatRSRType> ProSailType;
+  typedef typename ProSailType::OutputType SimulationType;
   
 private:
   void DoInit()
@@ -157,29 +170,29 @@ private:
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances using Prospect+Sail.");
 
-    AddParameter(ParameterType_InputFilename, "bv-file", "Input file containing the bv samples.");
-    SetParameterDescription( "in", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
-    MandatoryOn("bv-file");
+    AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples.");
+    SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
+    MandatoryOn("bvfile");
 
-    AddParameter(ParameterType_InputFilename, "soil-file", "Input file containing the soil spectra.");
-    SetParameterDescription( "in", "Input file containing ." );
-    MandatoryOn("soil-file");
+    AddParameter(ParameterType_InputFilename, "soilfile", "Input file containing the soil spectra.");
+    SetParameterDescription( "soilfile", "Input file containing ." );
+    MandatoryOn("soilfile");
 
-    AddParameter(ParameterType_InputFilename, "rsr-file", "Input file containing the relative spectral responses.");
-    SetParameterDescription( "in", "Input file containing ." );
-    MandatoryOn("rsr-file");
+    AddParameter(ParameterType_InputFilename, "rsrfile", "Input file containing the relative spectral responses.");
+    SetParameterDescription( "rsrfile", "Input file containing ." );
+    MandatoryOn("rsrfile");
     
     AddParameter(ParameterType_OutputFilename, "out", "Output file");
     SetParameterDescription( "out", "Filename where the simulations are saved." );
     MandatoryOn("out");
 
-    AddParameter(ParameterType_Float, "solar-zenith", "");
-    SetParameterDescription( "solar-zenith", "." );
-    MandatoryOn("solar-zenith");
+    AddParameter(ParameterType_Float, "solarzenith", "");
+    SetParameterDescription( "solarzenith", "." );
+    MandatoryOn("solarzenith");
 
-    AddParameter(ParameterType_Float, "sensor-zenith", "");
-    SetParameterDescription( "sensor-zenith", "." );
-    MandatoryOn("sensor-zenith");
+    AddParameter(ParameterType_Float, "sensorzenith", "");
+    SetParameterDescription( "sensorzenith", "." );
+    MandatoryOn("sensorzenith");
 
     AddParameter(ParameterType_Float, "azimuth", "");
     SetParameterDescription( "azimuth", "." );
@@ -197,14 +210,105 @@ private:
     // Nothing to do here : all parameters are independent
   }
 
+  unsigned short int CountSensorBands(std::string rsrFileName)
+  {
+    std::ifstream rsrFile(rsrFileName.c_str());
+    std::string line;
+    short int nbSpaces = 0;
+    if (rsrFile.is_open())
+      {
+      getline(rsrFile,line);
+      rsrFile.close();
+      std::size_t found = line.find(' ');
+      while(found!=std::string::npos)
+        {
+        ++nbSpaces;
+        found = line.find(' ', found+1);
+        }
+      return nbSpaces-1;
+      }
+    else
+      {
+      itkGenericExceptionMacro(<< "Could not open file " << rsrFileName);
+      }
 
+  }
+
+
+  void WriteSimulation(SimulationType simu)
+  {
+    //TODO: implement the method
+  }
+  
   void DoExecute()
   {
     m_Azimuth = GetParameterFloat("azimuth");
-    m_SolarZenith = GetParameterFloat("solar-zenith");
-    m_SensorZenith = GetParameterFloat("sensor-zenith");
-    
+    m_SolarZenith = GetParameterFloat("solarzenith");
+    m_SensorZenith = GetParameterFloat("sensorzenith");
+    std::string rsrFileName = GetParameterString("rsrfile");
+    short int nbBands = this->CountSensorBands(rsrFileName);
+    SatRSRType::Pointer  satRSR = SatRSRType::New();
+    satRSR->SetNbBands(nbBands);
+    satRSR->SetSortBands(false);
+    satRSR->Load(rsrFileName);
 
+    std::cout << "Bands for sensor" << std::endl;
+    for(unsigned int i = 0; i< nbBands; ++i)
+      std::cout << i << " " << (satRSR->GetRSR())[i]->GetInterval().first << " " << (satRSR->GetRSR())[i]->GetInterval().second << std::endl;
+
+    std::string bvFileName = GetParameterString("bvfile");
+    std::string outFileName = GetParameterString("out");
+
+    try
+      {
+      m_SampleFile.open(bvFileName.c_str());
+      }
+    catch(...)
+      {
+      itkGenericExceptionMacro(<< "Could not open file " << bvFileName);
+      }
+
+    try
+      {
+      m_SimulationsFile.open(outFileName.c_str(), std::ofstream::out);
+      }
+    catch(...)
+      {
+      itkGenericExceptionMacro(<< "Could not open file " << outFileName);
+      }    
+
+    AcquisitionParsType prosailPars;
+    prosailPars[HSPOT] = 0; //TODO find the appropriate value
+    prosailPars[TTS] = m_SolarZenith;
+    prosailPars[TTO] = m_SensorZenith;
+    prosailPars[PSI] = m_Azimuth;
+    
+    ProSailType prosail;
+    prosail.SetRSR(satRSR);
+
+    //read variable names (first line)
+    std::string line;
+    std::getline(m_SampleFile, line);
+    while(m_SampleFile.good())
+      {
+      BVType prosailBV;
+      // Read the variable values
+      std::getline(m_SampleFile, line);
+      std::stringstream ss(line);
+      for(unsigned int varName = 0; varName != static_cast<unsigned int>(IVNamesEnd);
+          ++ varName)
+        {
+        double bvValue;
+        ss >> bvValue;
+        prosailBV[static_cast<IVNames>(varName)] = bvValue;
+        }
+      prosail.SetBVs(prosailBV);
+      prosail.SetParameters(prosailPars);
+      this->WriteSimulation(prosail());
+      }
+
+    m_SampleFile.close();
+    m_SimulationsFile.close();
   }
 
   double m_Azimuth;
