@@ -250,8 +250,8 @@ private:
       }
     catch(...)
       {
-      itkGenericExceptionMacro(<< "Could not open file " << GetParameterString("out"))
-        }
+      itkGenericExceptionMacro(<< "Could not open file " << GetParameterString("out"));
+      }
 
     m_SampleFile << std::setprecision(4);
     m_SampleFile << std::setw(12) << std::left << "MLAI";
