@@ -49,17 +49,6 @@ NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::~NeuralN
   delete m_ANNModel;
 }
 
-/** Train the machine learning model */
-template<class TInputValue, class TOutputValue>
-void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::SetLayerSizes(const std::vector<unsigned int> layers)
-{
-  const unsigned int nbLayers = layers.size();
-  if (nbLayers < 3)
-    itkExceptionMacro(<< "Number of layers in the Neural Network must be >= 3")
-
-  m_LayerSizes = layers;
-}
-
 /** Converts a ListSample of VariableLengthVector to a CvMat. The user
  *  is responsible for freeing the output pointer with the
  *  cvReleaseMat function.  A null pointer is resturned in case the
@@ -188,39 +177,6 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Loa
 
   m_ANNModel->read(fs, model_node);
   cvReleaseFileStorage(&fs);
-}
-
-template<class TInputValue, class TOutputValue>
-bool NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::CanReadFile(const std::string & file)
-{
-  std::ifstream ifs;
-  ifs.open(file.c_str());
-
-  if (!ifs)
-    {
-    std::cerr << "Could not read file " << file << std::endl;
-    return false;
-    }
-
-  while (!ifs.eof())
-    {
-    std::string line;
-    std::getline(ifs, line);
-
-    if (line.find(CV_TYPE_NAME_ML_ANN_MLP) != std::string::npos)
-      {
-      //std::cout << "Reading a " << CV_TYPE_NAME_ML_ANN_MLP << " model" << std::endl;
-      return true;
-      }
-    }
-  ifs.close();
-  return false;
-}
-
-template<class TInputValue, class TOutputValue>
-bool NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::CanWriteFile(const std::string & file)
-{
-  return false;
 }
 
 template<class TInputValue, class TOutputValue>
