@@ -21,6 +21,10 @@
 
 #include "otbBVUtil.h"
 
+#include "otbMachineLearningModelFactory.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
+#include "itkListSample.h"
+
 namespace otb
 {
 
@@ -43,6 +47,11 @@ public:
   itkTypeMacro(InverseModelLearning, otb::Application);
 
   typedef double PrecisionType;
+  typedef itk::FixedArray<PrecisionType, 1> OutputSampleType;
+  typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
+  typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
+  typedef itk::Statistics::ListSample< InputSampleType > ListInputSampleType;
+  typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
   
 private:
   void DoInit()
@@ -85,23 +94,71 @@ private:
       }
 
     unsigned short int nbInputVariables = countColumns(trainingFileName) - 1;
+
+    std::cout << "Found " << nbInputVariables << " input variables in " << trainingFileName << std::endl;
+    //TODO: build the samples
+    ListInputSampleType::Pointer inputListSample = ListInputSampleType::New();
+    ListOutputSampleType::Pointer outputListSample = ListOutputSampleType::New();
+
+    unsigned long int nbSamples = 0;
     while(trainingFile.good())
       {
-      // Read the variable values
-      std::string line;
-      std::getline(trainingFile, line);
-      std::stringstream ss(line);
-      double outputValue;
-      ss >> outputValue;
-      for(unsigned int var = 0; var < nbInputVariables; ++ var)
+      if(!trainingFile.eof())
         {
-        double inputValue;
-        ss >> inputValue;
+        // Read the variable values
+        std::string line;
+        std::getline(trainingFile, line);
+        if(line.size() > 1)
+          {
+          std::stringstream ss(line);
+          OutputSampleType outputValue;
+          ss >> outputValue[0];
+          std::cout << outputValue << std::endl;
+          InputSampleType inputValue;
+          inputValue.Reserve(nbInputVariables);
+          for(unsigned int var = 0; var < nbInputVariables; ++ var)
+            {
+            PrecisionType value;
+            ss >> value;
+            inputValue[value];
+            }
+
+          inputListSample->PushBack(inputValue);
+          outputListSample->PushBack(outputValue);
+          ++nbSamples;
+          }
         }
       }
-
     trainingFile.close();
+
+    std::cout << "Found " << nbSamples << " samples in " << trainingFileName << std::endl;
+    NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
+    classifier->SetInputListSample(inputListSample);
+    classifier->SetTargetListSample(outputListSample);
+    classifier->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
+    std::vector<unsigned int> layerSizes;
+    // One hidden layer with 5 neurons and one output variable
+    layerSizes.push_back(nbInputVariables);
+    layerSizes.push_back(5);
+    layerSizes.push_back(1);
+    classifier->SetLayerSizes(layerSizes);
+    classifier->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
+    classifier->SetAlpha(1.0);
+    classifier->SetBeta(1.0);
+    classifier->SetBackPropDWScale(0.1);
+    classifier->SetBackPropMomentScale(0.1);
+    classifier->SetRegPropDW0(0.1);
+    classifier->SetRegPropDWMin(1e-7);
+    classifier->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
+    classifier->SetEpsilon(0.01);
+    classifier->SetMaxIter(1000);
+    classifier->Train();
+    classifier->Save(GetParameterString("out"));
+
+
   }
+
+
 
 };
 
