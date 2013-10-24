@@ -17,6 +17,9 @@
 #include "otbWrapperChoiceParameter.h"
 
 #include <fstream>
+#include <string>
+
+#include "otbBVUtil.h"
 
 namespace otb
 {
@@ -81,12 +84,12 @@ private:
       itkGenericExceptionMacro(<< "Could not open file " << trainingFileName);
       }
 
-    unsigned short int nbInputVariables = countColumns(trainingFile) - 1;
-    while(m_SampleFile.good())
+    unsigned short int nbInputVariables = countColumns(trainingFileName) - 1;
+    while(trainingFile.good())
       {
       // Read the variable values
       std::string line;
-      std::getline(m_SampleFile, line);
+      std::getline(trainingFile, line);
       std::stringstream ss(line);
       double outputValue;
       ss >> outputValue;

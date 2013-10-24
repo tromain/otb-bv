@@ -34,3 +34,6 @@ OTB_CREATE_APPLICATION(NAME           ProSailSimulator
                        SOURCES        otbProSailSimulator.cxx
                        LINK_LIBRARIES OTBIO;OTBCommon)                     
 
+OTB_CREATE_APPLICATION(NAME           InverseModelLearning
+                       SOURCES        otbInverseModelLearning.cxx
+                       LINK_LIBRARIES OTBIO;OTBCommon)
