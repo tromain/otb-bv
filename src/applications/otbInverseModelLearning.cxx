@@ -133,14 +133,14 @@ private:
     classifier->SetLayerSizes(layerSizes);
     classifier->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     classifier->SetAlpha(1.0);
-    classifier->SetBeta(2.0);
+    classifier->SetBeta(1.0);
     classifier->SetBackPropDWScale(0.1);
     classifier->SetBackPropMomentScale(0.1);
     classifier->SetRegPropDW0(0.1);
     classifier->SetRegPropDWMin(1e-7);
     classifier->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
-    classifier->SetEpsilon(0.01);
-    classifier->SetMaxIter(1000);
+    classifier->SetEpsilon(1e-10);
+    classifier->SetMaxIter(10000000);
     classifier->Train();
     classifier->Save(GetParameterString("out"));
 
