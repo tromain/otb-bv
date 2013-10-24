@@ -25,6 +25,7 @@
 #include <fstream>
 
 #include "otbBVTypes.h"
+#include "otbBVUtil.h"
 
 namespace otb
 {
@@ -212,31 +213,6 @@ private:
     // Nothing to do here : all parameters are independent
   }
 
-  unsigned short int CountSensorBands(std::string rsrFileName)
-  {
-    std::ifstream rsrFile(rsrFileName.c_str());
-    std::string line;
-    short int nbSpaces = 0;
-    if (rsrFile.is_open())
-      {
-      getline(rsrFile,line);
-      rsrFile.close();
-      std::size_t found = line.find(' ');
-      while(found!=std::string::npos)
-        {
-        ++nbSpaces;
-        found = line.find(' ', found+1);
-        }
-      return nbSpaces-1;
-      }
-    else
-      {
-      itkGenericExceptionMacro(<< "Could not open file " << rsrFileName);
-      }
-
-  }
-
-
   void WriteSimulation(SimulationType simu)
   {
     //TODO: implement the method
@@ -248,7 +224,7 @@ private:
     m_SolarZenith = GetParameterFloat("solarzenith");
     m_SensorZenith = GetParameterFloat("sensorzenith");
     std::string rsrFileName = GetParameterString("rsrfile");
-    short int nbBands = this->CountSensorBands(rsrFileName);
+    short int nbBands = countColumns(rsrFileName);
     SatRSRType::Pointer  satRSR = SatRSRType::New();
     satRSR->SetNbBands(nbBands);
     satRSR->SetSortBands(false);
