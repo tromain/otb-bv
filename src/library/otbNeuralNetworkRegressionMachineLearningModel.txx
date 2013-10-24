@@ -72,44 +72,6 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Lab
   unsigned int nbSamples = labels->Size();
   unsigned int nbClasses = 1;
 
-  // // Check for valid listSample
-  // if (labels != NULL && nbSamples > 0)
-  //   {
-  //   // Build an iterator
-  //   
-
-  //   TargetValueType classLabel;
-  //   for (; labelSampleIt != labels->End(); ++labelSampleIt)
-  //     {
-  //     // Retrieve labelSample
-  //     typename TargetListSampleType::MeasurementVectorType labelSample = labelSampleIt.GetMeasurementVector();
-  //     classLabel = labelSample[0];
-  //     if (m_MapOfLabels.count(classLabel) == 0)
-  //       {
-  //       m_MapOfLabels[classLabel] = -1;
-  //       }
-  //     }
-
-  //   unsigned int nbClasses = m_MapOfLabels.size();
-  //   typename MapOfLabelsType::iterator itMapOfLabels = m_MapOfLabels.begin();
-  //   unsigned itLabel = 0;
-  //   for (; itMapOfLabels != m_MapOfLabels.end(); ++itMapOfLabels)
-  //     {
-  //     classLabel = itMapOfLabels->first;
-  //     m_MapOfLabels[classLabel] = itLabel;
-
-  //     if (itLabel == 0)
-  //       {
-  //       if (m_CvMatOfLabels)
-  //         {
-  //         cvReleaseMat(&m_CvMatOfLabels);
-  //         }
-  //       m_CvMatOfLabels = cvCreateMat(1, nbClasses, CV_32SC1);
-  //       }
-  //     m_CvMatOfLabels->data.i[itLabel] = classLabel;
-  //     ++itLabel;
-  //     }
-
     // Allocate CvMat
     // Sample index
     unsigned int sampleIdx = 0;
@@ -121,7 +83,7 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Lab
       {
       output.at<float> (sampleIdx, labelSampleIt.GetMeasurementVector()[0]) = m_Beta;
       }
-    //}
+
 }
 
 /** Train the machine learning model */
@@ -195,7 +157,6 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Sav
     }
 
   m_ANNModel->write(fs, lname);
-//  cvWrite(fs, "class_labels", m_CvMatOfLabels);
 
   cvReleaseFileStorage(&fs);
 }
@@ -226,8 +187,6 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Loa
     }
 
   m_ANNModel->read(fs, model_node);
-//  m_CvMatOfLabels = (CvMat*)cvReadByName( fs, model_node, "class_labels" );
-
   cvReleaseFileStorage(&fs);
 }
 
