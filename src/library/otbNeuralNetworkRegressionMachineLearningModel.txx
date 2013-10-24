@@ -49,31 +49,6 @@ NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::~NeuralN
   delete m_ANNModel;
 }
 
-/** Converts a ListSample of VariableLengthVector to a CvMat. The user
- *  is responsible for freeing the output pointer with the
- *  cvReleaseMat function.  A null pointer is resturned in case the
- *  conversion failed.
- */
-template<class TInputValue, class TOutputValue>
-void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::LabelsToMat(const TargetListSampleType * labels,
-                                                                               cv::Mat & output)
-{
-  unsigned int nbSamples = labels->Size();
-  unsigned int nbClasses = 1;
-
-    // Allocate CvMat
-    // Sample index
-    unsigned int sampleIdx = 0;
-    typename TargetListSampleType::ConstIterator labelSampleIt = labels->Begin();
-    output.create(nbSamples, nbClasses, CV_32FC1);
-    output.setTo(-m_Beta);
-    // Fill the cv matrix
-    for (; labelSampleIt != labels->End(); ++labelSampleIt, ++sampleIdx)
-      {
-      output.at<float> (sampleIdx, labelSampleIt.GetMeasurementVector()[0]) = m_Beta;
-      }
-
-}
 
 /** Train the machine learning model */
 template<class TInputValue, class TOutputValue>
@@ -98,7 +73,7 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Tra
   otb::ListSampleToMat<InputListSampleType>(this->GetInputListSample(), samples);
 
   cv::Mat matOutputANN;
-  LabelsToMat(this->GetTargetListSample(), matOutputANN);
+  otb::ListSampleToMat<TargetListSampleType>(this->GetTargetListSample(), matOutputANN);
 
   CvANN_MLP_TrainParams params;
   params.train_method = m_TrainMethod;
