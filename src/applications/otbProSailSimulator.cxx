@@ -224,7 +224,8 @@ private:
     m_SolarZenith = GetParameterFloat("solarzenith");
     m_SensorZenith = GetParameterFloat("sensorzenith");
     std::string rsrFileName = GetParameterString("rsrfile");
-    short int nbBands = countColumns(rsrFileName);
+    //The first 2 columns of the rsr file correspond to the wavelenght and the solar radiation
+    short int nbBands = countColumns(rsrFileName)-2;
     SatRSRType::Pointer  satRSR = SatRSRType::New();
     satRSR->SetNbBands(nbBands);
     satRSR->SetSortBands(false);
