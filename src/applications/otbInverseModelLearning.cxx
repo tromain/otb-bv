@@ -22,7 +22,7 @@
 #include "otbBVUtil.h"
 
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkMachineLearningModel.h"
+#include "otbNeuralNetworkRegressionMachineLearningModel.h"
 #include "itkListSample.h"
 
 namespace otb
@@ -50,8 +50,8 @@ public:
   typedef itk::FixedArray<PrecisionType, 1> OutputSampleType;
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
-  typedef itk::Statistics::ListSample< InputSampleType > ListInputSampleType;
-  typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
+  typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
+  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
   
 private:
   void DoInit()
@@ -122,7 +122,6 @@ private:
             ss >> value;
             inputValue[value];
             }
-
           inputListSample->PushBack(inputValue);
           outputListSample->PushBack(outputValue);
           ++nbSamples;

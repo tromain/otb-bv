@@ -24,7 +24,7 @@ ELSE(OTB_FOUND)
           "OTB not found. Please set OTB_DIR")
 ENDIF(OTB_FOUND)
 
-
+INCLUDE_DIRECTORIES(../library/)
 
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
                        SOURCES        otbBVInputVariableGeneration.cxx
@@ -36,4 +36,4 @@ OTB_CREATE_APPLICATION(NAME           ProSailSimulator
 
 OTB_CREATE_APPLICATION(NAME           InverseModelLearning
                        SOURCES        otbInverseModelLearning.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon)
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning)
