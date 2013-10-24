@@ -133,7 +133,7 @@ private:
     classifier->SetLayerSizes(layerSizes);
     classifier->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     classifier->SetAlpha(1.0);
-    classifier->SetBeta(1.0);
+    classifier->SetBeta(2.0);
     classifier->SetBackPropDWScale(0.1);
     classifier->SetBackPropMomentScale(0.1);
     classifier->SetRegPropDW0(0.1);
@@ -147,18 +147,12 @@ private:
     // Test the predictions
 
     typename ListInputSampleType::ConstIterator sampleIt = inputListSample->Begin();
-    std::cout << sampleIt.GetMeasurementVector() << " ";
-    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
-    ++sampleIt;
-    std::cout << sampleIt.GetMeasurementVector() << " ";
-    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
-    ++sampleIt;
-    std::cout << sampleIt.GetMeasurementVector() << " ";
-    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
-    ++sampleIt;
-    std::cout << sampleIt.GetMeasurementVector() << " ";
-    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
-
+    while(sampleIt != inputListSample->End())
+      {
+      std::cout << sampleIt.GetMeasurementVector() << " --> ";
+      std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
+      ++sampleIt;
+      }
   }
 
 
