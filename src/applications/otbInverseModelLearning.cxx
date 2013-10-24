@@ -101,32 +101,22 @@ private:
     ListOutputSampleType::Pointer outputListSample = ListOutputSampleType::New();
 
     unsigned long int nbSamples = 0;
-    while(trainingFile.good())
+    for(std::string line; std::getline(trainingFile, line); )
       {
-      if(!trainingFile.eof())
-        {
-        // Read the variable values
-        std::string line;
-        std::getline(trainingFile, line);
         if(line.size() > 1)
           {
-          std::stringstream ss(line);
+          std::istringstream ss(line);
           OutputSampleType outputValue;
           ss >> outputValue[0];
-          std::cout << outputValue << std::endl;
           InputSampleType inputValue;
           inputValue.Reserve(nbInputVariables);
-          for(unsigned int var = 0; var < nbInputVariables; ++ var)
-            {
-            PrecisionType value;
-            ss >> value;
-            inputValue[value];
-            }
+          for(unsigned int var = 0; var < nbInputVariables; ++var)
+            ss >> inputValue[var];
+          std::cout << inputValue << " --> " << outputValue << std::endl;
           inputListSample->PushBack(inputValue);
           outputListSample->PushBack(outputValue);
           ++nbSamples;
           }
-        }
       }
     trainingFile.close();
 
@@ -154,6 +144,20 @@ private:
     classifier->Train();
     classifier->Save(GetParameterString("out"));
 
+    // Test the predictions
+
+    typename ListInputSampleType::ConstIterator sampleIt = inputListSample->Begin();
+    std::cout << sampleIt.GetMeasurementVector() << " ";
+    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
+    ++sampleIt;
+    std::cout << sampleIt.GetMeasurementVector() << " ";
+    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
+    ++sampleIt;
+    std::cout << sampleIt.GetMeasurementVector() << " ";
+    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
+    ++sampleIt;
+    std::cout << sampleIt.GetMeasurementVector() << " ";
+    std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
 
   }
 
