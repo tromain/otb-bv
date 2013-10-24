@@ -39,8 +39,7 @@ NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::NeuralNe
   m_RegPropDWMin(FLT_EPSILON),
   m_TermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS),
   m_MaxIter(1000),
-  m_Epsilon(0.01),
-  m_CvMatOfLabels(0)
+  m_Epsilon(0.01)
 {
 }
 
@@ -48,7 +47,6 @@ template<class TInputValue, class TOutputValue>
 NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::~NeuralNetworkRegressionMachineLearningModel()
 {
   delete m_ANNModel;
-  cvReleaseMat(&m_CvMatOfLabels);
 }
 
 /** Train the machine learning model */
@@ -72,61 +70,58 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Lab
                                                                                cv::Mat & output)
 {
   unsigned int nbSamples = labels->Size();
+  unsigned int nbClasses = 1;
 
-  // Check for valid listSample
-  if (labels != NULL && nbSamples > 0)
-    {
-    // Build an iterator
-    typename TargetListSampleType::ConstIterator labelSampleIt = labels->Begin();
+  // // Check for valid listSample
+  // if (labels != NULL && nbSamples > 0)
+  //   {
+  //   // Build an iterator
+  //   
 
-    TargetValueType classLabel;
-    for (; labelSampleIt != labels->End(); ++labelSampleIt)
-      {
-      // Retrieve labelSample
-      typename TargetListSampleType::MeasurementVectorType labelSample = labelSampleIt.GetMeasurementVector();
-      classLabel = labelSample[0];
-      if (m_MapOfLabels.count(classLabel) == 0)
-        {
-        m_MapOfLabels[classLabel] = -1;
-        }
-      }
+  //   TargetValueType classLabel;
+  //   for (; labelSampleIt != labels->End(); ++labelSampleIt)
+  //     {
+  //     // Retrieve labelSample
+  //     typename TargetListSampleType::MeasurementVectorType labelSample = labelSampleIt.GetMeasurementVector();
+  //     classLabel = labelSample[0];
+  //     if (m_MapOfLabels.count(classLabel) == 0)
+  //       {
+  //       m_MapOfLabels[classLabel] = -1;
+  //       }
+  //     }
 
-    unsigned int nbClasses = m_MapOfLabels.size();
-    typename MapOfLabelsType::iterator itMapOfLabels = m_MapOfLabels.begin();
-    unsigned itLabel = 0;
-    for (; itMapOfLabels != m_MapOfLabels.end(); ++itMapOfLabels)
-      {
-      classLabel = itMapOfLabels->first;
-      m_MapOfLabels[classLabel] = itLabel;
+  //   unsigned int nbClasses = m_MapOfLabels.size();
+  //   typename MapOfLabelsType::iterator itMapOfLabels = m_MapOfLabels.begin();
+  //   unsigned itLabel = 0;
+  //   for (; itMapOfLabels != m_MapOfLabels.end(); ++itMapOfLabels)
+  //     {
+  //     classLabel = itMapOfLabels->first;
+  //     m_MapOfLabels[classLabel] = itLabel;
 
-      if (itLabel == 0)
-        {
-        if (m_CvMatOfLabels)
-          {
-          cvReleaseMat(&m_CvMatOfLabels);
-          }
-        m_CvMatOfLabels = cvCreateMat(1, nbClasses, CV_32SC1);
-        }
-      m_CvMatOfLabels->data.i[itLabel] = classLabel;
-      ++itLabel;
-      }
+  //     if (itLabel == 0)
+  //       {
+  //       if (m_CvMatOfLabels)
+  //         {
+  //         cvReleaseMat(&m_CvMatOfLabels);
+  //         }
+  //       m_CvMatOfLabels = cvCreateMat(1, nbClasses, CV_32SC1);
+  //       }
+  //     m_CvMatOfLabels->data.i[itLabel] = classLabel;
+  //     ++itLabel;
+  //     }
 
     // Allocate CvMat
     // Sample index
     unsigned int sampleIdx = 0;
-    labelSampleIt = labels->Begin();
+    typename TargetListSampleType::ConstIterator labelSampleIt = labels->Begin();
     output.create(nbSamples, nbClasses, CV_32FC1);
     output.setTo(-m_Beta);
     // Fill the cv matrix
     for (; labelSampleIt != labels->End(); ++labelSampleIt, ++sampleIdx)
       {
-      // Retrieve labelSample
-      typename TargetListSampleType::MeasurementVectorType labelSample = labelSampleIt.GetMeasurementVector();
-      classLabel = labelSample[0];
-      unsigned int indexLabel = m_MapOfLabels[classLabel];
-      output.at<float> (sampleIdx, indexLabel) = m_Beta;
+      output.at<float> (sampleIdx, labelSampleIt.GetMeasurementVector()[0]) = m_Beta;
       }
-    }
+    //}
 }
 
 /** Train the machine learning model */
@@ -180,21 +175,7 @@ typename NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>:
   m_ANNModel->predict(sample, response);
 
   TargetSampleType target;
-  float currentResponse = 0;
-  float maxResponse = response.at<float> (0, 0);
-  target[0] = m_CvMatOfLabels->data.i[0];
-
-  unsigned int nbClasses = m_CvMatOfLabels->cols;
-  for (unsigned itLabel = 1; itLabel < nbClasses; ++itLabel)
-    {
-    currentResponse = response.at<float> (0, itLabel);
-    if (currentResponse > maxResponse)
-      {
-      maxResponse = currentResponse;
-      target[0] = m_CvMatOfLabels->data.i[itLabel];
-      }
-    }
-
+  target[0] = response.at<float> (0, 0);
   return target;
 }
 
@@ -214,7 +195,7 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Sav
     }
 
   m_ANNModel->write(fs, lname);
-  cvWrite(fs, "class_labels", m_CvMatOfLabels);
+//  cvWrite(fs, "class_labels", m_CvMatOfLabels);
 
   cvReleaseFileStorage(&fs);
 }
@@ -245,7 +226,7 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Loa
     }
 
   m_ANNModel->read(fs, model_node);
-  m_CvMatOfLabels = (CvMat*)cvReadByName( fs, model_node, "class_labels" );
+//  m_CvMatOfLabels = (CvMat*)cvReadByName( fs, model_node, "class_labels" );
 
   cvReleaseFileStorage(&fs);
 }
