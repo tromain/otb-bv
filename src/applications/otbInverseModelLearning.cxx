@@ -147,11 +147,15 @@ private:
     // Test the predictions
 
     typename ListInputSampleType::ConstIterator sampleIt = inputListSample->Begin();
-    while(sampleIt != inputListSample->End())
+    typename ListOutputSampleType::ConstIterator resultIt = outputListSample->Begin();
+    while(sampleIt != inputListSample->End() && resultIt != outputListSample->End())
       {
       std::cout << sampleIt.GetMeasurementVector() << " --> ";
-      std::cout << classifier->Predict(sampleIt.GetMeasurementVector()) << std::endl;
+      std::cout << classifier->Predict(sampleIt.GetMeasurementVector());
+      std::cout << " / " << resultIt.GetMeasurementVector();
+      std::cout << std::endl;
       ++sampleIt;
+      ++resultIt;
       }
   }
 
