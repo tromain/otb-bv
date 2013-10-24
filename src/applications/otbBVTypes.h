@@ -13,6 +13,9 @@
 =========================================================================*/
 #ifndef __otbBVTypes_h
 #define __otbBVTypes_h
+
+#include <map>
+
 namespace otb
 {
 enum IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Cdm, CwRel, Cbp, Bs, IVNamesEnd};
