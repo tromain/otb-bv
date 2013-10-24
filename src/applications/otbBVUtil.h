@@ -35,7 +35,7 @@ namespace otb
         ++nbSpaces;
         found = line.find(' ', found+1);
         }
-      return nbSpaces-1;
+      return nbSpaces+1;
       }
     else
       {
