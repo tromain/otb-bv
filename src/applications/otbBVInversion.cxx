@@ -109,13 +109,12 @@ private:
       itkGenericExceptionMacro(<< "Could not open file " << outFileName);
       }
 
+    unsigned short int nbInputVariables = countColumns(reflectancesFileName);
+    std::cout << "Found " << nbInputVariables << " input variables in " << reflectancesFileName << std::endl;
 
     NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
     classifier->Load(GetParameterString("model"));    
     
-    unsigned short int nbInputVariables = countColumns(reflectancesFileName) - 1;
-
-    std::cout << "Found " << nbInputVariables << " input variables in " << reflectancesFileName << std::endl;
 
     for(std::string line; std::getline(reflectancesFile, line); )
       {
@@ -134,6 +133,7 @@ private:
           }
       }
     reflectancesFile.close();
+    outFile.close();
 
   }
 
