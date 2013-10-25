@@ -95,8 +95,9 @@ private:
 
     unsigned short int nbInputVariables = countColumns(trainingFileName) - 1;
 
-    std::cout << "Found " << nbInputVariables << " input variables in " << trainingFileName << std::endl;
-    //TODO: build the samples
+    std::cout << "Found " << nbInputVariables << " input variables in "
+              << trainingFileName << std::endl;
+
     ListInputSampleType::Pointer inputListSample = ListInputSampleType::New();
     ListOutputSampleType::Pointer outputListSample = ListOutputSampleType::New();
 
@@ -120,7 +121,8 @@ private:
       }
     trainingFile.close();
 
-    std::cout << "Found " << nbSamples << " samples in " << trainingFileName << std::endl;
+    std::cout << "Found " << nbSamples << " samples in "
+              << trainingFileName << std::endl;
     NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
     classifier->SetInputListSample(inputListSample);
     classifier->SetTargetListSample(outputListSample);
@@ -144,19 +146,23 @@ private:
     classifier->Train();
     classifier->Save(GetParameterString("out"));
 
-    // Test the predictions
+    otbAppLogINFO("Estimation of prediction error from training samples ..."
+                  << std::endl);
 
+    double rmse = 0.0;
     typename ListInputSampleType::ConstIterator sampleIt = inputListSample->Begin();
     typename ListOutputSampleType::ConstIterator resultIt = outputListSample->Begin();
     while(sampleIt != inputListSample->End() && resultIt != outputListSample->End())
       {
-      std::cout << sampleIt.GetMeasurementVector() << " --> ";
-      std::cout << classifier->Predict(sampleIt.GetMeasurementVector());
-      std::cout << " / " << resultIt.GetMeasurementVector();
-      std::cout << std::endl;
+      rmse += pow(classifier->Predict(sampleIt.GetMeasurementVector())[0] -
+                  resultIt.GetMeasurementVector()[0], 2.0);
       ++sampleIt;
       ++resultIt;
       }
+
+    rmse = sqrt(rmse)/nbSamples;
+
+    otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
 
