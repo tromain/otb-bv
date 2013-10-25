@@ -269,14 +269,17 @@ private:
 
     //TODO: could use a particular seed if useful
     m_RNG = vnl_random();
-    
+
+    otbAppLogINFO("Generating BV samples" << std::endl);
     while(sampleCount < maxSamples)
       {
       this->WriteSample( this->DrawSample() );
       ++sampleCount;
       }
-
     m_SampleFile.close();
+
+    otbAppLogINFO("" << sampleCount << " samples generated and saved in "
+                  << GetParameterString("out") << std::endl);
   }
 
   double m_LAI_Conv;

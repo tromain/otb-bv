@@ -110,12 +110,15 @@ private:
       }
 
     unsigned short int nbInputVariables = countColumns(reflectancesFileName);
-    std::cout << "Found " << nbInputVariables << " input variables in " << reflectancesFileName << std::endl;
+    otbAppLogINFO("Found " << nbInputVariables << " input variables in "
+                  << reflectancesFileName << std::endl);
 
     NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
     classifier->Load(GetParameterString("model"));    
     
 
+    otbAppLogINFO("Applying NN regression ..." << std::endl);
+    unsigned long int sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )
       {
         if(line.size() > 1)
@@ -125,16 +128,15 @@ private:
           inputValue.Reserve(nbInputVariables);
           for(unsigned int var = 0; var < nbInputVariables; ++var)
             ss >> inputValue[var];
-
           OutputSampleType outputValue = classifier->Predict(inputValue);
-          std::cout << inputValue << " --> " << outputValue << std::endl;
-
           outFile << outputValue[0] << std::endl;
+          ++sampleCount;
           }
       }
     reflectancesFile.close();
     outFile.close();
-
+    otbAppLogINFO("" << sampleCount << " samples processed. Results saved in "
+                  << outFileName << std::endl);
   }
 
 

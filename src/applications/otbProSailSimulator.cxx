@@ -23,6 +23,7 @@
 #include "otbReduceSpectralResponse.h"
 
 #include <fstream>
+#include <string>
 
 #include "otbBVTypes.h"
 #include "otbBVUtil.h"
@@ -231,9 +232,15 @@ private:
     satRSR->SetSortBands(false);
     satRSR->Load(rsrFileName);
 
-    std::cout << "Bands for sensor" << std::endl;
+    
+    std::stringstream ss;
+    ss << "Bands for sensor" << std::endl;
     for(unsigned int i = 0; i< nbBands; ++i)
-      std::cout << i << " " << (satRSR->GetRSR())[i]->GetInterval().first << " " << (satRSR->GetRSR())[i]->GetInterval().second << std::endl;
+      ss << i << " " << (satRSR->GetRSR())[i]->GetInterval().first
+         << " " << (satRSR->GetRSR())[i]->GetInterval().second
+         << std::endl;
+
+    otbAppLogINFO(""<<ss);
 
     std::string bvFileName = GetParameterString("bvfile");
     std::string outFileName = GetParameterString("out");
@@ -265,6 +272,8 @@ private:
     ProSailType prosail;
     prosail.SetRSR(satRSR);
 
+    unsigned long int sampleCount = 0;
+    otbAppLogINFO("Processing simulations ..." << std::endl)
     //read variable names (first line)
     std::string line;
     std::getline(m_SampleFile, line);
@@ -284,10 +293,12 @@ private:
       prosail.SetBVs(prosailBV);
       prosail.SetParameters(prosailPars);
       this->WriteSimulation(prosail());
+      ++sampleCount;
       }
-
     m_SampleFile.close();
     m_SimulationsFile.close();
+    otbAppLogINFO("" << sampleCount << " samples processed. Results saved in "
+                  << outFileName << std::endl);
   }
 
   double m_Azimuth;
