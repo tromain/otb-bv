@@ -94,3 +94,8 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 * Actions
 
 ** TODO References Weiss & Baret
+** TODO [2013-10-24 Thu 14:36] Comments  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void%20SetLayerSizes%20(const%20std::vector<unsigned%20int>%20layers)][file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void SetLayerSizes (const std::vector<unsigned int> layers)]]
+- SetLayerSizes should be virtual
+- attributers shoudl be protected and not private
+** TODO [2013-10-24 Thu 14:41] variables are not normalised in the regression
+  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::/**]]
