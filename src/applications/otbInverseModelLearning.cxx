@@ -95,8 +95,8 @@ private:
 
     unsigned short int nbInputVariables = countColumns(trainingFileName) - 1;
 
-    std::cout << "Found " << nbInputVariables << " input variables in "
-              << trainingFileName << std::endl;
+    otbAppLogINFO("Found " << nbInputVariables << " input variables in "
+                  << trainingFileName << std::endl);
 
     ListInputSampleType::Pointer inputListSample = ListInputSampleType::New();
     ListOutputSampleType::Pointer outputListSample = ListOutputSampleType::New();
@@ -113,7 +113,6 @@ private:
           inputValue.Reserve(nbInputVariables);
           for(unsigned int var = 0; var < nbInputVariables; ++var)
             ss >> inputValue[var];
-          std::cout << inputValue << " --> " << outputValue << std::endl;
           inputListSample->PushBack(inputValue);
           outputListSample->PushBack(outputValue);
           ++nbSamples;
@@ -121,8 +120,8 @@ private:
       }
     trainingFile.close();
 
-    std::cout << "Found " << nbSamples << " samples in "
-              << trainingFileName << std::endl;
+    otbAppLogINFO("Found " << nbSamples << " samples in "
+                  << trainingFileName << std::endl);
     NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
     classifier->SetInputListSample(inputListSample);
     classifier->SetTargetListSample(outputListSample);
@@ -143,6 +142,8 @@ private:
     classifier->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
     classifier->SetEpsilon(1e-10);
     classifier->SetMaxIter(10000000);
+
+    otbAppLogINFO("Training the neural network ..." << std::endl);
     classifier->Train();
     classifier->Save(GetParameterString("out"));
 
