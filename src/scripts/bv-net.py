@@ -39,7 +39,15 @@ def generateInputBVDistribution(bvFile, nSamples):
     app.ExecuteAndWriteOutput()
 
 def generateTrainingData(bvFile, simuPars, trainingFile):
-    pass
+    app = otb.Registry.CreateApplication("ProSailSimulator")
+    app.SetParameterString("bvfile", bvFile)
+    app.SetParameterString("soilfile", simuPars['soilFile'])
+    app.SetParameterString("rsrfile", simuPars['rsrFile'])
+    app.SetParameterString("out", simuPars['outputFile'])
+    app.SetParameterFloat("solarzenith", simuPars['solarZenithAngle'])
+    app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
+    app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
+    app.ExecuteAndWriteOutput()
 
 def learnBVModel(trainingFile, outputFile):
     pass
