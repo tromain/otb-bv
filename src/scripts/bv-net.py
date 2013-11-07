@@ -30,7 +30,15 @@ def parseConfigFile(cfg):
     trainingFile = cfg.training.fileName
     modelFile = cfg.learning.outputFileName
     return (distFileName, nSamples, simuPars, trainingFile)
-    
+
+def generateInputBVDistribution(bvFile, nSamples):
+    pass
+
+def generateTrainingData(bvFile, simuPars, trainingFile):
+    pass
+
+def learnBVModel(trainingFile, outputFile):
+    pass
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
