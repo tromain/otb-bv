@@ -14,6 +14,7 @@
 # =========================================================================
 
 import sys
+import os
 from config import Config
 import otbApplication as otb
 
@@ -29,10 +30,13 @@ def parseConfigFile(cfg):
     simuPars['solarSensorAzimuth'] = cfg.simulation.solarSensorAzimuth
     trainingFile = cfg.training.fileName
     modelFile = cfg.learning.outputFileName
-    return (distFileName, nSamples, simuPars, trainingFile)
+    return (distFileName, nSamples, simuPars, trainingFile, modelFile)
 
 def generateInputBVDistribution(bvFile, nSamples):
-    pass
+    app = otb.Registry.CreateApplication("BVInputVariableGeneration")
+    app.SetParameterInt("samples", nSamples)
+    app.SetParameterString("out", bvFile)
+    app.ExecuteAndWriteOutput()
 
 def generateTrainingData(bvFile, simuPars, trainingFile):
     pass
