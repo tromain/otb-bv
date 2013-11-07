@@ -35,7 +35,7 @@ namespace Functor
 {
 
 template <class TSatRSR, unsigned int SimNbBands = 2000>
-class ProsailSimulator
+class ProSailSimulator
 {
 public:
   /** Standard class typedefs */
@@ -54,12 +54,12 @@ public:
   typedef typename std::vector<PrecisionType> OutputType;
   
   /** Constructor */
-  ProsailSimulator() {
+  ProSailSimulator() {
     m_SatRSR = SatRSRType::New();
   }
 
   /** Destructor */
-  ~ProsailSimulator() {};
+  ~ProSailSimulator() {};
   
   /** Implementation of the () operator*/
   inline OutputType operator ()()
@@ -106,12 +106,12 @@ public:
     return pix;
   }
 
-  bool operator !=(const ProsailSimulator& other) const
+  bool operator !=(const ProSailSimulator& other) const
   {
     return true;
   }
 
-  bool operator ==(const ProsailSimulator& other) const
+  bool operator ==(const ProSailSimulator& other) const
   {
     return false;
   }
@@ -165,7 +165,7 @@ public:
 
   typedef double PrecisionType;
   typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
-  typedef Functor::ProsailSimulator<SatRSRType> ProSailType;
+  typedef Functor::ProSailSimulator<SatRSRType> ProSailType;
   typedef typename ProSailType::OutputType SimulationType;
   
 private:
