@@ -295,6 +295,8 @@ private:
     ProSailType prosail;
     prosail.SetRSR(satRSR);
 
+    //TODO : the soil file is not used
+    
     unsigned long int sampleCount = 0;
     otbAppLogINFO("Processing simulations ..." << std::endl)
     //read variable names (first line)
