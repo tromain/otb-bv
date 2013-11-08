@@ -15,6 +15,7 @@
 
 import sys
 import os
+import string
 from config import Config
 import otbApplication as otb
 
@@ -48,7 +49,20 @@ def generateTrainingData(bvFile, simuPars, trainingFile):
     app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
     app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
     app.ExecuteAndWriteOutput()
-    #TODO: combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
+    #TODO: convert the variable to invert to an index
+    bvindex = 1
+    #combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
+    with open(trainingFile, 'w') as tf:
+        with open(bvFile, 'r') as bvf:
+            bvf.readline() #header line
+            with open(simuPars['outputFile'], 'r') as rf:
+                #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
+                for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
+                    outline = string.split(bvline)[bvindex]
+                    angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
+                    outline = outline+" "+string.join(string.split(refline[:-1]), " ")+" "+angles+"\n"
+                    tf.write(outline)
+                
 
 def learnBVModel(trainingFile, outputFile):
     app = otb.Registry.CreateApplication("InverseModelLearning")
