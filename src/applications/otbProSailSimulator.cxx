@@ -322,7 +322,7 @@ private:
       }
     m_SampleFile.close();
     m_SimulationsFile.close();
-    otbAppLogINFO("" << sampleCount << " samples processed. Results saved in "
+    otbAppLogINFO("" << --sampleCount << " samples processed. Results saved in "
                   << outFileName << std::endl);
   }
 
