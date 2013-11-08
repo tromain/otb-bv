@@ -48,9 +48,13 @@ def generateTrainingData(bvFile, simuPars, trainingFile):
     app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
     app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
     app.ExecuteAndWriteOutput()
+    #TODO: combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
 
 def learnBVModel(trainingFile, outputFile):
-    pass
+    app = otb.Registry.CreateApplication("InverseModelLearning")
+    app.SetParameterString("training", trainingFile)
+    app.SetParameterString("out", outputFile)
+    app.ExecuteAndWriteOutput()
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
