@@ -121,6 +121,9 @@ private:
     s[Cab] = this->CorrelateValue(this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod,
                                             m_Cab_std, GAUSSIAN),
                                   m_Cab_mod, s[MLAI]);
+    s[Car] = this->CorrelateValue(this->Rng(m_Car_min, m_Car_max, m_Car_mod,
+                                            m_Car_std, GAUSSIAN),
+                                  m_Car_mod, s[MLAI]);
     s[Cdm] = this->CorrelateValue(this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod,
                                             m_Cdm_std, GAUSSIAN),
                                   m_Cdm_mod, s[MLAI]);
@@ -176,6 +179,10 @@ private:
      HsDn which is not correlated, all other values are equal to 10,
      we will only define one variable to deal with that, instead of
      defining a value for each bv.
+
+     Car --> not used by bvnet; Féret's dissertation uses Cxc to denote Car
+     and gives a mean of 8.58 and a std of 3.95 and fig 2.2, p.47 gives the
+     min at 0 and the max at 25
      
   */
 
@@ -217,6 +224,11 @@ private:
     m_Cab_mod = 45.0;
     m_Cab_std = 30.0;
     m_Cab_nbcl = 4;
+
+    m_Car_min = 0.0;
+    m_Car_max = 25.0;
+    m_Car_mod = 8.58;
+    m_Car_std = 3.95;
 
     m_Cdm_min = 0.0030;
     m_Cdm_max = 0.0110;
@@ -319,6 +331,12 @@ private:
   double m_Cab_mod;
   double m_Cab_std;
   unsigned short  m_Cab_nbcl;
+
+  double m_Car_min;
+  double m_Car_max;
+  double m_Car_mod;
+  double m_Car_std;
+
 
   double m_Cdm_min;
   double m_Cdm_max;
