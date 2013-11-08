@@ -271,6 +271,7 @@ private:
     m_SampleFile << std::setw(12) << std::left    << "HsD";
     m_SampleFile << std::setw(12) << std::left    << "N";
     m_SampleFile << std::setw(12) << std::left    << "Cab";
+    m_SampleFile << std::setw(12) << std::left    << "Car";
     m_SampleFile << std::setw(12) << std::left    << "Cdm";
     m_SampleFile << std::setw(12) << std::left    << "CwRel";
     m_SampleFile << std::setw(12) << std::left    << "Cbp";
