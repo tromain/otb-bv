@@ -247,7 +247,9 @@ private:
 
   void WriteSimulation(SimulationType simu)
   {
-    //TODO: implement the method
+    for(unsigned int i=0; i<simu.size(); ++i)
+      m_SimulationsFile << std::setw(12) << std::left << simu[i] ;
+    m_SimulationsFile << std::endl;
   }
   
   void DoExecute()
