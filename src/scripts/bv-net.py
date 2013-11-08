@@ -19,6 +19,9 @@ import string
 from config import Config
 import otbApplication as otb
 
+# The indices here have to be coherent with the order used in the bv file (and the definition of the vars in otbBVTypes.h
+bvindex = {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Car": 6, "Cdm": 7, "CwRel": 4, "Cbp": 9, "Bs": 10}
+
 def parseConfigFile(cfg):
     distFileName = cfg.bvDistribution.fileName
     nSamples = cfg.bvDistribution.samples
@@ -49,8 +52,6 @@ def generateTrainingData(bvFile, simuPars, trainingFile):
     app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
     app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
     app.ExecuteAndWriteOutput()
-    #TODO: convert the variable to invert to an index
-    bvindex = 1
     #combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
     with open(trainingFile, 'w') as tf:
         with open(bvFile, 'r') as bvf:
@@ -58,7 +59,7 @@ def generateTrainingData(bvFile, simuPars, trainingFile):
             with open(simuPars['outputFile'], 'r') as rf:
                 #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
-                    outline = string.split(bvline)[bvindex]
+                    outline = string.split(bvline)[bvindex[cfg.training.invertBV]]
                     angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
                     outline = outline+" "+string.join(string.split(refline[:-1]), " ")+" "+angles+"\n"
                     tf.write(outline)
