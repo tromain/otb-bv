@@ -42,6 +42,8 @@ public:
   typedef TSatRSR SatRSRType;
   typedef typename SatRSRType::Pointer SatRSRPointerType;
   typedef typename otb::ProspectModel ProspectType;
+  typedef typename otb::LeafParameters LeafParametersType;
+  typedef typename LeafParametersType::Pointer LeafParametersPointerType;
   typedef typename otb::SailModel SailType;
 
   typedef typename SatRSRType::PrecisionType PrecisionType;
@@ -75,20 +77,20 @@ public:
       hxSpectrum.push_back(resp);
       }
 
-    //TODO: set the parameters using the maps
     ProspectType::Pointer prospect = ProspectType::New();
-    //  prospect->SetInput(m_LabelParameters[ label ]);
+    prospect->SetInput(m_LP);
+
     SailType::Pointer sail = SailType::New();
-/*    sail->SetLAI(lai);
-    sail->SetAngl(m_AcquisitionParameters[std::string("Angl")]);
-    sail->SetPSoil(m_AcquisitionParameters[std::string("PSoil")]);
-    sail->SetSkyl(m_AcquisitionParameters[std::string("Skyl")]);
-    sail->SetHSpot(m_AcquisitionParameters[std::string("HSpot")]);
-    sail->SetTTS(m_AcquisitionParameters[std::string("TTS")]);
-    sail->SetTTO(m_AcquisitionParameters[std::string("TTO")]);
-    sail->SetPSI(m_AcquisitionParameters[std::string("PSI")]);
+    sail->SetLAI(m_LAI);
+    sail->SetAngl(m_Angl);
+    sail->SetPSoil(m_PSoil);
+    sail->SetSkyl(m_Skyl);
+    sail->SetHSpot(m_HSpot);
+    sail->SetTTS(m_TTS);
+    sail->SetTTO(m_TTO);
+    sail->SetPSI(m_PSI);
     sail->SetReflectance(prospect->GetReflectance());
-    sail->SetTransmittance(prospect->GetTransmittance());*/
+    sail->SetTransmittance(prospect->GetTransmittance());
     sail->Update();
     for(unsigned int i=0;i<SimNbBands;i++)
       {
@@ -128,18 +130,41 @@ public:
 
   inline void SetBVs(BVType bvmap)
   {
-    //TODO: implement the method
+    m_LP->SetCab(bvmap[Cab]);
+    m_LP->SetCar(bvmap[Car]);
+    m_LP->SetCBrown(bvmap[Cbp]);
+    m_LP->SetCw(bvmap[Cdm]*bvmap[CwRel]/(1.-bvmap[CwRel]));
+    m_LP->SetCm(bvmap[Cdm]);
+    m_LP->SetN(bvmap[N]);
+    m_LAI = bvmap[MLAI];
+    m_Angl = bvmap[ALA];
+    m_PSoil = bvmap[Bs];
+    m_Skyl = 0;
+    m_HSpot = bvmap[HsD];
   }
 
   inline void SetParameters(AcquisitionParsType apmap)
   {
     //TODO: implement the method
+    m_TTS; //solar zenith angle
+    m_TTO; //observer zenith angle
+    m_PSI; //azimuth
+
   }
   
 protected:
 
   /** Satellite Relative spectral response*/
   SatRSRPointerType m_SatRSR;
+  LeafParametersPointerType m_LP;
+  double m_LAI; //leaf area index
+  double m_Angl; //average leaf angle
+  double m_PSoil; //soil coefficient
+  double m_Skyl; //diffuse/direct radiation
+  double m_HSpot; //hot spot
+  double m_TTS; //solar zenith angle
+  double m_TTO; //observer zenith angle
+  double m_PSI; //azimuth
 };
 
 
