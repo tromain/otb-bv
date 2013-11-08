@@ -145,10 +145,9 @@ public:
 
   inline void SetParameters(AcquisitionParsType apmap)
   {
-    //TODO: implement the method
-    m_TTS; //solar zenith angle
-    m_TTO; //observer zenith angle
-    m_PSI; //azimuth
+    m_TTS = apmap[TTS]; //solar zenith angle
+    m_TTO = apmap[TTO]; //observer zenith angle
+    m_PSI = apmap[PSI]; //azimuth
 
   }
   
@@ -289,7 +288,6 @@ private:
       }    
 
     AcquisitionParsType prosailPars;
-    prosailPars[HSPOT] = 0; //TODO find the appropriate value
     prosailPars[TTS] = m_SolarZenith;
     prosailPars[TTO] = m_SensorZenith;
     prosailPars[PSI] = m_Azimuth;
