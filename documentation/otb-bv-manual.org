@@ -33,6 +33,14 @@
 | double m_Cm;     | //LMA                   | Cdm (?)    |
 | double m_N;      | //structure coef        | N          |
 
+Cw = Cdm *Cw_Rel/(1-Cw_Rel)
+Cdm = Cm
+Crown_Cover = not used in SAIL, only useful if GEOSAIL
+Car --> not used by bvnet; Féret's dissertation uses Cxc to denote Car
+and gives a mean of 8.58 and a std of 3.95
+
+
+
 **** Sail OTB
 | Nom var OTB     | Description                | var bvnet |
 |-----------------+----------------------------+-----------|
@@ -44,6 +52,8 @@
 | double m_TTS;   | //solar zenith angle       | \theta_s  |
 | double m_TTO;   | //observer zenith angle    | \theta_v  |
 | double m_PSI;   | //azimuth                  | \psi      |
+
+Skyl = 0
 
 *** Variable correlations
 *** Results
@@ -91,7 +101,7 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 
 * References
 
-* Actions
+* Actions                                                          :noexport:
 
 ** TODO References Weiss & Baret
 ** TODO [2013-10-24 Thu 14:36] Comments  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void%20SetLayerSizes%20(const%20std::vector<unsigned%20int>%20layers)][file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void SetLayerSizes (const std::vector<unsigned int> layers)]]
