@@ -77,9 +77,25 @@ public:
       hxSpectrum.push_back(resp);
       }
 
+    LeafParametersPointerType m_LP = LeafParametersType::New();
+    m_LP->SetCab(m_BV[Cab]);
+    m_LP->SetCar(m_BV[Car]);
+    m_LP->SetCBrown(m_BV[Cbp]);
+    double Cw = m_BV[Cdm]*m_BV[CwRel]/(1.-m_BV[CwRel]);
+    //TODO : this check should not be needed if the simulations were OK
+    if(Cw<0) Cw = 0.0;
+    m_LP->SetCw(Cw);
+    m_LP->SetCm(m_BV[Cdm]);
+    m_LP->SetN(m_BV[N]);
+    m_LAI = m_BV[MLAI];
+    m_Angl = m_BV[ALA];
+    m_PSoil = m_BV[Bs];
+    m_Skyl = 0;
+    m_HSpot = m_BV[HsD];
+    
     ProspectType::Pointer prospect = ProspectType::New();
     prospect->SetInput(m_LP);
-
+    
     SailType::Pointer sail = SailType::New();
     sail->SetLAI(m_LAI);
     sail->SetAngl(m_Angl);
@@ -130,17 +146,7 @@ public:
 
   inline void SetBVs(BVType bvmap)
   {
-    m_LP->SetCab(bvmap[Cab]);
-    m_LP->SetCar(bvmap[Car]);
-    m_LP->SetCBrown(bvmap[Cbp]);
-    m_LP->SetCw(bvmap[Cdm]*bvmap[CwRel]/(1.-bvmap[CwRel]));
-    m_LP->SetCm(bvmap[Cdm]);
-    m_LP->SetN(bvmap[N]);
-    m_LAI = bvmap[MLAI];
-    m_Angl = bvmap[ALA];
-    m_PSoil = bvmap[Bs];
-    m_Skyl = 0;
-    m_HSpot = bvmap[HsD];
+    m_BV = bvmap;
   }
 
   inline void SetParameters(AcquisitionParsType apmap)
@@ -164,6 +170,7 @@ protected:
   double m_TTS; //solar zenith angle
   double m_TTO; //observer zenith angle
   double m_PSI; //azimuth
+  BVType m_BV;
 };
 
 
