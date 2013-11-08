@@ -37,7 +37,8 @@ Cw = Cdm *Cw_Rel/(1-Cw_Rel)
 Cdm = Cm
 Crown_Cover = not used in SAIL, only useful if GEOSAIL
 Car --> not used by bvnet; Féret's dissertation uses Cxc to denote Car
-and gives a mean of 8.58 and a std of 3.95
+and gives a mean of 8.58 and a std of 3.95 and fig 2.2, p.47 gives the
+min at 0 and the max at 25
 
 
 
