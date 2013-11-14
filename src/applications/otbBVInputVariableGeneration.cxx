@@ -200,7 +200,6 @@ private:
     m_ALA_std = 20.0;
     m_ALA_nbcl = 3.0;
 
-    //TODO : check that min-max values are OK since they seem to be wrong in the S2PAD doc
     m_CrownCover_min = 0.4;
     m_CrownCover_max = 1.2;
     m_CrownCover_mod = 0.8;
