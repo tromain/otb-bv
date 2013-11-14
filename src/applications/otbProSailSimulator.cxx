@@ -304,7 +304,7 @@ private:
     ProSailType prosail;
     prosail.SetRSR(satRSR);
 
-    //TODO : the soil file is not used
+    //TODO : the soil file is not used --> implement a version of Sail using an external soil model instead of DataSpecP5B, then multipmy by Bs
     
     unsigned long int sampleCount = 0;
     otbAppLogINFO("Processing simulations ..." << std::endl)

@@ -4,8 +4,6 @@
 
 * Use
 ** Input variable generation
-
-
 *** Variable statistics
 |        | Variable         | Minimum | Maximum |   Mode |    Std | Nb_Class | Law   | LAI_Conv |
 |--------+------------------+---------+---------+--------+--------+----------+-------+----------|
@@ -43,18 +41,19 @@ min at 0 and the max at 25
 
 
 **** Sail OTB
-| Nom var OTB     | Description                | var bvnet |
-|-----------------+----------------------------+-----------|
-| double m_LAI;   | //leaf area index          | MLAI      |
-| double m_Angl;  | //average leaf angle       | ALA       |
-| double m_PSoil; | //soil coefficient         | Bs        |
-| double m_Skyl;  | //diffuse/direct radiation |           |
-| double m_HSpot; | //hot spot                 | HsD       |
-| double m_TTS;   | //solar zenith angle       | \theta_s  |
-| double m_TTO;   | //observer zenith angle    | \theta_v  |
-| double m_PSI;   | //azimuth                  | \psi      |
+| Nom var OTB     | Description                | var bvnet                  |
+|-----------------+----------------------------+----------------------------|
+| double m_LAI;   | //leaf area index          | MLAI                       |
+| double m_Angl;  | //average leaf angle       | ALA                        |
+| double m_PSoil; | //soil coefficient         | utilise un spectre complet |
+| double m_Skyl;  | //diffuse/direct radiation |                            |
+| double m_HSpot; | //hot spot                 | HsD                        |
+| double m_TTS;   | //solar zenith angle       | \theta_s                   |
+| double m_TTO;   | //observer zenith angle    | \theta_v                   |
+| double m_PSI;   | //azimuth                  | \psi                       |
 
 Skyl = 0
+Bs --> l'utiliser pour multiplier la réflectance du sol
 
 *** Variable correlations
 *** Results
@@ -94,6 +93,10 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 
 ** Reflectance simulation
 
+*** Soil in Sail OTB
+./otbSailModel.cxx:280:      Rsoil1 = DataSpecP5B[i].drySoil; //10
+./otbSailModel.cxx:281:      Rsoil2 = DataSpecP5B[i].wetSoil; //11
+rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
 ** Mismatch estimation
 
 ** Model inversion
@@ -110,3 +113,4 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 - attributers shoudl be protected and not private
 ** TODO [2013-10-24 Thu 14:41] variables are not normalised in the regression
   [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::/**]]
+** TODO Implement a version of Sail which uses an external soil file
