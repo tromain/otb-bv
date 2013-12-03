@@ -114,3 +114,15 @@ rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
 ** TODO [2013-10-24 Thu 14:41] variables are not normalised in the regression
   [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::/**]]
 ** TODO Implement a version of Sail which uses an external soil file
+** TODO Validation
+*** [2013-11-29 Fri 15:48] Pour extraire les simulations bvnet de matlab
+
+load 20130822_F2_inout.mat
+fieldnames(Law)
+
+pour écrire un fichier avec toutes les valeurs pour une simulation
+
+     fid = fopen ("myfile.txt", "w");
+     fdisp (fid, "3/8 is ");
+     fdisp (fid, 3/8);
+     fclose (fid);
