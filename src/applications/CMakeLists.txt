@@ -12,21 +12,21 @@
 #
 # =========================================================================
 
-PROJECT(otb-bv)
+project(otb-bv)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8)
 
-FIND_PACKAGE(OTB)
-IF(OTB_FOUND)
-  INCLUDE(${OTB_USE_FILE})
-ELSE(OTB_FOUND)
-  MESSAGE(FATAL_ERROR
+find_package(OTB)
+if(OTB_FOUND)
+  include(${OTB_USE_FILE})
+else(OTB_FOUND)
+  message(FATAL_ERROR
           "OTB not found. Please set OTB_DIR")
-ENDIF(OTB_FOUND)
+endif(OTB_FOUND)
 
 include(OTBWrapperMacros)
 
-INCLUDE_DIRECTORIES(../library/)
+include_directories(../library/)
 
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
                        SOURCES        otbBVInputVariableGeneration.cxx
