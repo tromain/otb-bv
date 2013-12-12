@@ -24,8 +24,6 @@ else(OTB_FOUND)
           "OTB not found. Please set OTB_DIR")
 endif(OTB_FOUND)
 
-include(OTBWrapperMacros)
-
 include_directories(../library/)
 
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
