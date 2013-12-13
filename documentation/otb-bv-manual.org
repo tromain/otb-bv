@@ -126,3 +126,149 @@ pour écrire un fichier avec toutes les valeurs pour une simulation
      fdisp (fid, "3/8 is ");
      fdisp (fid, 3/8);
      fclose (fid);
+*** Description des données préparées par David
+**** Simulation des Variables biophysiques :
+ - LAI, N, ALA, etc. 
+   - caractéristiques pour la simulation dans \Workspace\20130822_F2_Canopy_Atmos_Class_1.csv
+   - simulations dans le fichier matlab \Workspace\Report_20130822_F2\Class_1\20130822_F2_inout.mat , structure "Law"
+     - /home/inglada/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/20130822_F2_inout.mat
+   - les caractéristiques du sol nu dans les configurations sont couplées avec une série de courbes sol nu, ici est utilisé \DATA\Soil\R_Soil_ISRIC_7soils.mat
+ - Géométrie de prise de vue :
+   - Workspace\20130822_F2_Configuration.csv
+
+**** Réflectance simulée :
+- \Workspace\Report_20130822_F2\Class_1\20130822_F2_inout.mat , structure Input > Rho_Toc > valeurs pour chaque bande
+**** Image d'entrée :
+- \Workspace\20130822_F2 + .hdr. Le modèle prend du format ENVI (géoréférencé ou non) en entrée, j'ai aussi mis un format GeoTiff géoréférencé.
+- les caractéristiques utilisées comme référence pour les capteurs sont dans \DATA\Filtres_Smac.mat
+**** Variables estimées par BVNET :
+- \Workspace\Report_20130822_F2\Class_1\20130822_F2_inout.mat , structure "Output". 
+- Les images en sortie sont dans le dossier \Workspace\Image_20130822_F2\ sous format ENVI non géoréférencé.
+
+**** Les deux programmes centraux sont :
+- Build_Learn.m (construction du réseau de neurones)
+- \CODE\Apply_NNT\Macro_Apply_NNT.m (application à l'image d'entrée)
+
+**** Code pour parser le fichier
+#+begin_src octave
+load \
+/home/inglada/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/20130822_F2_inout.mat
+
+nbSamples = size(Law.I_Soil)(1)  
+fid = fopen ("law.txt", "w");
+fdisp (fid, "IS\t LAI\t ALA\t CC\t HsD\t N\t Cab\t Cdm\t Cw_Rel\t \
+Cbp\t Bs\t VZ\t VAz\t SZ\t SA\t B1\t B2\t B3\t FCOV\t FAP\t LAI\t")
+       
+for i = 1:nbSamples
+  fprintf(fid, "%.3f \t", Law.I_Soil(i))
+  fprintf(fid, "%.3f \t", Law.LAI(i))
+  fprintf(fid, "%.3f \t", Law.ALA(i))
+  fprintf(fid, "%.3f \t", Law.Crown_Cover(i))
+  fprintf(fid, "%.3f \t", Law.HsD(i))
+  fprintf(fid, "%.3f \t", Law.N(i))
+  fprintf(fid, "%.3f \t", Law.Cab(i))
+  fprintf(fid, "%.3f \t", Law.Cdm(i))
+  fprintf(fid, "%.3f \t", Law.Cw_Rel(i))
+  fprintf(fid, "%.3f \t", Law.Cbp(i))
+  fprintf(fid, "%.3f \t", Law.Bs(i))
+  fprintf(fid, "%.3f \t", Law.View_Zenith(i))
+  fprintf(fid, "%.3f \t", Law.View_Azimuth(i))
+  fprintf(fid, "%.3f \t", Law.Sun_Zenith(i))
+  fprintf(fid, "%.3f \t", Law.Sun_Azimuth(i))
+  fprintf(fid, "%.3f \t", Input.Rho_Toc(i,1))
+  fprintf(fid, "%.3f \t", Input.Rho_Toc(i,2))
+  fprintf(fid, "%.3f \t", Input.Rho_Toc(i,3))
+  fprintf(fid, "%.3f \t", Output.FCOVER(i))
+  fprintf(fid, "%.3f \t", Output.FAPAR(i))
+  fprintf(fid, "%.3f \n", Output.LAI(i))
+endfor
+
+fclose (fid);
+#+end_src
+
+**** Fichier avec les données
+[[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt]]
+
+#+begin_src sh
+head ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt
+#+end_src
+
+#+RESULTS:
+|  IS |   LAI |    ALA |    CC |   HsD |     N |    Cab |   Cdm | Cw_Rel |   Cbp |    Bs |    VZ |   VAz |    SZ |    SA |    B1 |    B2 |    B3 |  FCOV |   FAP |   LAI |
+| 7.0 | 3.728 | 59.755 | 0.958 | 0.186 | 1.494 | 64.632 | 0.008 |  0.733 | 0.075 | 0.729 | 0.305 | 5.023 | 0.647 | 2.428 | 0.046 | 0.032 | 0.406 | 0.792 | 0.863 | 3.728 |
+| 5.0 | 2.971 | 29.822 | 0.963 | 0.311 | 1.385 | 72.532 | 0.005 |   0.67 | 0.372 | 0.613 | 0.305 | 5.023 | 0.647 | 2.428 | 0.059 |  0.04 |  0.51 | 0.872 | 0.867 | 2.971 |
+| 7.0 |  0.64 | 11.959 | 0.985 | 0.431 | 1.463 | 44.276 | 0.005 |   0.82 | 0.417 | 0.444 | 0.305 | 5.023 | 0.647 | 2.428 | 0.086 | 0.077 | 0.318 | 0.442 | 0.431 |  0.64 |
+| 7.0 | 0.798 | 48.686 | 0.985 | 0.259 | 1.785 | 36.291 | 0.008 |  0.716 | 0.214 | 0.588 | 0.305 | 5.023 | 0.647 | 2.428 | 0.099 | 0.096 | 0.299 | 0.376 | 0.418 | 0.798 |
+| 7.0 | 4.599 | 44.403 | 0.966 | 0.473 | 1.758 | 55.954 | 0.006 |  0.658 | 0.018 |  0.55 | 0.305 | 5.023 | 0.647 | 2.428 | 0.092 | 0.049 | 0.609 | 0.919 | 0.901 | 4.599 |
+| 7.0 | 2.102 | 46.606 | 0.959 | 0.318 | 1.399 | 29.591 | 0.004 |  0.803 | 0.197 |  0.63 | 0.305 | 5.023 | 0.647 | 2.428 | 0.098 | 0.066 | 0.429 | 0.701 | 0.714 | 2.102 |
+| 3.0 | 4.549 | 50.386 | 0.982 | 0.442 | 1.873 | 65.192 | 0.009 |  0.738 | 0.239 | 0.458 | 0.305 | 5.023 | 0.647 | 2.428 | 0.066 | 0.038 | 0.491 | 0.917 | 0.917 | 4.549 |
+| 5.0 | 0.443 | 57.212 | 0.981 | 0.119 | 2.009 | 30.125 |  0.01 |  0.811 | 0.369 | 0.693 | 0.305 | 5.023 | 0.647 | 2.428 | 0.107 | 0.131 | 0.254 | 0.186 | 0.244 | 0.443 |
+| 7.0 | 0.706 | 33.199 | 0.973 | 0.131 | 1.647 | 84.235 | 0.011 |  0.831 | 0.083 | 0.553 | 0.305 | 5.023 | 0.647 | 2.428 | 0.075 | 0.077 | 0.307 | 0.395 | 0.441 | 0.706 |
+
+
+***** Input vars
+[[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt]]
+
+#+begin_src sh
+head ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt
+#+end_src
+
+#+RESULTS:
+|   LAI |    ALA |    CC |   HsD |     N |    Cab |   Cdm | Cw_Rel |   Cbp |    Bs |
+| 3.728 | 59.755 | 0.958 | 0.186 | 1.494 | 64.632 | 0.008 |  0.733 | 0.075 | 0.729 |
+| 2.971 | 29.822 | 0.963 | 0.311 | 1.385 | 72.532 | 0.005 |   0.67 | 0.372 | 0.613 |
+|  0.64 | 11.959 | 0.985 | 0.431 | 1.463 | 44.276 | 0.005 |   0.82 | 0.417 | 0.444 |
+| 0.798 | 48.686 | 0.985 | 0.259 | 1.785 | 36.291 | 0.008 |  0.716 | 0.214 | 0.588 |
+| 4.599 | 44.403 | 0.966 | 0.473 | 1.758 | 55.954 | 0.006 |  0.658 | 0.018 |  0.55 |
+| 2.102 | 46.606 | 0.959 | 0.318 | 1.399 | 29.591 | 0.004 |  0.803 | 0.197 |  0.63 |
+| 4.549 | 50.386 | 0.982 | 0.442 | 1.873 | 65.192 | 0.009 |  0.738 | 0.239 | 0.458 |
+| 0.443 | 57.212 | 0.981 | 0.119 | 2.009 | 30.125 |  0.01 |  0.811 | 0.369 | 0.693 |
+| 0.706 | 33.199 | 0.973 | 0.131 | 1.647 | 84.235 | 0.011 |  0.831 | 0.083 | 0.553 |
+
+***** Output refls
+[[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/output-refls.txt]]
+#+begin_src sh
+head ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/output-refls.txt
+#+end_src
+
+#+RESULTS:
+|    B1 |    B2 |    B3 |
+| 0.046 | 0.032 | 0.406 |
+| 0.059 |  0.04 |  0.51 |
+| 0.086 | 0.077 | 0.318 |
+| 0.099 | 0.096 | 0.299 |
+| 0.092 | 0.049 | 0.609 |
+| 0.098 | 0.066 | 0.429 |
+| 0.066 | 0.038 | 0.491 |
+| 0.107 | 0.131 | 0.254 |
+| 0.075 | 0.077 | 0.307 |
+
+***** Simulations
+#+begin_src sh
+otbcli_ProSailSimulator -bvfile ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt \
+    -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr -out /tmp/simus.txt \
+    -solarzenith 37.08 -sensorzenith 17.48 -azimuth 149.159
+#+end_src
+
+(* 180.0 (/ (- 5.03 2.428) 3.14))
+
+#+begin_src sh
+head /tmp/simus.txt
+#+end_src
+
+#+RESULTS:
+| 0.00812213 |  0.0074936 | 0.00731742 | 0.0103929 | 0.00981358 |
+|  0.0115862 |   0.010452 |  0.0104512 | 0.0140087 |  0.0135353 |
+|  0.0303241 |  0.0354416 |  0.0393449 | 0.0487835 |   0.046169 |
+|  0.0313329 |  0.0381138 |  0.0419052 | 0.0530174 |  0.0497086 |
+| 0.00996737 | 0.00949007 | 0.00880305 | 0.0138654 |  0.0126334 |
+|  0.0121105 |  0.0121685 |  0.0124179 |  0.015252 |  0.0151401 |
+| 0.00921148 | 0.00862345 | 0.00811449 | 0.0122571 |  0.0113622 |
+|  0.0565182 |  0.0713378 |  0.0803616 | 0.0977797 |  0.0925198 |
+|  0.0325505 |  0.0386697 |  0.0432387 | 0.0537301 |  0.0506309 |
+|  0.0199048 |  0.0229026 |  0.0250312 |  0.031949 |  0.0300118 |
+
+
+
+
+
