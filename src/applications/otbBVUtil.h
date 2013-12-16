@@ -24,12 +24,12 @@ namespace otb
   {
     std::ifstream ifile(fileName.c_str());
     std::string line;
-    short int nbSpaces = 0;
+    auto nbSpaces = 0;
     if (ifile.is_open())
       {
       getline(ifile,line);
       ifile.close();
-      std::size_t found = line.find(' ');
+      auto found = line.find(' ');
       while(found!=std::string::npos)
         {
         ++nbSpaces;
