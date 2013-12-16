@@ -33,8 +33,6 @@ public:
 /** Standard class typedefs. */
   typedef BVInputVariableGeneration     Self;
   typedef Application                   Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
 
   enum DistType {GAUSSIAN, UNIFORM};
   
