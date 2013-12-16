@@ -141,7 +141,7 @@ private:
 
   void WriteSample(SampleType s)
   {
-    SampleType::const_iterator si = s.begin();
+    auto si = s.begin();
     while( si != s.end())
       {
       m_SampleFile << std::setw(12) << std::left << (*si).second ;
@@ -208,8 +208,8 @@ private:
     m_SampleFile << std::setw(12) << std::left    << "Cbp";
     m_SampleFile << std::setw(12) << std::left    << "Bs" << std::endl;
     
-    unsigned int maxSamples = GetParameterInt("samples");
-    unsigned int sampleCount = 0;
+    auto maxSamples = GetParameterInt("samples");
+    auto sampleCount = 0;
 
     //TODO: could use a particular seed if useful
     m_RNG = vnl_random();
