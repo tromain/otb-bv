@@ -141,7 +141,7 @@ private:
 
   void WriteSample(SampleType s)
   {
-    SampleType::const_iterator si = s.begin();
+    auto si = s.begin();
     while( si != s.end())
       {
       m_SampleFile << std::setw(12) << std::left << (*si).second ;
@@ -186,72 +186,72 @@ private:
      
   */
 
-    m_LAI_Conv = 10.0;
-    
-    m_MLAI_min = 0.0;
-    m_MLAI_max = 8.0;
-    m_MLAI_mod = 2.0;
-    m_MLAI_std = 2.0;
-    m_MLAI_nbcl = 6;
 
-    m_ALA_min = 30.0;
-    m_ALA_max = 80.0;
-    m_ALA_mod = 60.0;
-    m_ALA_std = 20.0;
-    m_ALA_nbcl = 3.0;
 
-    m_CrownCover_min = 0.4;
-    m_CrownCover_max = 1.2;
-    m_CrownCover_mod = 0.8;
-    m_CrownCover_std = 0.4;
-    m_CrownCover_nbcl = 1;
 
-    m_HsD_min = 0.1;
-    m_HsD_max = 0.5;
-    m_HsD_mod = 0.2;
-    m_HsD_std = 0.5;
-    m_HsD_nbcl = 1;
 
-    m_N_min = 1.20;
-    m_N_max = 1.80;
-    m_N_mod = 1.50;
-    m_N_std = 0.30;
-    m_N_nbcl = 3;
 
-    m_Cab_min = 20.0;
-    m_Cab_max = 90.0;
-    m_Cab_mod = 45.0;
-    m_Cab_std = 30.0;
-    m_Cab_nbcl = 4;
 
-    m_Car_min = 0.0;
-    m_Car_max = 25.0;
-    m_Car_mod = 8.58;
-    m_Car_std = 3.95;
 
-    m_Cdm_min = 0.0030;
-    m_Cdm_max = 0.0110;
-    m_Cdm_mod = 0.0050;
-    m_Cdm_std = 0.0050;
-    m_Cdm_nbcl = 4;
 
-    m_CwRel_min = 0.60;
-    m_CwRel_max = 0.85;
-    m_CwRel_mod = 0.75;
-    m_CwRel_std = 0.08;
-    m_CwRel_nbcl = 4;
 
-    m_Cbp_min = 0.00;
-    m_Cbp_max = 2.00;
-    m_Cbp_mod = 0.00;
-    m_Cbp_std = 0.30;
-    m_Cbp_nbcl = 3;
 
-    m_Bs_min = 0.50;
-    m_Bs_max = 3.50;
-    m_Bs_mod = 1.20;
-    m_Bs_std = 2.00;
-    m_Bs_nbcl = 4;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     try
@@ -294,73 +294,72 @@ private:
                   << GetParameterString("out") << std::endl);
   }
 
-  double m_LAI_Conv;
-
-  double m_MLAI_min;
-  double m_MLAI_max;
-  double m_MLAI_mod;
-  double m_MLAI_std;
-  unsigned short  m_MLAI_nbcl;
-
-  double m_ALA_min;
-  double m_ALA_max;
-  double m_ALA_mod;
-  double m_ALA_std;
-  unsigned short  m_ALA_nbcl;
-
-  double m_CrownCover_min;
-  double m_CrownCover_max;
-  double m_CrownCover_mod;
-  double m_CrownCover_std;
-  unsigned short  m_CrownCover_nbcl;
-
-  double m_HsD_min;
-  double m_HsD_max;
-  double m_HsD_mod;
-  double m_HsD_std;
-  unsigned short  m_HsD_nbcl;
-
-  double m_N_min;
-  double m_N_max;
-  double m_N_mod;
-  double m_N_std;
-  unsigned short  m_N_nbcl;
-
-  double m_Cab_min;
-  double m_Cab_max;
-  double m_Cab_mod;
-  double m_Cab_std;
-  unsigned short  m_Cab_nbcl;
-
-  double m_Car_min;
-  double m_Car_max;
-  double m_Car_mod;
-  double m_Car_std;
-
-
-  double m_Cdm_min;
-  double m_Cdm_max;
-  double m_Cdm_mod;
-  double m_Cdm_std;
-  unsigned short  m_Cdm_nbcl;
-
-  double m_CwRel_min;
-  double m_CwRel_max;
-  double m_CwRel_mod;
-  double m_CwRel_std;
-  unsigned short  m_CwRel_nbcl;
-
-  double m_Cbp_min;
-  double m_Cbp_max;
-  double m_Cbp_mod;
-  double m_Cbp_std;
-  unsigned short  m_Cbp_nbcl;
-
-  double m_Bs_min;
-  double m_Bs_max;
-  double m_Bs_mod;
-  double m_Bs_std;
-  unsigned short  m_Bs_nbcl;
+  double m_LAI_Conv = 10.0;                     
+                                                                                            
+  double m_MLAI_min = 0.0;                      
+  double m_MLAI_max = 8.0;                      
+  double m_MLAI_mod = 2.0;                      
+  double m_MLAI_std = 2.0;                      
+  unsigned short  m_MLAI_nbcl = 6;                       
+                                                                                            
+  double m_ALA_min = 30.0;                      
+  double m_ALA_max = 80.0;                      
+  double m_ALA_mod = 60.0;                      
+  double m_ALA_std = 20.0;                      
+  unsigned short  m_ALA_nbcl = 3.0;                      
+                                                                                            
+  double m_CrownCover_min = 0.4;                
+  double m_CrownCover_max = 1.2;                
+  double m_CrownCover_mod = 0.8;                
+  double m_CrownCover_std = 0.4;                
+  unsigned short  m_CrownCover_nbcl = 1;                 
+                                                                                            
+  double m_HsD_min = 0.1;                       
+  double m_HsD_max = 0.5;                       
+  double m_HsD_mod = 0.2;                       
+  double m_HsD_std = 0.5;                       
+  unsigned short  m_HsD_nbcl = 1;                        
+                                                                                            
+  double m_N_min = 1.20;                        
+  double m_N_max = 1.80;                        
+  double m_N_mod = 1.50;                        
+  double m_N_std = 0.30;                        
+  unsigned short  m_N_nbcl = 3;                          
+                                                                                            
+  double m_Cab_min = 20.0;                      
+  double m_Cab_max = 90.0;                      
+  double m_Cab_mod = 45.0;                      
+  double m_Cab_std = 30.0;                      
+  unsigned short  m_Cab_nbcl = 4;                        
+                                                                                            
+  double m_Car_min = 0.0;                       
+  double m_Car_max = 25.0;                      
+  double m_Car_mod = 8.58;                      
+  double m_Car_std = 3.95;                      
+                                                                                            
+  double m_Cdm_min = 0.0030;                    
+  double m_Cdm_max = 0.0110;                    
+  double m_Cdm_mod = 0.0050;                    
+  double m_Cdm_std = 0.0050;                    
+  unsigned short  m_Cdm_nbcl = 4;                        
+                                                                                            
+  double m_CwRel_min = 0.60;                    
+  double m_CwRel_max = 0.85;                    
+  double m_CwRel_mod = 0.75;                    
+  double m_CwRel_std = 0.08;                    
+  unsigned short  m_CwRel_nbcl = 4;                      
+                                                                                            
+  double m_Cbp_min = 0.00;                      
+  double m_Cbp_max = 2.00;                      
+  double m_Cbp_mod = 0.00;                      
+  double m_Cbp_std = 0.30;                      
+  unsigned short  m_Cbp_nbcl = 3;                        
+                                                                                            
+  double m_Bs_min = 0.50;                       
+  double m_Bs_max = 3.50;                       
+  double m_Bs_mod = 1.20;                       
+  double m_Bs_std = 2.00;                       
+  unsigned short  m_Bs_nbcl = 4;                         
 
   // the random number generator
   vnl_random m_RNG;
