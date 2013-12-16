@@ -144,9 +144,9 @@ private:
     otbAppLogINFO("Estimation of prediction error from training samples ..."
                   << std::endl);
 
-    double rmse = 0.0;
-    typename ListInputSampleType::ConstIterator sampleIt = inputListSample->Begin();
-    typename ListOutputSampleType::ConstIterator resultIt = outputListSample->Begin();
+    auto rmse = 0.0;
+    auto sampleIt = inputListSample->Begin();
+    auto resultIt = outputListSample->Begin();
     while(sampleIt != inputListSample->End() && resultIt != outputListSample->End())
       {
       rmse += pow(classifier->Predict(sampleIt.GetMeasurementVector())[0] -
