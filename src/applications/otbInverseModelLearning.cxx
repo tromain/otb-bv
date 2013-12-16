@@ -124,12 +124,8 @@ private:
     classifier->SetInputListSample(inputListSample);
     classifier->SetTargetListSample(outputListSample);
     classifier->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
-    std::vector<unsigned int> layerSizes;
     // One hidden layer with 5 neurons and one output variable
-    layerSizes.push_back(nbInputVariables);
-    layerSizes.push_back(5);
-    layerSizes.push_back(1);
-    classifier->SetLayerSizes(layerSizes);
+    classifier->SetLayerSizes(std::vector<unsigned int>({nbInputVariables, 5, 1}));
     classifier->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     classifier->SetAlpha(1.0);
     classifier->SetBeta(1.0);
