@@ -50,9 +50,7 @@ public:
   typedef std::pair<PrecisionType,PrecisionType> PairType;
   typedef typename std::vector<PairType> VectorPairType;
   typedef otb::SpectralResponse< PrecisionType, PrecisionType>  ResponseType;
-  typedef typename ResponseType::Pointer  ResponsePointerType;
   typedef otb::ReduceSpectralResponse < ResponseType,SatRSRType>  ReduceResponseType;
-  typedef typename ReduceResponseType::Pointer  ReduceResponseTypePointerType;
   typedef typename std::vector<PrecisionType> OutputType;
   
   /** Constructor */
@@ -77,7 +75,7 @@ public:
       hxSpectrum.push_back(resp);
       }
 
-    LeafParametersPointerType m_LP = LeafParametersType::New();
+    auto m_LP = LeafParametersType::New();
     m_LP->SetCab(m_BV[Cab]);
     m_LP->SetCar(m_BV[Car]);
     m_LP->SetCBrown(m_BV[Cbp]);
@@ -93,10 +91,10 @@ public:
     m_Skyl = 0;
     m_HSpot = m_BV[HsD];
     
-    ProspectType::Pointer prospect = ProspectType::New();
+    auto prospect = ProspectType::New();
     prospect->SetInput(m_LP);
     
-    SailType::Pointer sail = SailType::New();
+    auto sail = SailType::New();
     sail->SetLAI(m_LAI);
     sail->SetAngl(m_Angl);
     sail->SetPSoil(m_PSoil);
@@ -112,13 +110,13 @@ public:
       {
       hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetHemisphericalReflectance()->GetResponse()[i].second);
       }
-    ResponsePointerType aResponse = ResponseType::New();
+    auto aResponse = ResponseType::New();
     aResponse->SetResponse( hxSpectrum );
-    ReduceResponseTypePointerType  reduceResponse = ReduceResponseType::New();
+    auto  reduceResponse = ReduceResponseType::New();
     reduceResponse->SetInputSatRSR(m_SatRSR);
     reduceResponse->SetInputSpectralResponse( aResponse );
     reduceResponse->CalculateResponse();
-    VectorPairType reducedResponse =  reduceResponse->GetReduceResponse()->GetResponse();
+    auto reducedResponse =  reduceResponse->GetReduceResponse()->GetResponse();
     for(unsigned int i=0;i<m_SatRSR->GetNbBands();i++)
       pix[i] = reducedResponse[i].second;
     return pix;
@@ -185,9 +183,6 @@ public:
 /** Standard class typedefs. */
   typedef ProSailSimulator     Self;
   typedef Application                   Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
-
   
 /** Standard macro */
   itkNewMacro(Self);
@@ -260,7 +255,7 @@ private:
     std::string rsrFileName = GetParameterString("rsrfile");
     //The first 2 columns of the rsr file correspond to the wavelenght and the solar radiation
     short int nbBands = countColumns(rsrFileName)-2;
-    SatRSRType::Pointer  satRSR = SatRSRType::New();
+    auto satRSR = SatRSRType::New();
     satRSR->SetNbBands(nbBands);
     satRSR->SetSortBands(false);
     satRSR->Load(rsrFileName);
