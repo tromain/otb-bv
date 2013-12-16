@@ -208,8 +208,8 @@ private:
     m_SampleFile << std::setw(12) << std::left    << "Cbp";
     m_SampleFile << std::setw(12) << std::left    << "Bs" << std::endl;
     
-    unsigned int maxSamples = GetParameterInt("samples");
-    unsigned int sampleCount = 0;
+    auto maxSamples = GetParameterInt("samples");
+    auto sampleCount = 0;
 
     //TODO: could use a particular seed if useful
     m_RNG = vnl_random();
