@@ -24,7 +24,7 @@ else(OTB_FOUND)
           "OTB not found. Please set OTB_DIR")
 endif(OTB_FOUND)
 
-include_directories(../library/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../library/)
 
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
                        SOURCES        otbBVInputVariableGeneration.cxx
