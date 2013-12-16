@@ -65,10 +65,10 @@ public:
   inline OutputType operator ()()
   {
     OutputType pix;
-    for(unsigned int i=0;i<m_SatRSR->GetNbBands();i++)
+    for(auto i=0;i<m_SatRSR->GetNbBands();i++)
       pix.push_back(0.0);
     VectorPairType hxSpectrum;
-    for(unsigned int i=0;i<SimNbBands;i++)
+    for(auto i=0;i<SimNbBands;i++)
       {
       PairType resp;
       resp.first = static_cast<PrecisionType>((400.0+i)/1000);
@@ -106,7 +106,7 @@ public:
     sail->SetReflectance(prospect->GetReflectance());
     sail->SetTransmittance(prospect->GetTransmittance());
     sail->Update();
-    for(unsigned int i=0;i<SimNbBands;i++)
+    for(auto i=0;i<SimNbBands;i++)
       {
       hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetHemisphericalReflectance()->GetResponse()[i].second);
       }
@@ -117,7 +117,7 @@ public:
     reduceResponse->SetInputSpectralResponse( aResponse );
     reduceResponse->CalculateResponse();
     auto reducedResponse =  reduceResponse->GetReduceResponse()->GetResponse();
-    for(unsigned int i=0;i<m_SatRSR->GetNbBands();i++)
+    for(auto i=0;i<m_SatRSR->GetNbBands();i++)
       pix[i] = reducedResponse[i].second;
     return pix;
   }
@@ -242,7 +242,7 @@ private:
 
   void WriteSimulation(SimulationType simu)
   {
-    for(unsigned int i=0; i<simu.size(); ++i)
+    for(auto i=0; i<simu.size(); ++i)
       m_SimulationsFile << std::setw(12) << std::left << simu[i] ;
     m_SimulationsFile << std::endl;
   }
@@ -263,7 +263,7 @@ private:
     
     std::stringstream ss;
     ss << "Bands for sensor" << std::endl;
-    for(unsigned int i = 0; i< nbBands; ++i)
+    for(auto i = 0; i< nbBands; ++i)
       ss << i << " " << (satRSR->GetRSR())[i]->GetInterval().first
          << " " << (satRSR->GetRSR())[i]->GetInterval().second
          << std::endl;
@@ -312,7 +312,7 @@ private:
       // Read the variable values
       std::getline(m_SampleFile, line);
       std::stringstream ss(line);
-      for(unsigned int varName = 0; varName != static_cast<unsigned int>(IVNamesEnd);
+      for(auto varName = 0; varName != static_cast<unsigned int>(IVNamesEnd);
           ++ varName)
         {
         double bvValue;
