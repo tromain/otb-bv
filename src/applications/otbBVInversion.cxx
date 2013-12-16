@@ -37,9 +37,6 @@ public:
 /** Standard class typedefs. */
   typedef BVInversion     Self;
   typedef Application                   Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
-
   
 /** Standard macro */
   itkNewMacro(Self);
@@ -86,7 +83,7 @@ private:
   void DoExecute()
   {
    
-    std::string reflectancesFileName = GetParameterString("reflectances");
+    auto reflectancesFileName = GetParameterString("reflectances");
     std::ifstream reflectancesFile;
     try
       {
@@ -98,7 +95,7 @@ private:
       }
 
 
-    std::string outFileName = GetParameterString("out");
+    auto outFileName = GetParameterString("out");
     std::ofstream outFile;
     try
       {
@@ -109,16 +106,16 @@ private:
       itkGenericExceptionMacro(<< "Could not open file " << outFileName);
       }
 
-    unsigned short int nbInputVariables = countColumns(reflectancesFileName);
+    auto nbInputVariables = countColumns(reflectancesFileName);
     otbAppLogINFO("Found " << nbInputVariables << " input variables in "
                   << reflectancesFileName << std::endl);
 
-    NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
+    auto classifier = NeuralNetworkType::New();
     classifier->Load(GetParameterString("model"));    
     
 
     otbAppLogINFO("Applying NN regression ..." << std::endl);
-    unsigned long int sampleCount = 0;
+    auto sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )
       {
         if(line.size() > 1)
@@ -126,7 +123,7 @@ private:
           std::istringstream ss(line);
           InputSampleType inputValue;
           inputValue.Reserve(nbInputVariables);
-          for(unsigned int var = 0; var < nbInputVariables; ++var)
+          for(auto var = 0; var < nbInputVariables; ++var)
             ss >> inputValue[var];
           OutputSampleType outputValue = classifier->Predict(inputValue);
           outFile << outputValue[0] << std::endl;
