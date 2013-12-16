@@ -37,8 +37,6 @@ public:
 /** Standard class typedefs. */
   typedef InverseModelLearning     Self;
   typedef Application                   Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
 
   
 /** Standard macro */
@@ -82,7 +80,7 @@ private:
   void DoExecute()
   {
    
-    std::string trainingFileName = GetParameterString("training");
+    auto trainingFileName = GetParameterString("training");
     std::ifstream trainingFile;
     try
       {
@@ -93,15 +91,15 @@ private:
       itkGenericExceptionMacro(<< "Could not open file " << trainingFileName);
       }
 
-    unsigned short int nbInputVariables = countColumns(trainingFileName) - 1;
+    auto nbInputVariables = countColumns(trainingFileName) - 1;
 
     otbAppLogINFO("Found " << nbInputVariables << " input variables in "
                   << trainingFileName << std::endl);
 
-    ListInputSampleType::Pointer inputListSample = ListInputSampleType::New();
-    ListOutputSampleType::Pointer outputListSample = ListOutputSampleType::New();
+    auto inputListSample = ListInputSampleType::New();
+    auto outputListSample = ListOutputSampleType::New();
 
-    unsigned long int nbSamples = 0;
+    auto nbSamples = 0;
     for(std::string line; std::getline(trainingFile, line); )
       {
         if(line.size() > 1)
@@ -122,7 +120,7 @@ private:
 
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
-    NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();
+    auto classifier = NeuralNetworkType::New();
     classifier->SetInputListSample(inputListSample);
     classifier->SetTargetListSample(outputListSample);
     classifier->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
