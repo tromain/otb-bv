@@ -74,7 +74,7 @@ private:
     double rn;
     if(dist == GAUSSIAN)
       {
-      bool sampleInsideBounds = false;
+      auto sampleInsideBounds = false;
       while(!sampleInsideBounds)
         {
         rn = m_RNG.normal64() * std + mod;
