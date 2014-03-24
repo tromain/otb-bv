@@ -12,32 +12,18 @@
 #
 # =========================================================================
 
-project(otb-bv)
-
-cmake_minimum_required(VERSION 2.8)
-
-find_package(OTB)
-if(OTB_FOUND)
-  include(${OTB_USE_FILE})
-else(OTB_FOUND)
-  message(FATAL_ERROR
-          "OTB not found. Please set OTB_DIR")
-endif(OTB_FOUND)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../library/)
-
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
                        SOURCES        otbBVInputVariableGeneration.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon)
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil)
 
 OTB_CREATE_APPLICATION(NAME           ProSailSimulator
                        SOURCES        otbProSailSimulator.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBSimulation)                     
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBSimulation;OTBBVUtil)                     
 
 OTB_CREATE_APPLICATION(NAME           InverseModelLearning
                        SOURCES        otbInverseModelLearning.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning)
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)
 
 OTB_CREATE_APPLICATION(NAME           BVInversion
                        SOURCES        otbBVInversion.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning)                     
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)                     
