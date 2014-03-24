@@ -22,4 +22,4 @@ set(BVTests_SRCS
   bvProSailSimulatorFunctor.cxx)
 
 add_executable(otbBVTests ${BVTests_SRCS})
-target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting)
+target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting OTBSimulation)
