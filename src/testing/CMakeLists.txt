@@ -11,27 +11,15 @@
 # PURPOSE.  See the above copyright notices for more information.
 #
 # =========================================================================
-project(otb-bv)
 
-cmake_minimum_required(VERSION 2.8)
+set(OTBBV_TESTS ${otb-bv_BINARY_DIR}/testing/otbBVTests)
 
-find_package(OTB)
-if(OTB_FOUND)
-  include(${OTB_USE_FILE})
-else(OTB_FOUND)
-  message(FATAL_ERROR
-          "OTB not found. Please set OTB_DIR")
-endif(OTB_FOUND)
+add_test(bvProSailSimulatorFunctor ${OTBBV_TESTS}
+         bvProSailSimulatorFunctor)       
 
-if(NOT OTBBV_INSTALL_BIN_DIR)
-  set(OTBBV_INSTALL_BIN_DIR "bin")
-endif()
+set(BVTests_SRCS
+  otbBVTests.cxx
+  bvProSailSimulatorFunctor.cxx)
 
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/library)
-
-include(${CMAKE_ROOT}/Modules/Dart.cmake)
-
-add_subdirectory(library)
-add_subdirectory(applications)
-add_subdirectory(testing)
+add_executable(otbBVTests ${BVTests_SRCS})
+target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting)
