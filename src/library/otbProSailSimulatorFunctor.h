@@ -20,6 +20,7 @@
 #include "otbSatelliteRSR.h"
 #include "otbReduceSpectralResponse.h"
 
+#include "otbBVTypes.h"
 namespace otb
 {
 namespace Functor

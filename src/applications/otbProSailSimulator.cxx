@@ -20,7 +20,6 @@
 #include <fstream>
 #include <string>
 
-#include "otbBVTypes.h"
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
 
