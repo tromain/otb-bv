@@ -11,8 +11,8 @@
   PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __otbBVUtil_h
-#define __otbBVUtil_h
+#ifndef __OTBBVUTIL_H
+#define __OTBBVUTIL_H
 
 #include <string>
 

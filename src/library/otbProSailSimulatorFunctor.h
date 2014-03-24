@@ -11,6 +11,8 @@
   PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+#ifndef __OTBPROSAILSIMULATORFUNCTOR_H
+#define __OTBPROSAILSIMULATORFUNCTOR_H
 
 #include "otbLeafParameters.h"
 #include "otbSailModel.h"
@@ -168,3 +170,4 @@ protected:
 
 }
 }
+#endif

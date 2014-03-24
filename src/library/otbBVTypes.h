@@ -11,8 +11,8 @@
   PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __otbBVTypes_h
-#define __otbBVTypes_h
+#ifndef __OTBBVTYPES_H
+#define __OTBBVTYPES_H
 
 #include <map>
 

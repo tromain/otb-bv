@@ -15,8 +15,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __otbNeuralNetworkRegressionMachineLearningModel_h
-#define __otbNeuralNetworkRegressionMachineLearningModel_h
+#ifndef __OTBNEURALNETWORKREGRESSIONMACHINELEARNINGMODEL_H
+#define __OTBNEURALNETWORKREGRESSIONMACHINELEARNINGMODEL_H
 
 #include "otbNeuralNetworkMachineLearningModel.h"
 
