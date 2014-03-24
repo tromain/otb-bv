@@ -101,7 +101,7 @@ public:
     sail->Update();
     for(auto i=0;i<SimNbBands;i++)
       {
-      hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetHemisphericalReflectance()->GetResponse()[i].second);
+      hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetViewingReflectance()->GetResponse()[i].second);
       }
     auto aResponse = ResponseType::New();
     aResponse->SetResponse( hxSpectrum );
