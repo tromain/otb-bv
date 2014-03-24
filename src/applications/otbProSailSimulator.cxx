@@ -62,7 +62,8 @@ public:
   ~ProSailSimulator() {};
   
   /** Implementation of the () operator*/
-  inline OutputType operator ()()
+  inline
+  OutputType operator ()()
   {
     OutputType pix;
     for(auto i=0;i<m_SatRSR->GetNbBands();i++)
@@ -132,22 +133,26 @@ public:
     return false;
   }
 
-  inline void SetRSR(const  SatRSRPointerType rsr)
+  inline
+  void SetRSR(const  SatRSRPointerType rsr)
   {
     m_SatRSR = rsr;
   }
 
-  inline SatRSRPointerType GetRSR() const
+  inline
+  SatRSRPointerType GetRSR() const
   {
     return m_SatRSR;
   }
 
-  inline void SetBVs(BVType bvmap)
+  inline
+  void SetBVs(BVType bvmap)
   {
     m_BV = bvmap;
   }
 
-  inline void SetParameters(AcquisitionParsType apmap)
+  inline
+  void SetParameters(AcquisitionParsType apmap)
   {
     m_TTS = apmap[TTS]; //solar zenith angle
     m_TTO = apmap[TTO]; //observer zenith angle
