@@ -72,7 +72,7 @@ public:
     m_LP->SetCab(m_BV[Cab]);
     m_LP->SetCar(m_BV[Car]);
     m_LP->SetCBrown(m_BV[Cbp]);
-    double Cw = m_BV[Cdm]*m_BV[CwRel]/(1.-m_BV[CwRel]);
+    double Cw = m_BV[Cdm]/(1.-m_BV[CwRel]);
     //TODO : this check should not be needed if the simulations were OK
     if(Cw<0) Cw = 0.0;
     m_LP->SetCw(Cw);
@@ -83,9 +83,17 @@ public:
     m_PSoil = m_BV[Bs];
     m_Skyl = 0;
     m_HSpot = m_BV[HsD];
-    
+
     auto prospect = ProspectType::New();
     prospect->SetInput(m_LP);
+
+    prospect->GenerateData();
+    auto refl = prospect->GetReflectance()->GetResponse();
+    auto trans = prospect->GetTransmittance()->GetResponse();
+
+    std::cout << "Response size = " << refl.size() << std::endl;
+    for(auto i=0; i<refl.size(); i++)
+      std::cout << refl[i].first << "\t " << refl[i].second << "\t " << trans[i].second << std::endl;
     
     auto sail = SailType::New();
     sail->SetLAI(m_LAI);
