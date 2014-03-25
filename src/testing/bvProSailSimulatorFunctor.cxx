@@ -28,25 +28,25 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   satRSR->Load("/home/inglada/Dev/otb-bv/data/formosat2.rsr");
 
   typename otb::AcquisitionParsType prosailPars;
-  prosailPars[otb::TTS] = 30.0;
-  prosailPars[otb::TTO] = 0.0;
-  prosailPars[otb::PSI] = 0.0;
+  prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);
+  prosailPars[otb::TTO] = 0.30456*(180.0/3.141592);
+  prosailPars[otb::PSI] = -2.5952*(180.0/3.141592);
 
   ProSailType prosail;
   prosail.SetRSR(satRSR);
   typename otb::BVType prosailBV;
 
-  prosailBV[otb::MLAI] = 2.0;
-  prosailBV[otb::ALA] = 60.0;
-  prosailBV[otb::CrownCover] = 0.8;
-  prosailBV[otb::HsD] = 0.2;
-  prosailBV[otb::N] = 1.5;
-  prosailBV[otb::Cab] = 45.0;
-  prosailBV[otb::Car] = 8.5;
-  prosailBV[otb::Cdm] = 0.005;
-  prosailBV[otb::CwRel] = 0.75;
-  prosailBV[otb::Cbp] = 0.5;
-  prosailBV[otb::Bs] = 1.2;
+  prosailBV[otb::MLAI] = 3.7277;
+  prosailBV[otb::ALA] = 59.755;
+  prosailBV[otb::CrownCover] = 0.95768;
+  prosailBV[otb::HsD] = 0.18564;
+  prosailBV[otb::N] = 1.4942;
+  prosailBV[otb::Cab] = 64.632;
+  prosailBV[otb::Car] = 0;
+  prosailBV[otb::Cdm] = 0.0079628;
+  prosailBV[otb::CwRel] = 0.73298;
+  prosailBV[otb::Cbp] = 0.075167;
+  prosailBV[otb::Bs] = 0.72866;
 
   prosail.SetBVs(prosailBV);
   prosail.SetParameters(prosailPars);
