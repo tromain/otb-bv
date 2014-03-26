@@ -12646,3 +12646,5 @@ plot "~/Dev/otb-bv/documentation/prospect.txt" using 1:2 with lines lw 3 title "
 
 
 
+** [2014-03-25 Tue 16:39] pour l'apprentissage du réseau  [[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS%20LAI%20ALA%20CC%20HsD%20N%20Cab%20Cdm%20Cw_Rel%20Cbp%20Bs%20VZ%20VAz%20SZ%20SA%20B1%20B2%20B3%20FCOV%20FAP%20LAI][file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS LAI ALA CC HsD N Cab Cdm Cw_Rel Cbp Bs VZ VAz SZ SA B1 B2 B3 FCOV FAP LAI]]
+** [2014-03-25 Tue 19:30] il y a aussi une différence sur le dry matter  [[file:~/org/clocking.org]]
