@@ -99,6 +99,9 @@ private:
     auto inputListSample = ListInputSampleType::New();
     auto outputListSample = ListOutputSampleType::New();
 
+    inputListSample->SetMeasurementVectorSize(nbInputVariables);
+    outputListSample->SetMeasurementVectorSize(1);
+    
     auto nbSamples = 0;
     for(std::string line; std::getline(trainingFile, line); )
       {
