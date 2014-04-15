@@ -27,7 +27,7 @@ if(NOT OTBBV_INSTALL_BIN_DIR)
   set(OTBBV_INSTALL_BIN_DIR "bin")
 endif()
 
-
+option(BUILD_SHARED_LIBS "Build ITK with shared libraries." ON)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/library)
 
 include(${CMAKE_ROOT}/Modules/Dart.cmake)
