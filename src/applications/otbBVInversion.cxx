@@ -67,6 +67,11 @@ private:
     AddParameter(ParameterType_OutputFilename, "out", "Output estimated variable.");
     SetParameterDescription( "out", "Filename where the estimated variables will be saved." );
     MandatoryOn("out");
+
+    AddParameter(ParameterType_Float, "factor", "Normalization factor for the output variable.");
+    SetParameterDescription( "factor", "Multiplicative factor to apply to the inverted variable." );
+    SetDefaultParameterFloat("factor", 1.0);
+    MandatoryOff("factor");
   }
 
   virtual ~BVInversion()
@@ -112,7 +117,8 @@ private:
 
     auto classifier = NeuralNetworkType::New();
     classifier->Load(GetParameterString("model"));    
-    
+
+    auto m_factor = static_cast<double> (GetParameterFloat("factor"));
 
     otbAppLogINFO("Applying NN regression ..." << std::endl);
     auto sampleCount = 0;
@@ -126,7 +132,7 @@ private:
           for(auto var = 0; var < nbInputVariables; ++var)
             ss >> inputValue[var];
           OutputSampleType outputValue = classifier->Predict(inputValue);
-          outFile << outputValue[0] << std::endl;
+          outFile << outputValue[0]*m_factor << std::endl;
           ++sampleCount;
           }
       }

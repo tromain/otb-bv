@@ -18,6 +18,7 @@
 
 #include <fstream>
 #include <string>
+#include <limits>
 
 #include "otbBVUtil.h"
 
@@ -64,6 +65,11 @@ private:
     AddParameter(ParameterType_OutputFilename, "out", "Output regression model.");
     SetParameterDescription( "out", "Filename where the regression model will be saved." );
     MandatoryOn("out");
+
+    AddParameter(ParameterType_Float, "factor", "Normalization factor for the output variable.");
+    SetParameterDescription( "factor", "Inverse multiplicative factor to apply to the inverted variable." );
+    SetDefaultParameterFloat("factor", 1.0);
+    MandatoryOff("factor");
   }
 
   virtual ~InverseModelLearning()
@@ -101,7 +107,12 @@ private:
 
     inputListSample->SetMeasurementVectorSize(nbInputVariables);
     outputListSample->SetMeasurementVectorSize(1);
-    
+
+    auto m_factor = static_cast<double> (GetParameterFloat("factor"));
+    if(fabs(m_factor) < std::numeric_limits<double>::epsilon())
+      {
+      throw std::invalid_argument{"Normalization factor factor is too small"};
+      }
     auto nbSamples = 0;
     for(std::string line; std::getline(trainingFile, line); )
       {
@@ -110,6 +121,7 @@ private:
           std::istringstream ss(line);
           OutputSampleType outputValue;
           ss >> outputValue[0];
+          outputValue[0]/=m_factor;
           InputSampleType inputValue;
           inputValue.Reserve(nbInputVariables);
           for(unsigned int var = 0; var < nbInputVariables; ++var)
@@ -128,7 +140,7 @@ private:
     classifier->SetTargetListSample(outputListSample);
     classifier->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // One hidden layer with 5 neurons and one output variable
-    classifier->SetLayerSizes(std::vector<unsigned int>({nbInputVariables, 5, 1}));
+    classifier->SetLayerSizes(std::vector<unsigned int>({static_cast<unsigned int>(nbInputVariables), 5, 5, 1}));
     classifier->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     classifier->SetAlpha(1.0);
     classifier->SetBeta(1.0);
