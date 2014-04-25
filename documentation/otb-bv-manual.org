@@ -68,11 +68,65 @@ f_{APAR} = \frac{a_0+\sum_{i=1}^{N}a_i \rho_i}{b_0+\sum_{i=1}^{N}b_i \rho_i}
 with $\rho_i$ being the reflectance of band $i$.
 #+begin_latex
 \begin{equation}
-f_{APAR} = \frac{a_0+\sum_{i=1}^{N}a_i \rho_i+\sum_{i=1}^{N}\sum_{j=1,j\neq i}^{N}a_{ij} \rho_i\rho_j}{b_0+\sum_{i=1}^{N}b_i \rho_i+\sum_{i=1}^{N}\sum_{j=1,j\neq i}^{N}b_{ij} \rho_i\rho_j}
+f_{APAR} = \frac{a_0+\sum_{i=1}^{N}a_i \rho_i+\sum_{i=1}^{N}\sum_{j=1}^{N}a_{ij} \rho_i\rho_j}{b_0+\sum_{i=1}^{N}b_i \rho_i+\sum_{i=1}^{N}\sum_{j=1}^{N}b_{ij} \rho_i\rho_j}
 \end{equation}
 #+end_latex
 
-Linear regression is a particular case of nonlinear regression.
+Linear regression is a particular case of nonlinear regression for
+which $a_{ij}=b_{ij}=0$.
+#+begin_latex
+\begin{equation}
+\begin{split}
+LAI &= -\frac{1}{K_{LAI}}ln\left(\frac{NDVI-NDVI_{\infty}}{NDVI_s-NDVI_{\infty}}\right) \\
+&= -\frac{1}{K_{LAI}}ln\left(\alpha NDVI + \beta\right) \\
+&= C ln \left(\frac{a_0+\sum_{i=1}^{N}a_i \rho_i}{b_0+\sum_{i=1}^{N}b_i \rho_i} \right)
+\end{split}
+\end{equation}
+#+end_latex
+
+And in the general case:
+#+begin_latex
+\begin{equation}
+LAI = F\left(\frac{a_0+\sum_{i=1}^{N}a_i \rho_i}{b_0+\sum_{i=1}^{N}b_i \rho_i} \right)
+\label{general-lai}
+\end{equation}
+#+end_latex
+
+where $F(x)$ is a monotonic sublinear increasing function
+(logarithmic, but also a polynomial of degree less than 1 -- a square
+root, for instance -- a logistic curve, etc.). If we assume that $F$
+can also be the identity function, equation \ref{general-lai} can also
+be applied to $f_{APAR}$ and in general to any BV. So we can write:
+#+begin_latex
+\begin{equation}
+BV = F\left(\frac{a_0+\sum_{i=1}^{N}a_i \rho_i}{b_0+\sum_{i=1}^{N}b_i \rho_i} \right)
+\end{equation}
+#+end_latex
+
+The advantage of statistical learning is that acquisition parameters
+can be easily integrated as /observed/ values in the same way as the
+reflectances, while in the analytical formulas, it is difficult to
+choose how to set these values. One could imagine to introduce a
+modulation function which would depend on the acquisition and canopy parameters
+$\vec{\theta}$: 
+
+#+begin_latex
+\begin{equation}
+BV = F\left(\frac{a_0+\sum_{i=1}^{N}a_i \rho_i}{b_0+\sum_{i=1}^{N}b_i \rho_i} \right)G(\vec{\theta})
+\label{general-bv}
+\end{equation}
+#+end_latex
+
+And finally:
+#+begin_latex
+\begin{equation}
+BV = F\left(\frac{a_0+\sum_{i=1}^{N}a_i \rho_i}{b_0+\sum_{i=1}^{N}b_i \rho_i} \right)G\left(\frac{p_0+\sum_{i=1}^{M}p_i \theta_i}{q_0+\sum_{i=1}^{M}q_i \theta_i} \right)
+\label{final-bv}
+\end{equation}
+#+end_latex
+
+with for instance \theta_i=\{solar zenith, sensor zenith, azimuth angle, average leaf angle, \cdots \}.
+
 
 Therefore, we can separate the approach in 2 steps:
 1. Getting the input/output pairs (the biophysiscal variable and the reflectances)
@@ -89,6 +143,9 @@ Therefore, we can separate the approach in 2 steps:
          1. NN
          2. SVM
          3. etc.
+
+The choice of the configuration will depend on the available data and
+the diversity of acquisition conditions.
 * Use
 ** BV-Net
 *** Input variable generation
