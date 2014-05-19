@@ -241,11 +241,45 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 ./otbSailModel.cxx:280:      Rsoil1 = DataSpecP5B[i].drySoil; //10
 ./otbSailModel.cxx:281:      Rsoil2 = DataSpecP5B[i].wetSoil; //11
 rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
+
+**** Command line
+#+begin_src sh
+otbApplicationLauncherCommandLine ProSailSimulator  ./ -bvfile ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt \
+    -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr -out /tmp/simus.txt \
+    -solarzenith 37.08 -sensorzenith 17.48 -azimuth -149.159
+#+end_src
+
+
 *** Mismatch estimation
 
 *** Model inversion
 
+
+
+
+**** TODO Data preparation
+
+Extract the desired variable from the appropriate file and put it at
+the front of the simulations
+
+#+begin_src sh
+tail -n +2 ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt > /tmp/input-vars-no-header.txt
+paste /tmp/input-vars-no-header.txt /tmp/simus.txt > /tmp/all_vars.txt
+# LAI	 ALA	 CC	 HsD	 N	 Cab	 Cdm	 Cw_Rel	 Cbp	 Bs
+awk '{print $1,$11,$12,$13,$14,$15}' /tmp/all_vars.txt > /tmp/lai-train.txt
+#+end_src
+
+#+RESULTS:
+
+
+
+
+
+**** Model learning
+otbApplicationLauncherCommandLine InverseModelLearning ./ -training ~/tmp/lai-train.txt -out /tmp/model -factor 8
 *** BV estimation
+otbApplicationLauncherCommandLine BVInversion ./ -reflectances ~/tmp/lai-refls.txt -model /tmp/model -out /tmp/estim -factor 8
+**** TODO Add an option for validation (use the first column as the variable to validate with)
 * References
 
 * Actions                                                          :noexport:
