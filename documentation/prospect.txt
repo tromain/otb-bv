@@ -588,7 +588,6 @@
 0.987	 0.4301561   0.4597435
 0.988	 0.4302395   0.4598815
 0.989	 0.4303378   0.4600350
-/home/ing0.4304358   0.4601888ing/otbBVTests: symbol lookup error: /usr/lib/x86_64-linux-gnu/libQtGui.so.4: undefined symbol: _Z23qUnregisterResourceDataiPKhS0_S0_
 0.99	 0.4305534   0.4603636
 0.991	 0.4306711   0.4605385
 0.992	 0.4308138   0.4607399
