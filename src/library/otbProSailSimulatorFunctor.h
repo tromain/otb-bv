@@ -81,7 +81,7 @@ public:
     m_LAI = m_BV[MLAI];
     m_Angl = m_BV[ALA];
     m_PSoil = m_BV[Bs];
-    m_Skyl = 0;
+    m_Skyl = 0.3;
     m_HSpot = m_BV[HsD];
 
     auto prospect = ProspectType::New();
@@ -91,10 +91,6 @@ public:
     auto refl = prospect->GetReflectance()->GetResponse();
     auto trans = prospect->GetTransmittance()->GetResponse();
 
-    std::cout << "Response size = " << refl.size() << std::endl;
-    for(auto i=0; i<refl.size(); i++)
-      std::cout << refl[i].first << "\t " << refl[i].second << "\t " << trans[i].second << std::endl;
-    
     auto sail = SailType::New();
     sail->SetLAI(m_LAI);
     sail->SetAngl(m_Angl);
@@ -107,6 +103,13 @@ public:
     sail->SetReflectance(prospect->GetReflectance());
     sail->SetTransmittance(prospect->GetTransmittance());
     sail->Update();
+
+    auto sailSim = sail->GetViewingReflectance()->GetResponse();
+    // std::cout << "Sail = " << sailSim.size() << " ------------------------------------- " << std::endl;
+    // for(auto i=0; i<sailSim.size(); i++)
+    //   std::cout << sailSim[i].first << "\t " << refl[i].second << "\t " << trans[i].second << "\t " << sailSim[i].second << std::endl;
+
+    
     for(auto i=0;i<SimNbBands;i++)
       {
       hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetViewingReflectance()->GetResponse()[i].second);
