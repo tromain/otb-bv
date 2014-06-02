@@ -119,9 +119,7 @@ private:
     s[Cab] = this->CorrelateValue(this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod,
                                             m_Cab_std, GAUSSIAN),
                                   m_Cab_mod, s[MLAI]);
-    s[Car] = this->CorrelateValue(this->Rng(m_Car_min, m_Car_max, m_Car_mod,
-                                            m_Car_std, GAUSSIAN),
-                                  m_Car_mod, s[MLAI]);
+    s[Car] = s[Cab]*0.25;
     s[Cdm] = this->CorrelateValue(this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod,
                                             m_Cdm_std, GAUSSIAN),
                                   m_Cdm_mod, s[MLAI]);
