@@ -166,13 +166,17 @@ private:
       // Read the variable values
       std::getline(m_SampleFile, line);
       std::stringstream ss(line);
-      for(auto varName = 0; varName != static_cast<unsigned int>(IVNamesEnd);
+      for(auto varName = 0; varName != static_cast<unsigned int>(IVNames::IVNamesEnd);
           ++ varName)
         {
         double bvValue;
-        ss >> bvValue;
-        prosailBV[static_cast<IVNames>(varName)] = bvValue;
+        if(static_cast<IVNames>(varName)!=IVNames::Car)
+          {
+          ss >> bvValue;
+          prosailBV[static_cast<IVNames>(varName)] = bvValue;
+          }
         }
+      prosailBV[IVNames::Car] = 0.25 * prosailBV[IVNames::Cab];
       prosail.SetBVs(prosailBV);
       prosail.SetParameters(prosailPars);
       this->WriteSimulation(prosail());

@@ -60,29 +60,22 @@ public:
     OutputType pix;
     for(auto i=0;i<m_SatRSR->GetNbBands();i++)
       pix.push_back(0.0);
-    VectorPairType hxSpectrum;
-    for(auto i=0;i<SimNbBands;i++)
-      {
-      PairType resp;
-      resp.first = static_cast<PrecisionType>((400.0+i)/1000);
-      hxSpectrum.push_back(resp);
-      }
 
     auto m_LP = LeafParametersType::New();
-    m_LP->SetCab(m_BV[Cab]);
-    m_LP->SetCar(m_BV[Car]);
-    m_LP->SetCBrown(m_BV[Cbp]);
-    double Cw = m_BV[Cdm]/(1.-m_BV[CwRel]);
+    m_LP->SetCab(m_BV[IVNames::Cab]);
+    m_LP->SetCar(m_BV[IVNames::Car]);
+    m_LP->SetCBrown(m_BV[IVNames::Cbp]);
+    double Cw = m_BV[IVNames::Cdm]/(1.-m_BV[IVNames::CwRel]);
     //TODO : this check should not be needed if the simulations were OK
     if(Cw<0) Cw = 0.0;
     m_LP->SetCw(Cw);
-    m_LP->SetCm(m_BV[Cdm]);
-    m_LP->SetN(m_BV[N]);
-    m_LAI = m_BV[MLAI];
-    m_Angl = m_BV[ALA];
-    m_PSoil = m_BV[Bs];
+    m_LP->SetCm(m_BV[IVNames::Cdm]);
+    m_LP->SetN(m_BV[IVNames::N]);
+    m_LAI = m_BV[IVNames::MLAI];
+    m_Angl = m_BV[IVNames::ALA];
+    m_PSoil = m_BV[IVNames::Bs];
     m_Skyl = 0.3;
-    m_HSpot = m_BV[HsD];
+    m_HSpot = m_BV[IVNames::HsD];
 
     auto prospect = ProspectType::New();
     prospect->SetInput(m_LP);
@@ -109,20 +102,24 @@ public:
     // for(auto i=0; i<sailSim.size(); i++)
     //   std::cout << sailSim[i].first << "\t " << refl[i].second << "\t " << trans[i].second << "\t " << sailSim[i].second << std::endl;
 
-    
+        VectorPairType hxSpectrum;
     for(auto i=0;i<SimNbBands;i++)
       {
-      hxSpectrum[i].second = static_cast<PrecisionType>(sail->GetViewingReflectance()->GetResponse()[i].second);
+      PairType resp;
+      resp.first = static_cast<PrecisionType>((400.0+i)/1000);
+      resp.second = sailSim[i].second;
+      hxSpectrum.push_back(resp);
       }
+
     auto aResponse = ResponseType::New();
     aResponse->SetResponse( hxSpectrum );
     auto  reduceResponse = ReduceResponseType::New();
     reduceResponse->SetInputSatRSR(m_SatRSR);
     reduceResponse->SetInputSpectralResponse( aResponse );
+    reduceResponse->SetReflectanceMode(true);
     reduceResponse->CalculateResponse();
-    auto reducedResponse =  reduceResponse->GetReduceResponse()->GetResponse();
     for(auto i=0;i<m_SatRSR->GetNbBands();i++)
-      pix[i] = reducedResponse[i].second;
+      pix[i] = (*reduceResponse)(i);
     return pix;
   }
 
