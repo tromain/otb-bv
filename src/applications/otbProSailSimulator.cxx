@@ -170,13 +170,9 @@ private:
           ++ varName)
         {
         double bvValue;
-        if(static_cast<IVNames>(varName)!=IVNames::Car)
-          {
-          ss >> bvValue;
-          prosailBV[static_cast<IVNames>(varName)] = bvValue;
-          }
+        ss >> bvValue;
+        prosailBV[static_cast<IVNames>(varName)] = bvValue;
         }
-      prosailBV[IVNames::Car] = 0.25 * prosailBV[IVNames::Cab];
       prosail.SetBVs(prosailBV);
       prosail.SetParameters(prosailPars);
       this->WriteSimulation(prosail());
