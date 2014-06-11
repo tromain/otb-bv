@@ -1,12 +1,9 @@
 #+TITLE: Biophysical variable estimation from remote sensing imagery 
 
-
 #+LATEX_HEADER:  \usepackage{savesym}
 #+LATEX_HEADER:  \savesymbol{iint}
 #+LATEX_HEADER:  \savesymbol{iiint}
 #+LATEX_HEADER:  \usepackage{amsmath}
-
-
 
 * Introduction
 
@@ -150,6 +147,7 @@ the diversity of acquisition conditions.
 ** BV-Net
 *** Input variable generation
 **** Variable statistics
+#+latex: \tiny
 |        | Variable         | Minimum | Maximum |   Mode |    Std | Nb_Class | Law   | LAI_Conv |
 |--------+------------------+---------+---------+--------+--------+----------+-------+----------|
 | Canopy | MLAI             |     0.0 |     8.0 |    2.0 |    2.0 |        6 | gauss |     1000 |
@@ -164,56 +162,59 @@ the diversity of acquisition conditions.
 |        | Cbp              |    0.00 |    2.00 |   0.00 |   0.30 |        3 | gauss |       10 |
 |--------+------------------+---------+---------+--------+--------+----------+-------+----------|
 | Soil   | Bs               |    0.50 |    3.50 |   1.20 |   2.00 |        4 | gauss |       10 |
-
+#+latex: \normalsize
 
 ***** Prospect OTB
-| Nom var OTB      | Description             | var bvnet  |
-|------------------+-------------------------+------------|
-| double m_Cab;    | //Chlorophyll content   | Cab        |
-| double m_Car;    | //Carotenoid content    |            |
-| double m_CBrown; | //Brown pigment content | Cbp        |
-| double m_Cw;     | //EWT                   | Cw_Rel (?) |
-| double m_Cm;     | //LMA                   | Cdm (?)    |
-| double m_N;      | //structure coef        | N          |
+| Nom var OTB | Description           | var bvnet  |
+|-------------+-----------------------+------------|
+| Cab         | Chlorophyll content   | Cab        |
+| Car         | Carotenoid content    |            |
+| CBrown      | Brown pigment content | Cbp        |
+| Cw          | EWT                   | Cw_Rel (?) |
+| Cm          | LMA                   | Cdm (?)    |
+| N           | structure coef        | N          |
 
 Cw = Cdm *Cw_Rel/(1-Cw_Rel)
 Cdm = Cm
 Crown_Cover = not used in SAIL, only useful if GEOSAIL
-Car --> not used by bvnet; Féret's dissertation uses Cxc to denote Car
+Car --> not used by bvnet Féret's dissertation uses Cxc to denote Car
 and gives a mean of 8.58 and a std of 3.95 and fig 2.2, p.47 gives the
 min at 0 and the max at 25
 
 
 
 ***** Sail OTB
-| Nom var OTB     | Description                | var bvnet                  |
-|-----------------+----------------------------+----------------------------|
-| double m_LAI;   | //leaf area index          | MLAI                       |
-| double m_Angl;  | //average leaf angle       | ALA                        |
-| double m_PSoil; | //soil coefficient         | utilise un spectre complet |
-| double m_Skyl;  | //diffuse/direct radiation |                            |
-| double m_HSpot; | //hot spot                 | HsD                        |
-| double m_TTS;   | //solar zenith angle       | \theta_s                   |
-| double m_TTO;   | //observer zenith angle    | \theta_v                   |
-| double m_PSI;   | //azimuth                  | \psi                       |
+| Nom var OTB | Description              | var bvnet                  |
+|-------------+--------------------------+----------------------------|
+| LAI         | leaf area index          | MLAI                       |
+| Angl        | average leaf angle       | ALA                        |
+| PSoil       | soil coefficient         | utilise un spectre complet |
+| Skyl        | diffuse/direct radiation |                            |
+| HSpot       | hot spot                 | HsD                        |
+| TTS         | solar zenith angle       | \theta_s                   |
+| TTO         | observer zenith angle    | \theta_v                   |
+| PSI         | azimuth                  | \psi                       |
 
 Skyl = 0
 Bs --> l'utiliser pour multiplier la réflectance du sol
 
 **** Variable correlations
 **** Results
-#+name: sample-file
-: /tmp/samples.txt
+#+name: sample-file-train
+: /tmp/samples-train.txt
 
 #+name: figure-file 
 : scatter.png
 
 #+name: numsamples
-: 1000
+: 20000
 
 
-#+begin_src sh :var outfile=sample-file :var samples:numsamples
-otbcli_BVInputVariableGeneration -samples $samples -out $outfile
+#+begin_src sh :var outfile=sample-file-train :var samples=numsamples :tangle yes
+./otbcli_BVInputVariableGeneration -samples $samples -out $outfile
+#+end_src
+
+#+begin_src sh :var outfile=sample-file-train :tangle no
 head $outfile
 #+end_src
 
@@ -229,7 +230,7 @@ head $outfile
 |  2.955 | 57.72 |     0.6685 |   0.26 | 1.593 | 36.52 | 0.008179 | 0.7556 |  0.4647 |  2.805 |
 |  3.524 | 63.58 |     0.6787 | 0.1097 | 1.522 | 60.61 | 0.006968 | 0.7773 |  0.1248 |  2.014 |
 
-#+begin_src sh :var outfile=sample-file figfile=figure-file
+#+begin_src sh :var outfile=sample-file-train figfile=figure-file
 python ../src/scripts/scatterplots.py $outfile $figfile
 #+end_src
 
@@ -243,42 +244,83 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
 
 **** Command line
-#+begin_src sh
-otbApplicationLauncherCommandLine ProSailSimulator  ./ -bvfile ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt \
-    -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr -out /tmp/simus.txt \
-    -solarzenith 37.08 -sensorzenith 17.48 -azimuth -149.159
+#+name: simu-file-train
+: /tmp/simus-train.txt
+
+#+begin_src sh :var samplefile=sample-file-train  :var simufile=simu-file-train :tangle yes
+./otbcli_ProSailSimulator  ./ -bvfile $samplefile \
+    -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr \
+    -out $simufile -solarzenith 37.08 -sensorzenith 17.48 \
+    -azimuth -149.159
 #+end_src
 
+#+begin_src sh :var simufile=simu-file-train  :tangle no
+head $simufile
+#+end_src
 
 *** Mismatch estimation
 
 *** Model inversion
 
 
-
-
-**** TODO Data preparation
+**** Data preparation
 
 Extract the desired variable from the appropriate file and put it at
-the front of the simulations
+the front of the simulations.
 
-#+begin_src sh
-tail -n +2 ~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/input-vars.txt > /tmp/input-vars-no-header.txt
-paste /tmp/input-vars-no-header.txt /tmp/simus.txt > /tmp/all_vars.txt
-# LAI	 ALA	 CC	 HsD	 N	 Cab	 Cdm	 Cw_Rel	 Cbp	 Bs
-awk '{print $1,$11,$12,$13,$14,$15}' /tmp/all_vars.txt > /tmp/lai-train.txt
+#+name: train-file
+: /tmp/train.txt
+
+#+name: lai-train-file
+: /tmp/lai-train.txt
+
+
+#+begin_src sh :var samplefile=sample-file-train  :var simufile=simu-file-train :var trainfile=train-file :var laitrainfile=lai-train-file :tangle yes
+tail -n +2 $samplefile > /tmp/input-vars-no-header.txt
+paste /tmp/input-vars-no-header.txt $simufile > $trainfile
+#LAI,ALA,CC,HsD,N,Cab,Car,Cdm,Cw_Rel,Cbp,Bs,B1,B2,B3,B4,Pan
+# 1   2  3   4  5  6   7   8    9    10  11 12 13 14 15 16
+awk '{print $1,$12,$13,$14,$15}' $trainfile > $laitrainfile
 #+end_src
 
-#+RESULTS:
-
-
-
-
+#+begin_src sh :var laitrainfile=lai-train-file :tangle no
+head $laitrainfile
+#+end_src
 
 **** Model learning
-otbApplicationLauncherCommandLine InverseModelLearning ./ -training ~/tmp/lai-train.txt -out /tmp/model -factor 8
+#+name: lai-model
+: /tmp/lai-model
+
+#+begin_src sh :var laitrainfile=lai-train-file :var laimodel=lai-model :tangle yes
+./otbcli_InverseModelLearning -training $laitrainfile \
+    -out $laimodel -factor 8
+#+end_src
+
 *** BV estimation
-otbApplicationLauncherCommandLine BVInversion ./ -reflectances ~/tmp/lai-refls.txt -model /tmp/model -out /tmp/estim -factor 8
+
+#+name: refl-file
+: /tmp/refl.txt
+
+
+#+begin_src sh :var laitrainfile=lai-train-file :var reflfile=refl-file :tangle yes
+awk '{print $2,$3,$4,$5}' $laitrainfile > $reflfile
+#+end_src
+
+#+name: lai-estim
+: /tmp/lai-estim.txt
+
+#+begin_src sh :var reflfile=refl-file :var laimodel=lai-model :var laiestim=lai-estim :tangle yes
+./otbcli_BVInversion -reflectances $reflfile -model $laimodel \
+    -out $laiestim -factor 8
+#+end_src
+
+#+name: validation-file
+: /tmp/valid.txt
+#+begin_src sh :var laiestim=lai-estim :var laitrainfile=lai-train-file :var validationfile=validation-file :tangle yes
+paste $laiestim $laitrainfile > /tmp/val
+awk '{print $2,$1}' /tmp/val > $validationfile
+#+end_src
+
 **** TODO Add an option for validation (use the first column as the variable to validate with)
 * References
 
@@ -457,30 +499,6 @@ head /tmp/simus.txt
 
 
 ** Validation Prosail
-*** [2014-03-24 Mon 18:04] j'ai fait une modif ici  [[file:~/OTB/OTB/Code/Simulation/otbReduceSpectralResponse.txx]]
-
----------------- Code/Simulation/otbReduceSpectralResponse.txx ----------------
-@@ -71,10 +71,7 @@
-     PrecisionType lambdaMin=(this->m_InputSatRSR->GetRSR())[numBand]->GetInterval().first;
-     PrecisionType lambdaMax=(this->m_InputSatRSR->GetRSR())[numBand]->GetInterval().second;
- 
--    ValuePrecisionType totalArea = static_cast<ValuePrecisionType> (0);
--    totalArea =lambdaMax - lambdaMin;
--    if (totalArea == 0) return static_cast<ValuePrecisionType> (0.0);
--
-+    if ((lambdaMax - lambdaMin) == 0) return ValuePrecisionType(0.0);
- 
-     while (it != pairs.end() - 1)
-       {
-@@ -205,7 +202,7 @@
-       ++it;
-       }
- 
--    return res / totalArea;
-+    return res;
-     }
- 
- }
 *** [2014-03-24 Mon 18:52] partir de ce prospect 
 
 comparer d'abord les valeurs de prospect entre matlab et otb
@@ -536,6 +554,9 @@ for iband=1:Nb_Bandes
 end
 
 #+end_src
+
+#+RESULTS:
+: /usr/share/octave/packages
 
 **** Résultats 1er échantillon
 ***** Variables
@@ -8637,3 +8658,21 @@ plot "~/tmp/sail.txt" using 1:2 with lines lw 3 title "Prospect refl bv-net", \
 3. 
 ** [2014-03-25 Tue 16:39] pour l'apprentissage du réseau  [[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS%20LAI%20ALA%20CC%20HsD%20N%20Cab%20Cdm%20Cw_Rel%20Cbp%20Bs%20VZ%20VAz%20SZ%20SA%20B1%20B2%20B3%20FCOV%20FAP%20LAI][file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS LAI ALA CC HsD N Cab Cdm Cw_Rel Cbp Bs VZ VAz SZ SA B1 B2 B3 FCOV FAP LAI]]
 ** [2014-03-25 Tue 19:30] il y a aussi une différence sur le dry matter  [[file:~/org/clocking.org]]
+** TODO fapar & fcover                                                :next:
+*** [2014-05-19 Mon 11:06] Output.FCOVER(isim,1) =Law.Crown_Cover(isim).*1-exp(-kellips(Law.ALA(isim),0).*Law.LAI(isim));
+
+  [[file:~/stok/DATA/BVNET_otb/CODE/Tools/kellips.m]]
+
+  [[file:~/stok/DATA/BVNET_otb/CODE/Create_Input_Output.m::Output.FCOVER(isim,1)%20%3DLaw.Crown_Cover(isim).*1-exp(-kellips(Law.ALA(isim),0).*Law.LAI(isim))%3B][file:~/stok/DATA/BVNET_otb/CODE/Create_Input_Output.m::Output.FCOVER(isim,1) =Law.Crown_Cover(isim).*1-exp(-kellips(Law.ALA(isim),0).*Law.LAI(isim));]]
+
+fapar :
+
+[[file:~/stok/DATA/BVNET_otb/CODE/Create_Input_Output.m::Output.FAPAR(isim,1)%20%3D%20sum(A(1:300,5).*Ecl(1:300))./sum(Ecl(1:300))%3B%20%25%20valeur%20int%C3%A9gr%C3%A9e%20entre%20400%20et%20700%20nm][file:~/stok/DATA/BVNET_otb/CODE/Create_Input_Output.m::Output.FAPAR(isim,1) = sum(A(1:300,5).*Ecl(1:300))./sum(Ecl(1:300)); % valeur intégrée entre 400 et 700 nm]]
+*** Calcul fAPAR
+
+Non, en fait, comme c'est le fAPAR journalier (intégré sur la journée) qui intéresse la plupart du temps les utilisateurs, nous avions fait (projet CYLOPES) des petits calculs avec
+SAIL et avec des données sur Avignon (si mes souvenirs sont bons) : nous avions calculé le RMSE entre le fAPAR journalier et le fAPAR instantané à différentes heures de  la journée.
+Nous avions trouvé que le fAPAR à 10h30 heure solaire locale  est le
+plus proche du fAPAR journalier.
+** [2014-06-06 Fri 09:11] j'ai mis skyl à 0  [[file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN)%3B][file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN);]]
+
