@@ -32,6 +32,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/library)
 
 include(${CMAKE_ROOT}/Modules/Dart.cmake)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 add_subdirectory(library)
 add_subdirectory(applications)
 add_subdirectory(testing)
