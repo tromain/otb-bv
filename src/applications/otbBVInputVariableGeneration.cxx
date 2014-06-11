@@ -68,16 +68,16 @@ private:
   }
 
   //Generates a random number of the appropriate distribution and respecting the bounds
-  double Rng(double min, double max, double mod, double std, DistType dist)
+  double Rng(double min, double max, double mod, double stdev, DistType dist)
   {
-    //TODO : why us std defined for uniform?
+    //TODO : why us stdev defined for uniform?
     double rn;
     if(dist == GAUSSIAN)
       {
       auto sampleInsideBounds = false;
       while(!sampleInsideBounds)
         {
-        rn = m_RNG.normal64() * std + mod;
+        rn = m_RNG.normal64() * stdev + mod;
         if( rn >= min && rn <= max)
           sampleInsideBounds = true;
         }
@@ -149,7 +149,7 @@ private:
   void DoExecute()
   {
     /* Variables
-     |        | Variable      | Minimum | Maximum |   Mode |    Std | Nb_Class | Law   | LAI_Conv |
+     |        | Variable      | Minimum | Maximum |   Mode |    Stdev | Nb_Class | Law   | LAI_Conv |
      |--------+---------------+---------+---------+--------+--------+----------+-------+----------|
      | Canopy | MLAI          |     0.0 |     8.0 |    2.0 |    2.0 |        6 | gauss |     1000 |
      |        | ALA (°)       |      30 |      80 |     60 |     20 |        3 | gauss |       10 |
@@ -177,7 +177,7 @@ private:
      defining a value for each bv.
 
      Car --> not used by bvnet; Féret's dissertation uses Cxc to denote Car
-     and gives a mean of 8.58 and a std of 3.95 and fig 2.2, p.47 gives the
+     and gives a mean of 8.58 and a stdev of 3.95 and fig 2.2, p.47 gives the
      min at 0 and the max at 25
      
   */
