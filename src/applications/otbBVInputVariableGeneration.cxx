@@ -70,7 +70,7 @@ private:
   //Generates a random number of the appropriate distribution and respecting the bounds
   double Rng(double min, double max, double mod, double std, DistType dist)
   {
-    //TODO : why std is defined for uniform?
+    //TODO : why us std defined for uniform?
     double rn;
     if(dist == GAUSSIAN)
       {
