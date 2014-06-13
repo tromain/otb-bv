@@ -36,17 +36,17 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   prosail.SetRSR(satRSR);
   typename otb::BVType prosailBV;
 
-  prosailBV[otb::MLAI] = 3.7277;
-  prosailBV[otb::ALA] = 59.755;
-  prosailBV[otb::CrownCover] = 0.95768;
-  prosailBV[otb::HsD] = 0.18564;
-  prosailBV[otb::N] = 1.4942;
-  prosailBV[otb::Cab] = 64.632;
-  prosailBV[otb::Car] = 0;
-  prosailBV[otb::Cdm] = 0.0079628;
-  prosailBV[otb::CwRel] = 0.73298;
-  prosailBV[otb::Cbp] = 0.075167;
-  prosailBV[otb::Bs] = 0.72866;
+  prosailBV[otb::IVNames::MLAI] = 3.7277;
+  prosailBV[otb::IVNames::ALA] = 59.755;
+  prosailBV[otb::IVNames::CrownCover] = 0.95768;
+  prosailBV[otb::IVNames::HsD] = 0.18564;
+  prosailBV[otb::IVNames::N] = 1.4942;
+  prosailBV[otb::IVNames::Cab] = 64.632;
+  prosailBV[otb::IVNames::Car] = 0;
+  prosailBV[otb::IVNames::Cdm] = 0.0079628;
+  prosailBV[otb::IVNames::CwRel] = 0.73298;
+  prosailBV[otb::IVNames::Cbp] = 0.075167;
+  prosailBV[otb::IVNames::Bs] = 0.72866;
 
   prosail.SetBVs(prosailBV);
   prosail.SetParameters(prosailPars);
