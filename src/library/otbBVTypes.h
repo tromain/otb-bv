@@ -22,6 +22,7 @@ enum class IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Car, Cdm, CwRel, Cbp, Bs
 enum AcquisitionParameters {TTS, TTO, PSI, AcquisitionParametersEnd};
 
 typedef std::map< AcquisitionParameters, double > AcquisitionParsType;
-typedef std::map< IVNames, double > BVType;
+typedef double PrecisionType;
+typedef std::map< IVNames, PrecisionType > BVType;
 }
 #endif
