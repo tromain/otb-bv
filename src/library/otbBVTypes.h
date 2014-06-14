@@ -24,5 +24,7 @@ enum AcquisitionParameters {TTS, TTO, PSI, AcquisitionParametersEnd};
 typedef std::map< AcquisitionParameters, double > AcquisitionParsType;
 typedef double PrecisionType;
 typedef std::map< IVNames, PrecisionType > BVType;
+
+using NormalizationVectorType = std::vector<std::pair<PrecisionType, PrecisionType>>;
 }
 #endif
