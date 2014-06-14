@@ -22,6 +22,7 @@ namespace otb
 unsigned short int countColumns(std::string fileName);
 
 template<typename II, typename OI>
+inline
 NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& ovLast)
 {
 
@@ -50,6 +51,7 @@ NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& 
 }
 
 template<typename NVT>
+inline
 void write_normalization_file(const NVT& var_minmax, std::string out_filename)
 {
   std::ofstream norm_file{out_filename};
@@ -77,6 +79,7 @@ T denormalize(T x, U p)
 }
 
 template<typename IS, typename OS, typename NVT>
+inline
 void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax)
 {
   auto ivIt = isl->Begin();
