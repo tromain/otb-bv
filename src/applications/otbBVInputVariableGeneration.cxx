@@ -16,7 +16,7 @@
 #include "otbWrapperApplicationFactory.h"
 #include "otbWrapperChoiceParameter.h"
 
-#include "vnl/vnl_random.h"
+#include <random>
 #include <fstream>
 
 #include "otbBVTypes.h"
@@ -34,7 +34,7 @@ public:
   typedef BVInputVariableGeneration     Self;
   typedef Application                   Superclass;
 
-  enum DistType {GAUSSIAN, UNIFORM};
+  enum DistType {GAUSSIAN, UNIFORM, LOGNORMAL};
   
 /** Standard macro */
   itkNewMacro(Self);
@@ -77,13 +77,31 @@ private:
       auto sampleInsideBounds = false;
       while(!sampleInsideBounds)
         {
-        rn = m_RNG.normal64() * stdev + mod;
+        std::normal_distribution<> d(mod,stdev);
+        rn = d(m_RNG);
+        if( rn >= min && rn <= max)
+          sampleInsideBounds = true;
+        }
+      }
+    if(dist == LOGNORMAL)
+      {
+      auto sampleInsideBounds = false;
+      while(!sampleInsideBounds)
+        {
+        std::lognormal_distribution<> d(mod, stdev);
+        rn = d(m_RNG);
         if( rn >= min && rn <= max)
           sampleInsideBounds = true;
         }
       }
     else
-      rn = m_RNG.drand32(min, max);
+      {
+      std::uniform_real_distribution<> d(min, max);
+      rn = d(m_RNG);
+      }
+
+
+
 
     return rn;
   }
@@ -99,14 +117,15 @@ private:
   */
   double CorrelateValue(double v, double v_mod, double lai)
   {
-    return v_mod + (v - v_mod)*(m_LAI_Conv - lai)/m_LAI_Conv;
+    double res = v_mod + (v - v_mod)*(m_LAI_Conv - lai)/m_LAI_Conv;
+    return res<0?0:res;
   }
   
   ///Builds the map with the values of the sample
   SampleType DrawSample()
   {
     SampleType s;
-    s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, GAUSSIAN);
+    s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, LOGNORMAL);
     s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, m_ALA_mod,
                                             m_ALA_std, GAUSSIAN),
                                   m_ALA_mod, s[IVNames::MLAI]);
@@ -207,8 +226,7 @@ private:
     auto maxSamples = GetParameterInt("samples");
     auto sampleCount = 0;
 
-    //TODO: could use a particular seed if useful
-    m_RNG = vnl_random();
+    m_RNG = std::mt19937(std::random_device{}());
 
     otbAppLogINFO("Generating BV samples" << std::endl);
     while(sampleCount < maxSamples)
@@ -225,7 +243,7 @@ private:
   double m_LAI_Conv = 10.0;                     
                                                                                             
   double m_MLAI_min = 0.0;                      
-  double m_MLAI_max = 8.0;                      
+  double m_MLAI_max = 15.0;                      
   double m_MLAI_mod = 2.0;                      
   double m_MLAI_std = 2.0;                      
   unsigned short  m_MLAI_nbcl = 6;                       
@@ -283,14 +301,14 @@ private:
   double m_Cbp_std = 0.30;                      
   unsigned short  m_Cbp_nbcl = 3;                        
                                                                                             
-  double m_Bs_min = 0.50;                       
-  double m_Bs_max = 3.50;                       
-  double m_Bs_mod = 1.20;                       
+  double m_Bs_min = 0.0;                       
+  double m_Bs_max = 1.00;                       
+  double m_Bs_mod = 0.5;                       
   double m_Bs_std = 2.00;                       
   unsigned short  m_Bs_nbcl = 4;                         
 
   // the random number generator
-  vnl_random m_RNG;
+  std::mt19937 m_RNG;
 
   // the output file
   std::ofstream m_SampleFile;
