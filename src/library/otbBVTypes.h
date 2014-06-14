@@ -21,9 +21,9 @@ namespace otb
 enum class IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Car, Cdm, CwRel, Cbp, Bs, IVNamesEnd};
 enum AcquisitionParameters {TTS, TTO, PSI, AcquisitionParametersEnd};
 
-typedef std::map< AcquisitionParameters, double > AcquisitionParsType;
-typedef double PrecisionType;
-typedef std::map< IVNames, PrecisionType > BVType;
+using AcquisitionParsType = std::map< AcquisitionParameters, double >;
+using PrecisionType = double;
+using BVType = std::map< IVNames, PrecisionType >;
 
 using NormalizationVectorType = std::vector<std::pair<PrecisionType, PrecisionType>>;
 }

@@ -15,12 +15,11 @@
 #define __OTBBVUTIL_H
 
 #include <string>
+#include "otbBVTypes.h"
 
 namespace otb
 {
 unsigned short int countColumns(std::string fileName);
-
-
 
 template<typename II, typename OI>
 NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& ovLast)
