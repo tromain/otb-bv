@@ -52,7 +52,7 @@ NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& 
 
 template<typename NVT>
 inline
-void write_normalization_file(const NVT& var_minmax, std::string out_filename)
+void write_normalization_file(const NVT& var_minmax, const std::string out_filename)
 {
   std::ofstream norm_file{out_filename};
   for(auto val : var_minmax)
@@ -64,18 +64,48 @@ void write_normalization_file(const NVT& var_minmax, std::string out_filename)
     }
 }
 
+NormalizationVectorType read_normalization_file(const std::string in_filename)
+{
+  NormalizationVectorType var_minmax;
+
+  std::ifstream norm_file;
+    try
+      {
+      norm_file.open(in_filename);
+      }
+    catch(...)
+      {
+      itkGenericExceptionMacro(<< "Could not open file " << in_filename);
+      }
+
+    for(std::string line; std::getline(norm_file, line); )
+      {
+        if(line.size() < 2)
+          {
+          itkGenericExceptionMacro(<< "Wrong line format in " << in_filename << ": " << line << std::endl);
+          }
+        std::istringstream ss(line);
+        PrecisionType minval, maxval;
+        ss >> minval;
+        ss >> maxval;
+        var_minmax.push_back(std::make_pair(minval, maxval));
+      }
+    norm_file.close();
+  return var_minmax;
+}
+
 template<typename T, typename U>
 inline
 T normalize(T x, U p)
 {
-  return (x-p.first)/(p.second-p.first+std::numeric_limits<T>::epsilon());
+  return 2*((x-p.first)/(p.second-p.first+std::numeric_limits<T>::epsilon())-0.5);
 }
 
 template<typename T, typename U>
 inline
 T denormalize(T x, U p)
 {
-  return x*(p.second-p.first)+p.first;
+  return (x*0.5+0.5)*(p.second-p.first)+p.first;
 }
 
 template<typename IS, typename OS, typename NVT>
@@ -96,7 +126,7 @@ void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax)
     auto ivInstId = ivIt.GetInstanceIdentifier();
     for(auto var = 0; var < nbInputVariables; ++var)
       {
-      isl->SetMeasurement(ivInstId, var, normalize(ovIt.GetMeasurementVector()[var],var_minmax[var]));
+      isl->SetMeasurement(ivInstId, var, normalize(ivIt.GetMeasurementVector()[var],var_minmax[var]));
       }
     ++ovIt;
     ++ivIt;
