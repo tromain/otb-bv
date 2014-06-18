@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <string>
+#include <thread>
 
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
@@ -150,16 +151,15 @@ private:
     prosailPars[TTO] = m_SensorZenith;
     prosailPars[PSI] = m_Azimuth;
     
-    ProSailType prosail;
-    prosail.SetRSR(satRSR);
 
     //TODO : the soil file is not used --> implement a version of Sail using an external soil model instead of DataSpecP5B, then multipmy by Bs
     
-    unsigned long int sampleCount = 0;
     otbAppLogINFO("Processing simulations ..." << std::endl)
     //read variable names (first line)
     std::string line;
     std::getline(m_SampleFile, line);
+
+    std::vector<BVType> bv_vec{};
     while(m_SampleFile.good())
       {
       BVType prosailBV;
@@ -173,15 +173,58 @@ private:
         ss >> bvValue;
         prosailBV[static_cast<IVNames>(varName)] = bvValue;
         }
-      prosail.SetBVs(prosailBV);
-      prosail.SetParameters(prosailPars);
-      this->WriteSimulation(prosail());
-      ++sampleCount;
+      bv_vec.push_back(prosailBV);
       }
     m_SampleFile.close();
+    auto sampleCount = bv_vec.size();
+    otbAppLogINFO("" << sampleCount << " samples read."<< std::endl);
+
+    std::vector<SimulationType> simus{sampleCount};
+    
+    auto simulator = [&](std::vector<BVType>::const_iterator sample_first,
+                          std::vector<BVType>::const_iterator sample_last,
+                          std::vector<SimulationType>::iterator simu_first){
+      ProSailType prosail;
+      prosail.SetRSR(satRSR);
+      prosail.SetParameters(prosailPars);
+      while(sample_first != sample_last)
+        {
+        prosail.SetBVs(*sample_first);
+        *simu_first = prosail();
+        ++sample_first;
+        ++simu_first;
+        }
+    };    
+
+    auto num_threads = std::thread::hardware_concurrency();
+    otbAppLogINFO("" << num_threads << " CPUs available."<< std::endl);
+
+    const auto block_size = sampleCount/num_threads;
+    std::vector<std::thread> threads(num_threads);
+    auto input_start = std::begin(bv_vec);
+    auto output_start = std::begin(simus);
+
+    for(auto t=0; t<num_threads; ++t)
+      {
+      auto input_end = input_start;
+      std::advance(input_end, block_size);
+      threads[t] = std::thread(simulator,
+                               input_start,
+                               input_end,
+                               output_start);
+      input_start = input_end;
+      std::advance(output_start, block_size);
+      }
+    std::for_each(threads.begin(),threads.end(),
+                  std::mem_fn(&std::thread::join));
+    
+    otbAppLogINFO("" << sampleCount << " samples processed."<< std::endl);
+
+    for(const auto& s : simus)
+      this->WriteSimulation(s);
+    
     m_SimulationsFile.close();
-    otbAppLogINFO("" << --sampleCount << " samples processed. Results saved in "
-                  << outFileName << std::endl);
+    otbAppLogINFO("Results saved in " << outFileName << std::endl);
   }
 
   double m_Azimuth;
