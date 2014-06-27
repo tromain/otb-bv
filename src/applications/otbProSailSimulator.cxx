@@ -110,6 +110,7 @@ private:
     std::string rsrFileName = GetParameterString("rsrfile");
     //The first 2 columns of the rsr file correspond to the wavelenght and the solar radiation
     short int nbBands = countColumns(rsrFileName)-2;
+    otbAppLogINFO("Simulating " << nbBands << " spectral bands."<<std::endl);
     auto satRSR = SatRSRType::New();
     satRSR->SetNbBands(nbBands);
     satRSR->SetSortBands(false);
