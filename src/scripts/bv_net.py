@@ -65,6 +65,8 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                     outline = outline+" "+string.join(string.split(refline[:-1]), " ")
                     if add_angles:
                         outline += " "+angles+"\n"
+                    else:
+                        outline += "\n"
                     tf.write(outline)
                 
 
