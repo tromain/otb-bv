@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include <fstream>
+#include <boost/algorithm/string.hpp>
 #include "itkMacro.h"
 
 namespace otb
@@ -25,6 +26,7 @@ namespace otb
       {
       getline(ifile,line);
       ifile.close();
+      boost::trim(line);
       auto found = line.find(' ');
       while(found!=std::string::npos)
         {
