@@ -120,7 +120,7 @@ private:
       otbAppLogINFO("Variable normalization."<< std::endl);            
       var_minmax = read_normalization_file(GetParameterString("normalization"));
       if(var_minmax.size()!=nbInputVariables+1)
-        itkGenericExceptionMacro(<< "Normalization file ("<< var_minmax.size() << " - 1) is not coherent with the number of input variables ("<< nbInputVariables <<".");
+        itkGenericExceptionMacro(<< "Normalization file ("<< var_minmax.size() << " - 1) is not coherent with the number of input variables ("<< nbInputVariables <<").");
       for(auto var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
