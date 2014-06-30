@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # =========================================================================
 #   Program:   otb-bv
-#   Language:  C++
+#   Language:  python
 #
 #   Copyright (c) CESBIO. All rights reserved.
 #
