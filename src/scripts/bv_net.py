@@ -61,18 +61,28 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                 #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
                     outline = string.split(bvline)[bvidx]
-                    angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
-                    outline = outline+" "+string.join(string.split(refline[:-1]), " ")
+                    outline = outline+" "+string.join(string.split(refline[:-1]), ' ')
+                    outline.rstrip()
                     if add_angles:
+                        angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
                         outline += " "+angles+"\n"
                     else:
                         outline += "\n"
                     tf.write(outline)
                 
 
-def learnBVModel(trainingFile, outputFile):
+def learnBVModel(trainingFile, outputFile, normalizationFile):
     app = otb.Registry.CreateApplication("InverseModelLearning")
     app.SetParameterString("training", trainingFile)
+    app.SetParameterString("out", outputFile)
+    app.SetParameterString("normalization", normalizationFile)
+    app.ExecuteAndWriteOutput()
+
+def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile):
+    app = otb.Registry.CreateApplication("BVInversion")
+    app.SetParameterString("reflectances", reflectanceFile)
+    app.SetParameterString("model", modelFile)
+    app.SetParameterString("normalization", normalizationFile)
     app.SetParameterString("out", outputFile)
     app.ExecuteAndWriteOutput()
 

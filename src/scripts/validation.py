@@ -33,20 +33,46 @@ import bv_net as bv
 working_dir = "/tmp/"
 rsr_dir = "/home/inglada/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
-nbSamples = 2000
+input_var_file_test = working_dir+"input-vars-test"
+nbSamples_train = 200
+nbSamples_test = 200
 fsat_rsr = rsr_dir+"formosat2.rsr"
 
 
-bv.generateInputBVDistribution(input_var_file, nbSamples)
+bv.generateInputBVDistribution(input_var_file, nbSamples_train)
+bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
 
+simus_list = []
 
-fsat_data = [fsat_rsr]
+fsat_data = ["formosat2", fsat_rsr]
 fsat_126 = {'doy': 126, 'to': 20.071, 'po': 307.601, 'ts':33.469, 'ps': 138.026}
+fsat_data.append(fsat_126)
 
 
-simuPars = {}
-simuPars['rsrFile'] = cfg.simulation.rsrFile
-simuPars['outputFile'] = cfg.simulation.outputFile
-simuPars['solarZenithAngle'] = cfg.simulation.solarZenithAngle
-simuPars['sensorZenithAngle'] = cfg.simulation.sensorZenithAngle
-simuPars['solarSensorAzimuth'] = cfg.simulation.solarSensorAzimuth
+simus_list.append(fsat_data)
+
+
+for sat in simus_list:
+    sat_name = sat[0]
+    rsr_file = sat[1]
+    for acqu in sat[2:]:
+        reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
+        training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
+        reflectance_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_test"
+        training_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_training_test"
+        normalization_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_normalization"
+        inversion_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion"
+        model_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_model"
+        simuPars = {}
+        simuPars['rsrFile'] = rsr_file
+        simuPars['outputFile'] = reflectance_file
+        simuPars['solarZenithAngle'] = acqu['ts']
+        simuPars['sensorZenithAngle'] = acqu['to']
+        simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
+        simuPars['soilFile'] = "whatever"
+        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex["MLAI"])
+        simuPars['outputFile'] = reflectance_file_test
+        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex["MLAI"])
+        bv.learnBVModel(training_file, model_file, normalization_file)
+        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file)
+        
