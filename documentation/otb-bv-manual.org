@@ -323,7 +323,7 @@ awk '{print $2,$1}' /tmp/val > $validationfile
 
 **** TODO Add an option for validation (use the first column as the variable to validate with)
 * References
-
+The PROSAIL model which results from the coupling of PROSPECT-5 and 4SAIL  [[http://teledetection.ipgp.jussieu.fr/prosail/][prosail]]
 * Actions                                                          :noexport:
 
 ** TODO References Weiss & Baret
@@ -8675,4 +8675,15 @@ SAIL et avec des données sur Avignon (si mes souvenirs sont bons) : nous avions
 Nous avions trouvé que le fAPAR à 10h30 heure solaire locale  est le
 plus proche du fAPAR journalier.
 ** [2014-06-06 Fri 09:11] j'ai mis skyl à 0  [[file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN)%3B][file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN);]]
-
+** Gestion du sol
+- le Sail de l'OTB utilise 2 spectres de sol (sec et humide) et les
+  pondère avec
+      // Soil Reflectance Properties
+      //rsoil1 = dry soil
+      //rsoil2 = wet soil
+      rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
+- le Sail de bv-net utilise un spectre de sol et le multiplie par Bs
+- le plus logique serait de tirer m_Psoil suivant une loi uniforme 0,1
+** TODO [2014-06-14 Sat 18:40] mettre à jour la table des paramètres des lois avec le doc venus  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::double%20m_MLAI_max%20%3D%2015.0%3B][file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::double m_MLAI_max = 15.0;]]
+** TODO [2014-06-14 Sat 18:50] il faut aussi mettre à jour la formulede la corrélation des variables  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::return%20res<0?0:res%3B][file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::return res<0?0:res;]]
+** TODO ajouter l'option pour choisir les bandes du fichier rsr dans la simulation  [[gnus:nntp%2Bnews.gwene.org:gmane.org.user-groups.linux.toulouse][gnus:nntp+news.gwene.org:gmane.org.user-groups.linux.toulouse]]
