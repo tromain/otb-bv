@@ -43,7 +43,7 @@ def generateInputBVDistribution(bvFile, nSamples):
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
-def generateTrainingData(bvFile, simuPars, trainingFile):
+def generateTrainingData(bvFile, simuPars, trainingFile, bvidx):
     app = otb.Registry.CreateApplication("ProSailSimulator")
     app.SetParameterString("bvfile", bvFile)
     app.SetParameterString("soilfile", simuPars['soilFile'])
@@ -60,7 +60,7 @@ def generateTrainingData(bvFile, simuPars, trainingFile):
             with open(simuPars['outputFile'], 'r') as rf:
                 #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
-                    outline = string.split(bvline)[bvindex[cfg.training.invertBV]]
+                    outline = string.split(bvline)[bvidx]
                     angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
                     outline = outline+" "+string.join(string.split(refline[:-1]), " ")+" "+angles+"\n"
                     tf.write(outline)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     (bvDistributionFileName, numberOfSamples, simulationParameters, trainingDataFileName, outputModelFileName) = parseConfigFile(cfg)
     generateInputBVDistribution(bvDistributionFileName, numberOfSamples)
-    generateTrainingData(bvDistributionFileName, simulationParameters, trainingDataFileName)
+    generateTrainingData(bvDistributionFileName, simulationParameters, trainingDataFileName, bvindex[cfg.training.invertBV])
     learnBVModel(trainingDataFileName, outputModelFileName)
 
 
