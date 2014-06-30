@@ -43,7 +43,7 @@ def generateInputBVDistribution(bvFile, nSamples):
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
-def generateTrainingData(bvFile, simuPars, trainingFile, bvidx):
+def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False):
     app = otb.Registry.CreateApplication("ProSailSimulator")
     app.SetParameterString("bvfile", bvFile)
     app.SetParameterString("soilfile", simuPars['soilFile'])
@@ -62,7 +62,9 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx):
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
                     outline = string.split(bvline)[bvidx]
                     angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
-                    outline = outline+" "+string.join(string.split(refline[:-1]), " ")+" "+angles+"\n"
+                    outline = outline+" "+string.join(string.split(refline[:-1]), " ")
+                    if add_angles:
+                        outline += " "+angles+"\n"
                     tf.write(outline)
                 
 
