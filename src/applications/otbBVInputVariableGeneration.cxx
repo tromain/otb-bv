@@ -243,7 +243,7 @@ private:
   double m_LAI_Conv = 10.0;                     
                                                                                             
   double m_MLAI_min = 0.0;                      
-  double m_MLAI_max = 8.0;                      
+  double m_MLAI_max = 15.0;                      
   double m_MLAI_mod = 2.0;                      
   double m_MLAI_std = 2.0;                      
   unsigned short  m_MLAI_nbcl = 6;                       
@@ -254,8 +254,8 @@ private:
   double m_ALA_std = 20.0;                      
   unsigned short  m_ALA_nbcl = 3.0;                      
                                                                                             
-  double m_CrownCover_min = 0.4;                
-  double m_CrownCover_max = 1.2;                
+  double m_CrownCover_min = 0.2;                
+  double m_CrownCover_max = 1.0;                
   double m_CrownCover_mod = 0.8;                
   double m_CrownCover_std = 0.4;                
   unsigned short  m_CrownCover_nbcl = 1;                 
@@ -267,7 +267,7 @@ private:
   unsigned short  m_HsD_nbcl = 1;                        
                                                                                             
   double m_N_min = 1.20;                        
-  double m_N_max = 1.80;                        
+  double m_N_max = 2.20;                        
   double m_N_mod = 1.50;                        
   double m_N_std = 0.30;                        
   unsigned short  m_N_nbcl = 3;                          
