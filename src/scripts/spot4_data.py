@@ -52,17 +52,15 @@ spot4_rsr = rsr_dir+"spot4hrvir1.rsr"
 
 spot4_data = ["spot4", spot4_rsr]
 
-spot4_126 = {'doy': 126, 'to': 20.071, 'po': 307.601, 'ts':33.469, 'ps': 138.026, 'gt': [s for s in gt if s['doy']==126]}
-spot4_data.append(spot4_126)
-spot4_107 = {'doy': 107, 'to': 13.71259947, 'po': -76.57636044, 'ts': 42.85287493, 'ps': 132.8643351, 'gt': [s for s in gt if s['doy']==107]}
+spot4_107 = {'doy':107, 'to':13.71259947, 'po':-76.57636044, 'ts':42.85287493, 'ps':132.8643351, 'gt':[s for s in gt if s['doy']==107]}
 spot4_data.append(spot4_107)
-spot4_137 = {'doy':137, 'to': 11.48903591, 'po': -76.89109332, 'ts': 35.45797813, 'ps': 123.7352241, 'gt': [s for s in gt if s['doy']==137]}
+spot4_137 = {'doy':137, 'to':11.48903591, 'po':-76.89109332, 'ts':35.45797813, 'ps':123.7352241, 'gt':[s for s in gt if s['doy']==137]}
 spot4_data.append(spot4_137)
-spot4_147 = {'doy':147, 'to': 11.80717999, 'po':  -76.8844394, 'ts': 34.08922593, 'ps': 120.8016084, 'gt': [s for s in gt if s['doy']==147]}
+spot4_147 = {'doy':147, 'to':11.80717999, 'po': -76.8844394, 'ts':34.08922593, 'ps':120.8016084, 'gt':[s for s in gt if s['doy']==147]}
 spot4_data.append(spot4_147)
-spot4_158 = {'doy':158, 'to': 13.12962672, 'po':  100.3004711, 'ts': 36.10594062, 'ps': 113.8471485, 'gt': [s for s in gt if s['doy']==158]}
+spot4_158 = {'doy':158, 'to':13.12962672, 'po': 100.3004711, 'ts':36.10594062, 'ps':113.8471485, 'gt':[s for s in gt if s['doy']==158]}
 spot4_data.append(spot4_158)
-spot4_163 = {'doy':163, 'to': 13.12976268, 'po':  100.2980078, 'ts': 36.03377624, 'ps': 112.9455688, 'gt': [s for s in gt if s['doy']==163]}
+spot4_163 = {'doy':163, 'to':13.12976268, 'po': 100.2980078, 'ts':36.03377624, 'ps':112.9455688, 'gt':[s for s in gt if s['doy']==163]}
 spot4_data.append(spot4_163)
-spot4_167 = {'doy':167, 'to': 11.49005525, 'po':  -76.8844394, 'ts': 33.37841681, 'ps':  116.698214, 'gt': [s for s in gt if s['doy']==167]}
+spot4_167 = {'doy':167, 'to':11.49005525, 'po': -76.8844394, 'ts':33.37841681, 'ps': 116.698214, 'gt':[s for s in gt if s['doy']==167]}
 spot4_data.append(spot4_167)
