@@ -92,7 +92,7 @@ gt = [{'crop':"corn",'esu':1,'doy':200,'y':2013,'gai':2.481259206,'fapar':0.8135
 rsr_dir = "/home/inglada/Dev/otb-bv/data/"
 lsat_rsr = rsr_dir+"landsat8_4b.rsr"
 
-lsat_data = ["formosat2", lsat_rsr]
+lsat_data = ["landsat8", lsat_rsr]
  
 lsat_200 = {'doy': 200, 'to': 0, 'po': 0, 'ts': 62.06299464, 'ps': 136.3247244, 'gt': [s for s in gt if s['doy']==200]}
 lsat_data.append(lsat_200)
