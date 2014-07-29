@@ -8701,7 +8701,6 @@ paste /tmp/input-vars-no-header /tmp/simus > /tmp/train
 awk '{print $1,$12,$13,$14,$15}' /tmp/train > /tmp/laitrain
 ./otbcli_SVRInverseModelLearning -training /tmp/laitrain -out /tmp/svrmodel -normalization /tmp/norm
 ./otbcli_InverseModelLearning -training /tmp/laitrain -out /tmp/nnmodel -normalization /tmp/normnn
-./otbcli_SVRInverseModelLearning -training /tmp/laitrain -out /tmp/svrmodel -normalization /tmp/norm
 awk '{print $2,$3,$4,$5}' /tmp/laitrain > /tmp/refls
 ./otbcli_BVInversion -reflectances /tmp/refls -model /tmp/nnmodel -out /tmp/nnestim -normalization /tmp/norm
 ./otbcli_SVRBVInversion -reflectances /tmp/refls -model /tmp/svrmodel -out /tmp/svrestim -normalization /tmp/norm
