@@ -16,4 +16,5 @@
 void RegisterTests()
 {
   REGISTER_TEST(bvProSailSimulatorFunctor);
+  REGISTER_TEST(bvMultiLinearFitting);
 }
