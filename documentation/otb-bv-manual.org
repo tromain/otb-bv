@@ -8687,3 +8687,23 @@ plus proche du fAPAR journalier.
 ** TODO [2014-06-14 Sat 18:40] mettre à jour la table des paramètres des lois avec le doc venus  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::double%20m_MLAI_max%20%3D%2015.0%3B][file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::double m_MLAI_max = 15.0;]]
 ** TODO [2014-06-14 Sat 18:50] il faut aussi mettre à jour la formulede la corrélation des variables  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::return%20res<0?0:res%3B][file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::return res<0?0:res;]]
 ** TODO ajouter l'option pour choisir les bandes du fichier rsr dans la simulation  [[gnus:nntp%2Bnews.gwene.org:gmane.org.user-groups.linux.toulouse][gnus:nntp+news.gwene.org:gmane.org.user-groups.linux.toulouse]]
+** [2014-07-02 Wed 17:30] stats utilisées ar bvnet en sachant que je garde la loi lognormale pour le LAI  [[file:~/Projects/Sentinel2Agriculture/Admin/stats.org]]
+
+** TODO SVR
+** TODO multi-parameter fitting  [[http://www.gnu.org/software/gsl/manual/gsl-ref_37.html#SEC513][GNU Scientific Library -- Reference Manual - Least-Squares Fitting]]
+** Comparison between SVR and NN
+#+begin_src sh
+export ITK_AUTOLOAD_PATH="."
+./otbcli_BVInputVariableGeneration -samples 2000 -out /tmp/samples
+./otbcli_ProSailSimulator -bvfile /tmp/samples -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr -out /tmp/simus -solarzenith 28.0 -sensorzenith 19.2 -azimuth -162.28
+tail -n +2 /tmp/samples > /tmp/input-vars-no-header
+paste /tmp/input-vars-no-header /tmp/simus > /tmp/train
+awk '{print $1,$12,$13,$14,$15}' /tmp/train > /tmp/laitrain
+./otbcli_SVRInverseModelLearning -training /tmp/laitrain -out /tmp/svrmodel -normalization /tmp/norm
+./otbcli_InverseModelLearning -training /tmp/laitrain -out /tmp/nnmodel -normalization /tmp/normnn
+./otbcli_SVRInverseModelLearning -training /tmp/laitrain -out /tmp/svrmodel -normalization /tmp/norm
+awk '{print $2,$3,$4,$5}' /tmp/laitrain > /tmp/refls
+./otbcli_BVInversion -reflectances /tmp/refls -model /tmp/nnmodel -out /tmp/nnestim -normalization /tmp/norm
+./otbcli_SVRBVInversion -reflectances /tmp/refls -model /tmp/svrmodel -out /tmp/svrestim -normalization /tmp/norm
+#+end_src
+
