@@ -63,8 +63,8 @@ struct  MultiLinearRegressionModel
 protected:
   void multi_linear_fit()
   {
-    auto n = m_x[0].size();
-    auto m = m_x.size()+1;
+    auto n = m_x.size();
+    auto m = m_x[0].size()+1;
     auto X = gsl_matrix_alloc (n, m);
     auto y = gsl_vector_alloc (n);
     auto w = gsl_vector_alloc (n);
@@ -74,7 +74,7 @@ protected:
       {
       gsl_matrix_set (X, i, 0, 1.0);
       for(auto j=0; j<m-1; j++)
-        gsl_matrix_set(X, i, j+1, m_x[j][i]);
+        gsl_matrix_set(X, i, j+1, m_x[i][j]);
       gsl_vector_set (y, i, m_y[i]);
       gsl_vector_set (w, i, 1.0/(m_w[i]*m_w[i]));
       }
