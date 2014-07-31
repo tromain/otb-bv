@@ -151,13 +151,12 @@ private:
     
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
-
-
+    double rmse{0.0};
     if(true)
       {
-      EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
+      rmse = EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
       }
-   
+    otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
   template <typename RegressionType>
@@ -185,7 +184,7 @@ private:
     return sqrt(rmse)/nbSamples;
   }
 
-  void EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
+  double EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
   {
     auto regression = NeuralNetworkType::New();
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
@@ -201,8 +200,7 @@ private:
     regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
     regression->SetEpsilon(1e-10);
     regression->SetMaxIter(10000000);
-    auto rmse = EstimateRegressionModel(regression, ils, ols);
-    otbAppLogINFO("RMSE = " << rmse << std::endl);
+    return EstimateRegressionModel(regression, ils, ols);
   }
 };
 
