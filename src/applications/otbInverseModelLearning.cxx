@@ -177,20 +177,19 @@ private:
     regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
     regression->SetEpsilon(1e-10);
     regression->SetMaxIter(10000000);
-
-    regression->SetInputListSample(ils);
-    regression->SetTargetListSample(ols);
-    otbAppLogINFO("Model estimation ..." << std::endl);
-    regression->Train();
-    regression->Save(GetParameterString("out"));
-    otbAppLogINFO("Estimation of prediction error from training samples ..."
-                  << std::endl);
-    auto rmse = RMSE_estimation(regression, ils, ols);
+    auto rmse = EstimateRegressionModel(regression, ils, ols);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
   template <typename RegressionType>
-  double RMSE_estimation(RegressionType rgrsn, ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols)
+  double EstimateRegressionModel(RegressionType rgrsn, ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols)
   {
+    rgrsn->SetInputListSample(ils);
+    rgrsn->SetTargetListSample(ols);
+    otbAppLogINFO("Model estimation ..." << std::endl);
+    rgrsn->Train();
+    rgrsn->Save(GetParameterString("out"));
+    otbAppLogINFO("Estimation of prediction error from training samples ..."
+                  << std::endl);
     auto nbSamples = 0;
     auto rmse = 0.0;
     auto sampleIt = ils->Begin();
