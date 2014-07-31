@@ -153,13 +153,20 @@ private:
                   << trainingFileName << std::endl);
 
 
+    if(true)
+      {
+      EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
+      }
+   
+  }
 
+
+  void EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
+  {
     auto regression = NeuralNetworkType::New();
-    regression->SetInputListSample(inputListSample);
-    regression->SetTargetListSample(outputListSample);
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // Two hidden layer with 5 neurons and one output variable
-    regression->SetLayerSizes(std::vector<unsigned int>({static_cast<unsigned int>(nbInputVariables), 5, 5, 1}));
+    regression->SetLayerSizes(std::vector<unsigned int>({static_cast<unsigned int>(nbVars), 5, 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     regression->SetAlpha(1.0);
     regression->SetBeta(1.0);
@@ -171,17 +178,16 @@ private:
     regression->SetEpsilon(1e-10);
     regression->SetMaxIter(10000000);
 
+    regression->SetInputListSample(ils);
+    regression->SetTargetListSample(ols);
     otbAppLogINFO("Model estimation ..." << std::endl);
     regression->Train();
     regression->Save(GetParameterString("out"));
-
     otbAppLogINFO("Estimation of prediction error from training samples ..."
                   << std::endl);
-    auto rmse = RMSE_estimation(regression, inputListSample, outputListSample);
+    auto rmse = RMSE_estimation(regression, ils, ols);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
-
-
   template <typename RegressionType>
   double RMSE_estimation(RegressionType rgrsn, ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols)
   {
