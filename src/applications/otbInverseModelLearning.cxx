@@ -25,6 +25,7 @@
 
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbSVMMachineLearningModel.h"
 #include "itkListSample.h"
 
 namespace otb
@@ -52,6 +53,7 @@ public:
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
   typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
+  typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
   
 private:
   void DoInit()
@@ -156,6 +158,10 @@ private:
       {
       rmse = EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
       }
+    else
+      {
+      rmse = EstimateSVRRegresionModel(inputListSample, outputListSample, nbInputVariables);
+      }
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
@@ -186,6 +192,7 @@ private:
 
   double EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
   {
+    otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // Two hidden layer with 5 neurons and one output variable
@@ -200,6 +207,20 @@ private:
     regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
     regression->SetEpsilon(1e-10);
     regression->SetMaxIter(10000000);
+    return EstimateRegressionModel(regression, ils, ols);
+  }
+
+  double EstimateSVRRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
+  {
+    otbAppLogINFO("Support vectors");
+    auto regression = SVRType::New();
+    regression->SetSVMType(CvSVM::NU_SVR);
+    regression->SetNu(0.5);
+    regression->SetKernelType(CvSVM::RBF);
+    regression->SetTermCriteriaType(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS);
+    regression->SetMaxIter(100000);
+    regression->SetEpsilon(FLT_EPSILON);
+    regression->SetParameterOptimization(true);
     return EstimateRegressionModel(regression, ils, ols);
   }
 };
