@@ -151,6 +151,9 @@ private:
     
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
+
+
+
     auto classifier = NeuralNetworkType::New();
     classifier->SetInputListSample(inputListSample);
     classifier->SetTargetListSample(outputListSample);
@@ -168,30 +171,34 @@ private:
     classifier->SetEpsilon(1e-10);
     classifier->SetMaxIter(10000000);
 
-    otbAppLogINFO("Training the neural network ..." << std::endl);
+    otbAppLogINFO("Training neural network ..." << std::endl);
     classifier->Train();
     classifier->Save(GetParameterString("out"));
 
     otbAppLogINFO("Estimation of prediction error from training samples ..."
                   << std::endl);
-
-    auto rmse = 0.0;
-    auto sampleIt = inputListSample->Begin();
-    auto resultIt = outputListSample->Begin();
-    while(sampleIt != inputListSample->End() && resultIt != outputListSample->End())
-      {
-      rmse += pow(classifier->Predict(sampleIt.GetMeasurementVector())[0] -
-                  resultIt.GetMeasurementVector()[0], 2.0);
-      ++sampleIt;
-      ++resultIt;
-      }
-
-    rmse = sqrt(rmse)/nbSamples;
-
+    auto rmse = RMSE_estimation(classifier, inputListSample, outputListSample);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
 
+  template <typename ClassifierType>
+  double RMSE_estimation(ClassifierType clsfr, ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols)
+  {
+    auto nbSamples = 0;
+    auto rmse = 0.0;
+    auto sampleIt = ils->Begin();
+    auto resultIt = ols->Begin();
+    while(sampleIt != ils->End() && resultIt != ols->End())
+      {
+      rmse += pow(clsfr->Predict(sampleIt.GetMeasurementVector())[0] -
+                  resultIt.GetMeasurementVector()[0], 2.0);
+      ++sampleIt;
+      ++resultIt;
+      ++nbSamples;
+      }
+    return sqrt(rmse)/nbSamples;
+  }
 
 };
 
