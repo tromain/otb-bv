@@ -160,26 +160,6 @@ private:
    
   }
 
-
-  void EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
-  {
-    auto regression = NeuralNetworkType::New();
-    regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
-    // Two hidden layer with 5 neurons and one output variable
-    regression->SetLayerSizes(std::vector<unsigned int>({static_cast<unsigned int>(nbVars), 5, 5, 1}));
-    regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
-    regression->SetAlpha(1.0);
-    regression->SetBeta(1.0);
-    regression->SetBackPropDWScale(0.1);
-    regression->SetBackPropMomentScale(0.1);
-    regression->SetRegPropDW0(0.1);
-    regression->SetRegPropDWMin(1e-7);
-    regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
-    regression->SetEpsilon(1e-10);
-    regression->SetMaxIter(10000000);
-    auto rmse = EstimateRegressionModel(regression, ils, ols);
-    otbAppLogINFO("RMSE = " << rmse << std::endl);
-  }
   template <typename RegressionType>
   double EstimateRegressionModel(RegressionType rgrsn, ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols)
   {
@@ -205,6 +185,25 @@ private:
     return sqrt(rmse)/nbSamples;
   }
 
+  void EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
+  {
+    auto regression = NeuralNetworkType::New();
+    regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
+    // Two hidden layer with 5 neurons and one output variable
+    regression->SetLayerSizes(std::vector<unsigned int>({static_cast<unsigned int>(nbVars), 5, 5, 1}));
+    regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
+    regression->SetAlpha(1.0);
+    regression->SetBeta(1.0);
+    regression->SetBackPropDWScale(0.1);
+    regression->SetBackPropMomentScale(0.1);
+    regression->SetRegPropDW0(0.1);
+    regression->SetRegPropDWMin(1e-7);
+    regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
+    regression->SetEpsilon(1e-10);
+    regression->SetMaxIter(10000000);
+    auto rmse = EstimateRegressionModel(regression, ils, ols);
+    otbAppLogINFO("RMSE = " << rmse << std::endl);
+  }
 };
 
 }
