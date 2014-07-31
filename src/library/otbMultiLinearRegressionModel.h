@@ -60,6 +60,18 @@ struct  MultiLinearRegressionModel
     
     return result;
   }
+
+  /** Save the model to file */
+  void Save(const std::string & filename);
+
+  /** Load the model from file */
+  void Load(const std::string & filename);
+
+
+  VectorType GetModel()
+  {
+    return m_model;
+  }
 protected:
   void multi_linear_fit()
   {
@@ -101,5 +113,8 @@ protected:
 };
 }//namespace otb
 
+#ifndef OTB_MANUAL_INSTANTIATION
+#include "otbMultiLinearRegressionModel.txx"
+#endif
 
 #endif

@@ -53,6 +53,23 @@ int bvMultiLinearFitting(int argc, char * argv[])
     std::cout << model.Predict(test_vec) << " " << y_vec[2] << " " << fabs(model.Predict(test_vec)-y_vec[2]) << "\n";
     return EXIT_FAILURE;
     }
+  model.Save("/tmp/mrr.txt");
+  auto other_model = MRM();
+  other_model.Load("/tmp/mrr.txt");
+  double diff{0};
+  for(auto i=0; i<model.GetModel().size(); i++)
+    diff += fabs(model.GetModel()[i]-other_model.GetModel()[i]);
+  if(diff>1e-6)
+    {
+    std::cout << "ERROR: Loaded model is different from saved model" << "\n";
+    for(auto& v: model.GetModel())
+      std::cout << v << " ";
+    std::cout << "\n";
+    for(auto& v: other_model.GetModel())
+      std::cout << v << " ";
+    std::cout << "\n";
+    return EXIT_FAILURE;
+    }
   
   return EXIT_SUCCESS;
 }
