@@ -27,14 +27,6 @@ OTB_CREATE_APPLICATION(NAME           InverseModelLearning
 OTB_CREATE_APPLICATION(NAME           BVInversion
                        SOURCES        otbBVInversion.cxx
                        LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)
-
-OTB_CREATE_APPLICATION(NAME           SVRInverseModelLearning
-                       SOURCES        otbSVRInverseModelLearning.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)
-
-OTB_CREATE_APPLICATION(NAME           SVRBVInversion
-                       SOURCES        otbSVRBVInversion.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)                     
                      
 add_executable(testSimus testSimus.cxx)
 target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil)
