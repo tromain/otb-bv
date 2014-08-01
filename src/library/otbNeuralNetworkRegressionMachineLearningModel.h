@@ -45,7 +45,7 @@ public:
 
   /** Run-time type information (and related methods). */
   itkNewMacro(Self);
-  itkTypeMacro(NeuralNetworkRegressionMachineLearningModel, itk::MachineLearningModel);
+  itkTypeMacro(NeuralNetworkRegressionMachineLearningModel, NeuralNetworkMachineLearningModel);
 
     /**
    * Set the number of neurons in each layer (including input and output layers).
