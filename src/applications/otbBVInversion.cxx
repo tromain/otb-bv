@@ -18,11 +18,13 @@
 
 #include <fstream>
 #include <string>
+#include <memory>
 
 #include "otbBVUtil.h"
 
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbSVMMachineLearningModel.h"
 #include "itkListSample.h"
 
 namespace otb
@@ -48,20 +50,22 @@ public:
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
+  typedef MachineLearningModel<PrecisionType, PrecisionType> ModelType;
   typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
+  typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
   
 private:
   void DoInit()
   {
     SetName("BVInversion");
-    SetDescription("Estimate biophysical variables using a neural network inversion of Prospect+Sail.");
+    SetDescription("Estimate biophysical variables using aninversion of Prospect+Sail.");
 
     AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert.");
-    SetParameterDescription( "reflectances", "Input file containing the reflectances to invert. This is an ASCII file where each line is a sample. A line is a set of fields containing numerical values. The order of the fields must respect the one used for the neural network training." );
+    SetParameterDescription( "reflectances", "Input file containing the reflectances to invert. This is an ASCII file where each line is a sample. A line is a set of fields containing numerical values. The order of the fields must respect the one used for the training." );
     MandatoryOn("reflectances");
 
-    AddParameter(ParameterType_InputFilename, "model", "File containing the NN model.");
-    SetParameterDescription( "model", "File containing the NN model.");
+    AddParameter(ParameterType_InputFilename, "model", "File containing the regression model.");
+    SetParameterDescription( "model", "File containing the regression model.");
     MandatoryOn("model");
     
     AddParameter(ParameterType_OutputFilename, "out", "Output estimated variable.");
@@ -127,11 +131,26 @@ private:
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
                       " max=" << var_minmax[nbInputVariables].second <<std::endl)
       }
-    auto classifier = NeuralNetworkType::New();
-    classifier->Load(GetParameterString("model"));    
+    auto model_file = GetParameterString("model");
+    ModelType* regressor;
+    auto nn_regressor = NeuralNetworkType::New();
+    auto svr_regressor = SVRType::New();
+    if(nn_regressor->CanReadFile(model_file))
+      {
+      regressor = dynamic_cast<ModelType*>(nn_regressor.GetPointer());
+      otbAppLogINFO("Applying NN regression ..." << std::endl);
+      }
+    else if(svr_regressor->CanReadFile(model_file))
+      {
+      regressor = dynamic_cast<ModelType*>(svr_regressor.GetPointer());
+      otbAppLogINFO("Applying SVR regression ..." << std::endl);
+      }
+    else
+      {
+      itkGenericExceptionMacro(<< "Model in file " << model_file << " is not valid.\n");
+      }
+    regressor->Load(model_file);    
 
-
-    otbAppLogINFO("Applying NN regression ..." << std::endl);
     auto sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )
       {
@@ -146,7 +165,7 @@ private:
             if( HasValue( "normalization" )==true )
               inputValue[var] = normalize(inputValue[var], var_minmax[var]);
             }
-          OutputSampleType outputValue = classifier->Predict(inputValue);
+          OutputSampleType outputValue = regressor->Predict(inputValue);
           if( HasValue( "normalization" )==true )
             outputValue[0] = denormalize(outputValue[0],var_minmax[nbInputVariables]);
           outFile << outputValue[0] << std::endl;
