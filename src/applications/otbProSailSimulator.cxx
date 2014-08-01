@@ -20,6 +20,8 @@
 #include <fstream>
 #include <string>
 #include <thread>
+#include <boost/lexical_cast.hpp>
+#include <random>
 
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
@@ -83,6 +85,12 @@ private:
     SetParameterDescription( "azimuth", "." );
     MandatoryOn("azimuth");
 
+    AddParameter(ParameterType_StringList, "noisevar", "Variance of the noise to be added per band");
+    SetParameterDescription("noisevar",
+                            "Variance of the noise to be added per band.");
+    MandatoryOff("noisevar");
+
+
   }
 
   virtual ~ProSailSimulator()
@@ -126,6 +134,33 @@ private:
 
     otbAppLogINFO(""<<ss);
 
+    bool add_noise =IsParameterEnabled("noisevar");
+    std::vector<std::normal_distribution<>> noise_generators;
+    std::mt19937 RNG;
+    if(add_noise)
+      {
+      RNG = std::mt19937(std::random_device{}());
+      std::vector<std::string> var_str = GetParameterStringList("noisevar");
+      if(var_str.size()==1)
+        {
+        var_str = std::vector<std::string>(nbBands, var_str[0]);
+        otbAppLogINFO("All noise variances initialized to " << var_str[0] << "\n");
+        }
+      else if(var_str.size()!=nbBands)
+        {
+        itkGenericExceptionMacro(<< "Number of noise variances (" << var_str.size()
+                                 << ") does not match number of spectral bands in "
+                                 << rsrFileName << ": " << nbBands);
+        }
+      for(auto i=0; i<var_str.size(); i++)
+        {
+        noise_generators.push_back(
+          std::normal_distribution<>(0,
+                                     boost::lexical_cast<double>(var_str[i])));
+        otbAppLogINFO("Noise variance for band " << i << " equal to " << var_str[0] << "\n");
+        }
+      }    
+
     std::string bvFileName = GetParameterString("bvfile");
     std::string outFileName = GetParameterString("out");
 
@@ -152,7 +187,6 @@ private:
     prosailPars[TTO] = m_SensorZenith;
     prosailPars[PSI] = m_Azimuth;
     
-
     //TODO : the soil file is not used --> implement a version of Sail using an external soil model instead of DataSpecP5B, then multipmy by Bs
     
     otbAppLogINFO("Processing simulations ..." << std::endl)
@@ -192,6 +226,13 @@ private:
         {
         prosail.SetBVs(*sample_first);
         *simu_first = prosail();
+        if(add_noise)
+          {
+          for(auto i=0; i<nbBands; i++)
+            {
+            (*simu_first)[i] += noise_generators[i](RNG);
+            }
+          }
         ++sample_first;
         ++simu_first;
         }
