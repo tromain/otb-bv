@@ -72,6 +72,11 @@ private:
     AddParameter(ParameterType_OutputFilename, "normalization", "Output file containing min and max values per sample component.");
     SetParameterDescription( "normalization", "Output file containing min and max values per sample component. This file can be used by the inversion application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
+
+    AddParameter(ParameterType_String, "regression", "Regression to use for the training");
+    SetParameterDescription("regression", "Choice of the regression to use for the training: svr, nn.");
+    MandatoryOff("regression");
+
   }
 
   virtual ~InverseModelLearning()
@@ -132,36 +137,29 @@ private:
     if( HasValue( "normalization" )==true )
       {
       otbAppLogINFO("Variable normalization."<< std::endl);
-
       typename ListInputSampleType::Iterator ilFirst = inputListSample->Begin();
       typename ListOutputSampleType::Iterator olFirst = outputListSample->Begin();
       typename ListInputSampleType::Iterator ilLast = inputListSample->End();
       typename ListOutputSampleType::Iterator olLast = outputListSample->End();
-      
       auto var_minmax = estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
       write_normalization_file(var_minmax, GetParameterString("normalization"));
       normalize_variables(inputListSample, outputListSample, var_minmax);
-      
-
       for(auto var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
                       " max=" << var_minmax[nbInputVariables].second <<std::endl)
       }
-
-    
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
     double rmse{0.0};
-    if(true)
-      {
-      rmse = EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
-      }
-    else
-      {
+    std::string regressor_type{"nn"};
+    if (IsParameterEnabled("regression"))
+      regressor_type = GetParameterString("regression");    
+    if (regressor_type == "svr")
       rmse = EstimateSVRRegresionModel(inputListSample, outputListSample, nbInputVariables);
-      }
+    else if (regressor_type == "nn")
+      rmse = EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
