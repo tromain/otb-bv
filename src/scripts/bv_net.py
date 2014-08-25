@@ -21,7 +21,7 @@ from config import Config
 import otbApplication as otb
 
 # The indices here have to be coherent with the order used in the bv file (and the definition of the vars in otbBVTypes.h
-bvindex = {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Car": 6, "Cdm": 7, "CwRel": 4, "Cbp": 9, "Bs": 10}
+bvindex = {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Car": 6, "Cdm": 7, "CwRel": 4, "Cbp": 9, "Bs": 10, "FAPAR": 11, "FCOVER": 12}
 
 def parseConfigFile(cfg):
     distFileName = cfg.bvDistribution.fileName
@@ -60,8 +60,14 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
             with open(simuPars['outputFile'], 'r') as rf:
                 #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
-                    outline = string.split(bvline)[bvidx]
-                    outline = outline+" "+string.join(string.split(refline[:-1]), ' ')
+                    outline = ""
+                    if bvidx == bvindex["FCOVER"] :
+                        string.split(refline[-1]), ' '
+                    else if bvidx == bvindex["FAPAR"] : 
+                        string.split(refline[-2]), ' '
+                    else:
+                        outline = string.split(bvline)[bvidx]
+                    outline = outline+" "+string.join(string.split(refline[:-2]), ' ')
                     outline.rstrip()
                     if add_angles:
                         angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
