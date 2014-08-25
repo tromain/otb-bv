@@ -65,11 +65,11 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                     outline = ""
                     if bvidx == bvindex["FCOVER"] :
                         string.split(refline[-1]), ' '
-                    else if bvidx == bvindex["FAPAR"] : 
+                    elif bvidx == bvindex["FAPAR"] : 
                         string.split(refline[-2]), ' '
                     else:
                         outline = string.split(bvline)[bvidx]
-                    outline = outline+" "+string.join(string.split(refline[:-2]), ' ')
+                    outline = outline+" "+string.join(string.split(refline[:-1])[:-2], ' ')
                     outline.rstrip()
                     if add_angles:
                         angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
@@ -86,7 +86,17 @@ def learnBVModel(trainingFile, outputFile, normalizationFile):
     app.SetParameterString("normalization", normalizationFile)
     app.ExecuteAndWriteOutput()
 
-def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile):
+def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFaparFcover=False):
+    if removeFaparFcover:
+        #the reflectance file contains also the simulations of fapar and fcover
+        rff = open(reflectanceFile)
+        allfields = rff.readlines()
+        rff.close()
+        with open(reflectanceFile, 'w') as rf:
+            for l in allfields:
+                outline = string.join(string.split(l)[:-2])+"\n"
+                rf.write(outline)
+                
     app = otb.Registry.CreateApplication("BVInversion")
     app.SetParameterString("reflectances", reflectanceFile)
     app.SetParameterString("model", modelFile)

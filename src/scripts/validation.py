@@ -68,7 +68,7 @@ for sat in simus_list:
         simuPars['outputFile'] = reflectance_file_test
         bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName])
         bv.learnBVModel(training_file, model_file, normalization_file)
-        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file)
+        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True)
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:
                 with open(validation_file, 'w') as vaf:
