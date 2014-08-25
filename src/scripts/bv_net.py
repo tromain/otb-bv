@@ -64,9 +64,9 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
                     outline = ""
                     if bvidx == bvindex["FCOVER"] :
-                        string.split(refline[-1]), ' '
+                        outline = string.split(refline)[-1]
                     elif bvidx == bvindex["FAPAR"] : 
-                        string.split(refline[-2]), ' '
+                        outline = string.split(refline)[-2]
                     else:
                         outline = string.split(bvline)[bvidx]
                     outline = outline+" "+string.join(string.split(refline[:-1])[:-2], ' ')

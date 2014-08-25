@@ -22,7 +22,7 @@ from formosat_data import *
 from spot4_data import *
 from landsat_data import *
 
-varName = "MLAI"
+varName = "FAPAR"
 working_dir = "/tmp/"+varName+"/"
 rsr_dir = "/home/inglada/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
