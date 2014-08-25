@@ -15,6 +15,7 @@
 # =========================================================================
 
 import string
+import os
 import otbApplication as otb
 import bv_net as bv
 from formosat_data import *
@@ -26,16 +27,20 @@ working_dir = "/tmp/"+varName+"/"
 rsr_dir = "/home/inglada/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 20000
+nbSamples_train = 2000
 nbSamples_test = 200
+
+d = os.path.dirname(working_dir)
+if not os.path.exists(d):
+    os.makedirs(d)
 
 bv.generateInputBVDistribution(input_var_file, nbSamples_train)
 bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
 
 simus_list = []
 simus_list.append(fsat_data)
-simus_list.append(spot4_data)
-simus_list.append(lsat_data)
+# simus_list.append(spot4_data)
+# simus_list.append(lsat_data)
 
 for sat in simus_list:
     sat_name = sat[0]
@@ -77,8 +82,8 @@ for sat in simus_list:
                 for refl in gt_case['refls']:
                     rfgtf.write(str(refl/1000.0)+" ")
                 rfgtf.write("\n")
-                var_values_gt.append(gt_case[bv_val_names[varName][0]])
-                var_values_bvnet.append(gt_case[bv_val_names[varName][0]])
+                var_values_gt.append(gt_case[bv.bv_val_names[varName][0]])
+                var_values_bvnet.append(gt_case[bv.bv_val_names[varName][0]])
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:
