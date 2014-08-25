@@ -19,6 +19,7 @@
 #include "otbProspectModel.h"
 #include "otbSatelliteRSR.h"
 #include "otbReduceSpectralResponse.h"
+#include "otbSolarIrradianceFAPAR.h"
 
 #include "otbBVTypes.h"
 namespace otb
@@ -102,7 +103,24 @@ public:
     // for(auto i=0; i<sailSim.size(); i++)
     //   std::cout << sailSim[i].first << "\t " << refl[i].second << "\t " << trans[i].second << "\t " << sailSim[i].second << std::endl;
 
-        VectorPairType hxSpectrum;
+    auto fCover = sail->GetFCoverView();
+    
+    auto sail_fapar = SailType::New();
+    sail_fapar->SetLAI(m_LAI);
+    sail_fapar->SetAngl(m_Angl);
+    sail_fapar->SetPSoil(m_PSoil);
+    sail_fapar->SetSkyl(m_Skyl);
+    sail_fapar->SetHSpot(m_HSpot);
+    sail_fapar->SetTTS(m_TTS_FAPAR);
+    sail_fapar->SetTTO(0.0);
+    sail_fapar->SetPSI(0.0);
+    sail_fapar->SetReflectance(prospect->GetReflectance());
+    sail_fapar->SetTransmittance(prospect->GetTransmittance());
+    sail_fapar->Update();
+
+    auto fAPAR = this->ComputeFAPAR(sail_fapar->GetViewingAbsorptance());
+    
+    VectorPairType hxSpectrum;
     for(auto i=0;i<SimNbBands;i++)
       {
       PairType resp;
@@ -120,6 +138,9 @@ public:
     reduceResponse->CalculateResponse();
     for(auto i=0;i<m_SatRSR->GetNbBands();i++)
       pix[i] = (*reduceResponse)(i);
+
+    pix.push_back(fCover);
+    pix.push_back(fAPAR);
     return pix;
   }
 
@@ -157,11 +178,24 @@ public:
     m_TTS = apmap[TTS]; //solar zenith angle
     m_TTO = apmap[TTO]; //observer zenith angle
     m_PSI = apmap[PSI]; //azimuth
+    m_TTS_FAPAR = apmap[TTS_FAPAR]; //solar zenith angle for fapar computation
 
   }
   
 protected:
 
+  double ComputeFAPAR(SailType::SpectralResponseType* absorptance){
+    double fapar{0};
+    double solar_irrad{0};
+    for(auto& sip : solar_irradiance_fapar)
+      {
+      auto l = sip.first;
+      auto si = sip.second;
+      fapar += (*absorptance)(l)*si;
+      solar_irrad += si;
+      }
+    return fapar/solar_irrad;
+  }
   /** Satellite Relative spectral response*/
   SatRSRPointerType m_SatRSR;
   LeafParametersPointerType m_LP;
@@ -171,6 +205,7 @@ protected:
   double m_Skyl; //diffuse/direct radiation
   double m_HSpot; //hot spot
   double m_TTS; //solar zenith angle
+  double m_TTS_FAPAR; //solar zenith angle for fapar computation
   double m_TTO; //observer zenith angle
   double m_PSI; //azimuth
   BVType m_BV;
