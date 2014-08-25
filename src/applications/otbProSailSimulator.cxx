@@ -77,6 +77,10 @@ private:
     SetParameterDescription( "solarzenith", "." );
     MandatoryOn("solarzenith");
 
+    AddParameter(ParameterType_Float, "solarzenithf", "");
+    SetParameterDescription( "solarzenithf", "Solar zenith for the fAPAR simulation" );
+    MandatoryOn("solarzenithf");
+    
     AddParameter(ParameterType_Float, "sensorzenith", "");
     SetParameterDescription( "sensorzenith", "." );
     MandatoryOn("sensorzenith");
@@ -114,6 +118,7 @@ private:
   {
     m_Azimuth = GetParameterFloat("azimuth");
     m_SolarZenith = GetParameterFloat("solarzenith");
+    m_SolarZenith_Fapar = GetParameterFloat("solarzenithf");
     m_SensorZenith = GetParameterFloat("sensorzenith");
     std::string rsrFileName = GetParameterString("rsrfile");
     //The first 2 columns of the rsr file correspond to the wavelenght and the solar radiation
@@ -184,6 +189,7 @@ private:
 
     AcquisitionParsType prosailPars;
     prosailPars[TTS] = m_SolarZenith;
+    prosailPars[TTS_FAPAR] = m_SolarZenith_Fapar;
     prosailPars[TTO] = m_SensorZenith;
     prosailPars[PSI] = m_Azimuth;
     
@@ -271,6 +277,7 @@ private:
 
   double m_Azimuth;
   double m_SolarZenith;
+  double m_SolarZenith_Fapar;
   double m_SensorZenith;
   // the input file
   std::ifstream m_SampleFile;

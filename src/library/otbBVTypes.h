@@ -19,7 +19,7 @@
 namespace otb
 {
 enum class IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Car, Cdm, CwRel, Cbp, Bs, IVNamesEnd};
-enum AcquisitionParameters {TTS, TTO, PSI, AcquisitionParametersEnd};
+enum AcquisitionParameters {TTS, TTO, PSI, TTS_FAPAR, AcquisitionParametersEnd};
 
 using AcquisitionParsType = std::map< AcquisitionParameters, double >;
 using PrecisionType = double;
