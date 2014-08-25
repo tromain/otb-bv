@@ -21,7 +21,8 @@ from formosat_data import *
 from spot4_data import *
 from landsat_data import *
 
-working_dir = "/tmp/"
+varName = "MLAI"
+working_dir = "/tmp/"+varName+"/"
 rsr_dir = "/home/inglada/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
@@ -58,9 +59,9 @@ for sat in simus_list:
         simuPars['sensorZenithAngle'] = acqu['to']
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
-        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex["MLAI"])
+        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName])
         simuPars['outputFile'] = reflectance_file_test
-        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex["MLAI"])
+        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName])
         bv.learnBVModel(training_file, model_file, normalization_file)
         bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file)
         with open(inversion_file, 'r') as ivf:
@@ -69,19 +70,19 @@ for sat in simus_list:
                     for(ivline, tftline) in zip(ivf.readlines(), tft.readlines()):
                         outline = string.split(ivline)[0]+" "+string.split(tftline)[0]+"\n"
                         vaf.write(outline)
-        lais_gt = []
-        lais_bvnet = []
+        var_values_gt = []
+        var_values_bvnet = []
         with open(reflectances_gt_file, 'w') as rfgtf:
             for gt_case in acqu['gt']:
                 for refl in gt_case['refls']:
                     rfgtf.write(str(refl/1000.0)+" ")
                 rfgtf.write("\n")
-                lais_gt.append(gt_case['gai'])
-                lais_bvnet.append(gt_case['lai-bvnet'])
+                var_values_gt.append(gt_case[bv_val_names[varName][0]])
+                var_values_bvnet.append(gt_case[bv_val_names[varName][0]])
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:
-                for (ival, gtval, bvnetval) in zip(ivgtf.readlines(),lais_gt,lais_bvnet):
+                for (ival, gtval, bvnetval) in zip(ivgtf.readlines(),var_values_gt,var_values_bvnet):
                     vgtf.write(str(gtval)+" "+str(bvnetval)+" "+str(ival))
                 
                         

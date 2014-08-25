@@ -23,6 +23,8 @@ import otbApplication as otb
 # The indices here have to be coherent with the order used in the bv file (and the definition of the vars in otbBVTypes.h
 bvindex = {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Car": 6, "Cdm": 7, "CwRel": 4, "Cbp": 9, "Bs": 10, "FAPAR": 11, "FCOVER": 12}
 
+bv_val_names = {"MLAI": ['gai', 'lai-bvnet'], "FAPAR": ['fapar', 'fapar-bvnet'], "FCOVER": ['fcover', 'fcover-bvnet']}
+
 def parseConfigFile(cfg):
     distFileName = cfg.bvDistribution.fileName
     nSamples = cfg.bvDistribution.samples
