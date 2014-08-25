@@ -23,9 +23,9 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   typedef typename ProSailType::OutputType SimulationType;
 
   auto satRSR = SatRSRType::New();
-  satRSR->SetNbBands(5);
+  satRSR->SetNbBands(4);
   satRSR->SetSortBands(false);
-  satRSR->Load("/home/inglada/Dev/otb-bv/data/formosat2.rsr");
+  satRSR->Load("/home/inglada/Dev/otb-bv/data/formosat2_4b.rsr");
 
   typename otb::AcquisitionParsType prosailPars;
   prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);
@@ -52,8 +52,21 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   prosail.SetParameters(prosailPars);
   auto pix = prosail();
 
+  auto tolerance = double{1e-5};
+  decltype(pix) ref_pix{0.019252, 0.0257225, 0.0162109, 0.388866, 0.854399, 0.850187};
+  auto err_sim = double{0};
+
+  for(auto i=0; i<ref_pix.size(); i++)
+    err_sim += fabs(ref_pix[i]-pix[i]);
+
+  if(err_sim>tolerance)
+    {
+    std::cout << "Regression error" << std::endl;
+    return EXIT_FAILURE;
+    }
+  
   std::cout << "--------------------" << std::endl;
-  for(auto p : pix)
+  for(auto& p : pix)
     std::cout << p << " ";
 
   std::cout << std::endl;
