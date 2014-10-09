@@ -48,6 +48,7 @@ private:
     SetName("BVInputVariableGeneration");
     SetDescription("Generate random input variable distribution for ... .");
 
+    AddDocTag(Tags::BV);
     AddParameter(ParameterType_Int, "samples", "Sample size");
     SetDefaultParameterInt("samples", 1000);
     SetParameterDescription("samples", "Number of samples to be generated");
