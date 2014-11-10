@@ -251,7 +251,7 @@ rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
 ./otbcli_ProSailSimulator  ./ -bvfile $samplefile \
     -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr \
     -out $simufile -solarzenith 37.08 -sensorzenith 17.48 \
-    -azimuth -149.159
+    -azimuth -149.159 -solarzenithf 37.08
 #+end_src
 
 #+begin_src sh :var simufile=simu-file-train  :tangle no
@@ -327,14 +327,7 @@ The PROSAIL model which results from the coupling of PROSPECT-5 and 4SAIL  [[htt
 * Actions                                                          :noexport:
 
 ** TODO References Weiss & Baret
-** TODO [2013-10-24 Thu 14:36] Comments  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void%20SetLayerSizes%20(const%20std::vector<unsigned%20int>%20layers)][file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void SetLayerSizes (const std::vector<unsigned int> layers)]]
-- SetLayerSizes should be virtual
-- attributers shoudl be protected and not private
-** TODO [2013-10-24 Thu 14:41] variables are not normalised in the regression
-  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::/**]]
-** TODO Implement a version of Sail which uses an external soil file
-** TODO [2013-12-16 Mon 18:43] convertir les paramètres en structures pour initialisation simple  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx]]
-** TODO Validation
+** Infos pour la validation
 *** [2013-11-29 Fri 15:48] Pour extraire les simulations bvnet de matlab
 
 load 20130822_F2_inout.mat
@@ -493,13 +486,8 @@ head /tmp/simus.txt
 |  0.00643858 |  0.00861569 |   0.0100032 |   0.022433 |  0.0544914 |
 |  0.00360617 |  0.00457165 |  0.00526554 |  0.0120484 |  0.0291491 |
 |  0.00282917 |  0.00359217 |  0.00411945 | 0.00949897 |  0.0229241 |
-
-
-
-
-
-** Validation Prosail
-*** [2014-03-24 Mon 18:52] partir de ce prospect 
+*** Validation Prosail
+**** [2014-03-24 Mon 18:52] partir de ce prospect 
 
 comparer d'abord les valeurs de prospect entre matlab et otb
 
@@ -516,8 +504,8 @@ et il faudra l'utiliser comme ceci
         + Coef_Spe(:,3)*Law.Cdm(isim) + Coef_Spe(:,6)*Law.Cbp(isim))./Law.N(isim);
     RT = noyau(Coef_Spe(:,2),Law.N(isim),Ktot,tav(59.*pi/180,Coef_Spe(:,2))); % reflectance et transmittance des feuilles
     Rs = repmat(Law.Bs(isim)*Def_Base.R_Soil.Refl(51:2051,Law.I_Soil(isim)),1,4); %  Réflectance du sol dans le cas lambertien
-*** Session pour validation prosail
-**** Code
+**** Session pour validation prosail
+***** Code
 #+begin_src octave
 addpath("/home/inglada/stok/DATA/BVNET_otb/CODE/Tools")
 load "/home/inglada/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/20130822_F2_inout.mat"
@@ -558,8 +546,8 @@ end
 #+RESULTS:
 : /usr/share/octave/packages
 
-**** Résultats 1er échantillon
-***** Variables
+***** Résultats 1er échantillon
+****** Variables
 Law.LAI(1)
             ans =  3.7277
 octave> Law.I_Soil(1)
@@ -599,7 +587,7 @@ octave> Law.Rel_Azimuth(1)
 octave> Law.Cw(1)
             ans =  0.029821
 octave> 
-***** Prospect
+****** Prospect
 RT =
 
                0.0515997   0.0010789
@@ -2603,7 +2591,7 @@ RT =
                0.0286625   0.0327644
                0.0283227   0.0317835
                0.0279970   0.0308338
-***** Sol lambertien
+****** Sol lambertien
 octave> 
 Rs =
 
@@ -4608,7 +4596,7 @@ Rs =
                0.388841   0.388841   0.388841   0.388841
                0.388641   0.388641   0.388641   0.388641
                0.388441   0.388441   0.388441   0.388441
-***** Sail
+****** Sail
 octave> 
 R(:,1)
             ans =
@@ -6614,7 +6602,7 @@ R(:,1)
                0.032787
                0.032637
                0.032492
-***** Bandes spectrales
+****** Bandes spectrales
 octave> 
             Sensi =
 
@@ -8621,13 +8609,13 @@ octave>
                0.000000   0.000000   0.000000
 
 octave>
-***** Réflectances TOC
+****** Réflectances TOC
 Input.Rho_Toc(1,:)
             ans =
 
                0.046403   0.031783   0.405995
-**** Sorties OTB
-***** Plot chloro (prospect)
+***** Sorties OTB
+****** Plot chloro (prospect)
 
 #+begin_src gnuplot :file output.pdf
 set grid
@@ -8636,7 +8624,7 @@ plot "~/Dev/otb-bv/documentation/prospect.txt" using 1:2 with lines lw 3 title "
 
 #+RESULTS:
 [[file:output.pdf]]
-***** Sail
+****** Sail
 #+begin_src gnuplot :file sail.pdf
 set grid
 plot "~/tmp/sail.txt" using 1:2 with lines lw 3 title "Prospect refl bv-net", \
@@ -8649,16 +8637,59 @@ plot "~/tmp/sail.txt" using 1:2 with lines lw 3 title "Prospect refl bv-net", \
 
 #+RESULTS:
 [[file:sail.pdf]]
-*** Stratégie de validation
+**** Stratégie de validation
 1. Faire les scripts pour générer les résultats intermédiaires des
    simulations de law.txt, puis les scatterplots qui comparent les
    réflectances avec celles de bvnet.
 2. Générer plusieurs versions du fichier de paramètres prospect et
    évaluer l'influence.
 3. 
-** [2014-03-25 Tue 16:39] pour l'apprentissage du réseau  [[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS%20LAI%20ALA%20CC%20HsD%20N%20Cab%20Cdm%20Cw_Rel%20Cbp%20Bs%20VZ%20VAz%20SZ%20SA%20B1%20B2%20B3%20FCOV%20FAP%20LAI][file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS LAI ALA CC HsD N Cab Cdm Cw_Rel Cbp Bs VZ VAz SZ SA B1 B2 B3 FCOV FAP LAI]]
-** [2014-03-25 Tue 19:30] il y a aussi une différence sur le dry matter  [[file:~/org/clocking.org]]
-** TODO fapar & fcover                                                :next:
+*** [2014-03-25 Tue 16:39] pour l'apprentissage du réseau  [[file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS%20LAI%20ALA%20CC%20HsD%20N%20Cab%20Cdm%20Cw_Rel%20Cbp%20Bs%20VZ%20VAz%20SZ%20SA%20B1%20B2%20B3%20FCOV%20FAP%20LAI][file:~/stok/DATA/BVNET_otb/Workspace/Report_20130822_F2/Class_1/law.txt::IS LAI ALA CC HsD N Cab Cdm Cw_Rel Cbp Bs VZ VAz SZ SA B1 B2 B3 FCOV FAP LAI]]
+*** [2014-07-02 Wed 17:30] stats utilisées ar bvnet en sachant que je garde la loi lognormale pour le LAI  [[file:~/Projects/Sentinel2Agriculture/Admin/stats.org]]
+*** Comparison between SVR and NN
+#+begin_src sh
+export ITK_AUTOLOAD_PATH="."
+./otbcli_BVInputVariableGeneration -samples 2000 -out /tmp/samples
+./otbcli_ProSailSimulator -bvfile /tmp/samples -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr -out /tmp/simus -solarzenith 28.0 -sensorzenith 19.2 -azimuth -162.28
+tail -n +2 /tmp/samples > /tmp/input-vars-no-header
+paste /tmp/input-vars-no-header /tmp/simus > /tmp/train
+awk '{print $1,$12,$13,$14,$15}' /tmp/train > /tmp/laitrain
+./otbcli_SVRInverseModelLearning -training /tmp/laitrain -out /tmp/svrmodel -normalization /tmp/norm
+./otbcli_InverseModelLearning -training /tmp/laitrain -out /tmp/nnmodel -normalization /tmp/normnn
+awk '{print $2,$3,$4,$5}' /tmp/laitrain > /tmp/refls
+./otbcli_BVInversion -reflectances /tmp/refls -model /tmp/nnmodel -out /tmp/nnestim -normalization /tmp/norm
+./otbcli_SVRBVInversion -reflectances /tmp/refls -model /tmp/svrmodel -out /tmp/svrestim -normalization /tmp/norm
+#+end_src
+*** [2014-06-06 Fri 09:11] j'ai mis skyl à 0  [[file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN)%3B][file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN);]]
+** TODO [2013-10-24 Thu 14:36] Comments  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void%20SetLayerSizes%20(const%20std::vector<unsigned%20int>%20layers)][file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void SetLayerSizes (const std::vector<unsigned int> layers)]]
+- SetLayerSizes should be virtual
+- attributers shoudl be protected and not private
+** TODO [2013-12-16 Mon 18:43] convertir les paramètres en structures pour initialisation simple  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx]]
+** DONE Add noise to reflectances
+CLOSED: [2014-07-31 Thu 15:33]
+- State "DONE"       from "TODO"       [2014-07-31 Thu 15:33]
+- option for the simulator; if the parameter is not present, no noise
+  is added
+- different variance per spectral band
+** TODO Application to estimate the error
+- a regression which estimates the value of the error from the same
+  reflectances used to estimate the BV
+** TODO Unification regression application                             :next:
+** TODO Other regression algorithms from OpenCV
+*** RF
+** TODO Parametric regressions using the Grosenbauch family of functions
+
+** multi-parameter linear fitting
+*** TODO set weights in multilinear fitting proportinal to wavelength 
+** TODO Fusion of different regressions
+ - l'appli d'inversion pourrait prendre une liste de modèles et de
+   fichiers de predicteurs (de façon à ce que chaque regresseur puisse
+   utiliser des prédicteurs différents) et faire une fusion des
+   inversions
+ - use the predicted error to weight the estimations
+
+
+** TODO fapar & fcover
 *** [2014-05-19 Mon 11:06] Output.FCOVER(isim,1) =Law.Crown_Cover(isim).*1-exp(-kellips(Law.ALA(isim),0).*Law.LAI(isim));
 
   [[file:~/stok/DATA/BVNET_otb/CODE/Tools/kellips.m]]
@@ -8674,8 +8705,50 @@ Non, en fait, comme c'est le fAPAR journalier (intégré sur la journée) qui in
 SAIL et avec des données sur Avignon (si mes souvenirs sont bons) : nous avions calculé le RMSE entre le fAPAR journalier et le fAPAR instantané à différentes heures de  la journée.
 Nous avions trouvé que le fAPAR à 10h30 heure solaire locale  est le
 plus proche du fAPAR journalier.
-** [2014-06-06 Fri 09:11] j'ai mis skyl à 0  [[file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN)%3B][file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN);]]
-** Gestion du sol
+
+    R=sail3(Law.LAI(isim),Law.ALA(isim),Law.HsD(isim),Law.Crown_Cover(isim),RT(:,1),RT(:,2),Rs,Law.View_Zenith(isim),Law.Sun_Zenith(isim),Law.Rel_Azimuth(isim));
+    
+    %  Intégration spectrale en prenant en compte la sensibilité spectrale de chaque bande
+    %  fAPAR (black-sky à 10h)
+#+begin_src octave
+    A=sail3(Law.LAI(isim),Law.ALA(isim),Law.HsD(isim),Law.Crown_Cover(isim),RT(:,1),RT(:,2),Rs,0, \
+            Law.Sun_Zenith_FAPAR(isim),0);
+    R=sail3(Law.LAI(isim),Law.ALA(isim),Law.HsD(isim),Law.Crown_Cover(isim),RT(:,1),RT(:,2),Rs,Law.View_Zenith(isim), \
+            Law.Sun_Zenith(isim),      Law.Rel_Azimuth(isim));
+#+end_src
+
+Le Fapar se simule comme les réflectances avec SAIL, mais View_zenith=0,
+View_az-Sun_az=0 et Sun_zenit=10h30, ensuite, on intègre l'abs_dir
+(abs_sun) sur 400 et 700 nm comme ceci :
+
+      Output.FAPAR(isim,1)  = sum(A(1:300,5).*Ecl(1:300))./sum(Ecl(1:300)); % valeur intégrée entre 400 et 700 nm
+**** Correspondance entre le code matlab bvnet pour sail3 et le sail de l'otb (ou féret)
+| inra        | jussieu |
+|-------------+---------|
+| x_0         | dn      |
+| rs          | rsoil0  |
+| refl_bidir  | rsot    |
+| refl_hemdir | rdot    |
+| refl_hemhem | rddt    |
+| refl_dir_em | rsdt    | 
+
+Ce qui donne
+
+abs_dir = (1-rsdt-(1-rsoil0)*(tss+(tss*rsoil0*rdd+tsd)/dn))  
+abs_hem = (1-rddt-(1-rsoil0)*(tdd+(tdd*rdd*rsoil0)/dn))
+
+et fcover_view = 1-too
+
+Il faut modifier SailModel pour qu'il fournisse 3 autres sorties : les
+2 absoptances (vrais outputs comme les actuels) et le fcover (scalaire)
+
+% RES : [refl_sun-view refl_hem-view refl_sun-hem refl_hemhem abs_sun abs_hem fCover_view]
+% Ref=reflectance bidirectionnelle;
+% Abs=canopy absorptance; 1-Po(to) cover fraction in the veiw direction
+
+
+
+** TODO Gestion du sol
 - le Sail de l'OTB utilise 2 spectres de sol (sec et humide) et les
   pondère avec
       // Soil Reflectance Properties
@@ -8684,25 +8757,11 @@ plus proche du fAPAR journalier.
       rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
 - le Sail de bv-net utilise un spectre de sol et le multiplie par Bs
 - le plus logique serait de tirer m_Psoil suivant une loi uniforme 0,1
-** TODO [2014-06-14 Sat 18:40] mettre à jour la table des paramètres des lois avec le doc venus  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::double%20m_MLAI_max%20%3D%2015.0%3B][file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::double m_MLAI_max = 15.0;]]
-** TODO [2014-06-14 Sat 18:50] il faut aussi mettre à jour la formulede la corrélation des variables  [[file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::return%20res<0?0:res%3B][file:~/Dev/otb-bv/src/applications/otbBVInputVariableGeneration.cxx::return res<0?0:res;]]
-** TODO ajouter l'option pour choisir les bandes du fichier rsr dans la simulation  [[gnus:nntp%2Bnews.gwene.org:gmane.org.user-groups.linux.toulouse][gnus:nntp+news.gwene.org:gmane.org.user-groups.linux.toulouse]]
-** [2014-07-02 Wed 17:30] stats utilisées ar bvnet en sachant que je garde la loi lognormale pour le LAI  [[file:~/Projects/Sentinel2Agriculture/Admin/stats.org]]
-
-** TODO SVR
-** TODO multi-parameter fitting  [[http://www.gnu.org/software/gsl/manual/gsl-ref_37.html#SEC513][GNU Scientific Library -- Reference Manual - Least-Squares Fitting]]
-** Comparison between SVR and NN
-#+begin_src sh
-export ITK_AUTOLOAD_PATH="."
-./otbcli_BVInputVariableGeneration -samples 2000 -out /tmp/samples
-./otbcli_ProSailSimulator -bvfile /tmp/samples -soilfile soil.txt -rsrfile ~/Dev/otb-bv/data/formosat2.rsr -out /tmp/simus -solarzenith 28.0 -sensorzenith 19.2 -azimuth -162.28
-tail -n +2 /tmp/samples > /tmp/input-vars-no-header
-paste /tmp/input-vars-no-header /tmp/simus > /tmp/train
-awk '{print $1,$12,$13,$14,$15}' /tmp/train > /tmp/laitrain
-./otbcli_SVRInverseModelLearning -training /tmp/laitrain -out /tmp/svrmodel -normalization /tmp/norm
-./otbcli_InverseModelLearning -training /tmp/laitrain -out /tmp/nnmodel -normalization /tmp/normnn
-awk '{print $2,$3,$4,$5}' /tmp/laitrain > /tmp/refls
-./otbcli_BVInversion -reflectances /tmp/refls -model /tmp/nnmodel -out /tmp/nnestim -normalization /tmp/norm
-./otbcli_SVRBVInversion -reflectances /tmp/refls -model /tmp/svrmodel -out /tmp/svrestim -normalization /tmp/norm
-#+end_src
-
+- utiliser une base de spectres de sol et les utiliser tous pour les simulations
+** TODO Check limits of inputs and outputs
+- when applying the BV inversion, check that the input and output
+  values are inside the convex hull defined by the data used for training
+- provide a flag for each inversion
+  - OK
+  - IOB (input out of bounds)
+  - OOB
