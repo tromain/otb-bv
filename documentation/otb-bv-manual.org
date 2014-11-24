@@ -324,8 +324,11 @@ awk '{print $2,$1}' /tmp/val > $validationfile
 **** TODO Add an option for validation (use the first column as the variable to validate with)
 * Validation
 #+begin_src gnuplot
-plot "/tmp/MLAI/formosat2_126_validation" using 1:2 t "simus", "/tmp/MLAI/formosat2_126_validation_gt" using 1:3 lw 3 t "OTB", "/tmp/MLAI/formosat2_126_validation_gt" using 1:2 lw 3 t "bvnet", x
+plot "/tmp/MLAI/f2validation" using 1:2 t "simus", "/tmp/MLAI/f2validation_gt" using 1:3 lw 3 t "OTB", "/tmp/MLAI/f2validation_gt" using 1:2 lw 3 t "bvnet", x
 #+end_src
+#+begin_src gnuplot
+#+end_src
+
 
 #+RESULTS:
 
