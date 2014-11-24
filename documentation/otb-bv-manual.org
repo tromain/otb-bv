@@ -322,6 +322,8 @@ awk '{print $2,$1}' /tmp/val > $validationfile
 #+end_src
 
 **** TODO Add an option for validation (use the first column as the variable to validate with)
+* Validation
+
 * References
 The PROSAIL model which results from the coupling of PROSPECT-5 and 4SAIL  [[http://teledetection.ipgp.jussieu.fr/prosail/][prosail]]
 * Actions                                                          :noexport:
