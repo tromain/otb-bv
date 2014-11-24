@@ -137,7 +137,7 @@ gt = [{'crop':"wheat",'esu':1,'doy':126,'y':2013,'gai':3.265145793,'fapar':0.930
 {'crop':"corn",'esu':7,'doy':285,'y':2013,'gai':0.547703951,'fapar':0.426793439,'fcover':0.208692875,'refls':[28,57,61,234],'lai-bvnet':0.744444444,'fapar-bvnet':0.444444444,'fcover-bvnet':0.34},
 {'crop':"corn",'esu':9,'doy':285,'y':2013,'gai':0.410192996,'fapar':0.349707739,'fcover':0.110641869,'refls':[19,48,58,211],'lai-bvnet':0.685185185,'fapar-bvnet':0.416666667,'fcover-bvnet':0.315555556}]
 
-rsr_dir = "/home/inglada/Dev/otb-bv/data/"
+rsr_dir = "~/Dev/otb-bv/data/"
 fsat_rsr = rsr_dir+"formosat2_4b.rsr"
 
 fsat_data = ["formosat2", fsat_rsr]

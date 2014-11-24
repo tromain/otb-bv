@@ -89,7 +89,7 @@ gt = [{'crop':"corn",'esu':1,'doy':200,'y':2013,'gai':2.481259206,'fapar':0.8135
 {'crop':"corn",'esu':9,'doy':280,'y':2013,'gai':0.737880863,'fapar':0.472979445,'fcover':0.198232931,'refls':[47,42,247,138],'lai-bvnet':1.333333333,'fapar-bvnet':0.62,'fcover-bvnet':0.46}]
 
 
-rsr_dir = "/home/inglada/Dev/otb-bv/data/"
+rsr_dir = "~/Dev/otb-bv/data/"
 lsat_rsr = rsr_dir+"landsat8_4b.rsr"
 
 lsat_data = ["landsat8", lsat_rsr]
