@@ -25,7 +25,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   auto satRSR = SatRSRType::New();
   satRSR->SetNbBands(4);
   satRSR->SetSortBands(false);
-  satRSR->Load("/home/inglada/Dev/otb-bv/data/formosat2_4b.rsr");
+  satRSR->Load(argv[1]);
 
   typename otb::AcquisitionParsType prosailPars;
   prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);

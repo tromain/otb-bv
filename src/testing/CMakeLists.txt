@@ -15,7 +15,7 @@
 set(OTBBV_TESTS ${otb-bv_BINARY_DIR}/testing/otbBVTests)
 
 add_test(bvProSailSimulatorFunctor ${OTBBV_TESTS}
-         bvProSailSimulatorFunctor)
+  bvProSailSimulatorFunctor ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr)
 
 add_test(bvMultiLinearFitting ${OTBBV_TESTS}
          bvMultiLinearFitting)       
