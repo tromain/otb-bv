@@ -83,7 +83,7 @@ for sat in simus_list:
                     rfgtf.write(str(refl/1000.0)+" ")
                 rfgtf.write("\n")
                 var_values_gt.append(gt_case[bv.bv_val_names[varName][0]])
-                var_values_bvnet.append(gt_case[bv.bv_val_names[varName][0]])
+                var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:
