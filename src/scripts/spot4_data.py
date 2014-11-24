@@ -14,7 +14,7 @@
 #
 # =========================================================================
 
-
+import os
 
 gt = [{'crop':"wheat",'esu':1,'doy':107,'y':2013,'gai':4.598938342,'fapar':0.952820346,'fcover':0.743817789,'refls':[37,27,353,101],'lai-bvnet':3.333333333,'fapar-bvnet':0.84,'fcover-bvnet':0.78},
 {'crop':"wheat",'esu':15,'doy':107,'y':2013,'gai':4.030745706,'fapar':0.906458612,'fcover':0.423831553,'refls':[44,36,301,113],'lai-bvnet':2.333333333,'fapar-bvnet':0.74,'fcover-bvnet':0.66},
@@ -47,7 +47,7 @@ gt = [{'crop':"wheat",'esu':1,'doy':107,'y':2013,'gai':4.598938342,'fapar':0.952
 {'crop':"corn",'esu':6,'doy':167,'y':2013,'gai':0.36812906,'fapar':0.257324711,'fcover':0.196846497,'refls':[141,162,315,263],'lai-bvnet':0.4,'fapar-bvnet':0.28,'fcover-bvnet':0.25},
 {'crop':"corn",'esu':8,'doy':167,'y':2013,'gai':0.845316849,'fapar':0.445643739,'fcover':0.306569017,'refls':[54,63,221,189],'lai-bvnet':0.766666667,'fapar-bvnet':0.37,'fcover-bvnet':0.34}]
 
-rsr_dir = "~/Dev/otb-bv/data/"
+rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 spot4_rsr = rsr_dir+"spot4hrvir1.rsr"
 
 spot4_data = ["spot4", spot4_rsr]

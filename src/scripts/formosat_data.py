@@ -14,6 +14,7 @@
 #
 # =========================================================================
 
+import os
 gt = [{'crop':"wheat",'esu':1,'doy':126,'y':2013,'gai':3.265145793,'fapar':0.930802592,'fcover':0.710144159,'refls':[3,22,11,404],'lai-bvnet':3.818518519,'fapar-bvnet':0.873333333,'fcover-bvnet':0.852222222},
 {'crop':"wheat",'esu':15,'doy':126,'y':2013,'gai':3.10831565,'fapar':0.882737121,'fcover':0.506409094,'refls':[4,25,18,348],'lai-bvnet':3.196296296,'fapar-bvnet':0.817777778,'fcover-bvnet':0.777777778},
 {'crop':"wheat",'esu':2,'doy':126,'y':2013,'gai':3.217486521,'fapar':0.901689317,'fcover':0.627143081,'refls':[4,21,14,404],'lai-bvnet':3.818518519,'fapar-bvnet':0.874444444,'fcover-bvnet':0.854444444},
@@ -137,7 +138,7 @@ gt = [{'crop':"wheat",'esu':1,'doy':126,'y':2013,'gai':3.265145793,'fapar':0.930
 {'crop':"corn",'esu':7,'doy':285,'y':2013,'gai':0.547703951,'fapar':0.426793439,'fcover':0.208692875,'refls':[28,57,61,234],'lai-bvnet':0.744444444,'fapar-bvnet':0.444444444,'fcover-bvnet':0.34},
 {'crop':"corn",'esu':9,'doy':285,'y':2013,'gai':0.410192996,'fapar':0.349707739,'fcover':0.110641869,'refls':[19,48,58,211],'lai-bvnet':0.685185185,'fapar-bvnet':0.416666667,'fcover-bvnet':0.315555556}]
 
-rsr_dir = "~/Dev/otb-bv/data/"
+rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 fsat_rsr = rsr_dir+"formosat2_4b.rsr"
 
 fsat_data = ["formosat2", fsat_rsr]

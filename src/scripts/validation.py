@@ -22,9 +22,9 @@ from formosat_data import *
 from spot4_data import *
 from landsat_data import *
 
-varName = "FAPAR"
+varName = "MLAI"
 working_dir = "/tmp/"+varName+"/"
-rsr_dir = "/home/inglada/Dev/otb-bv/data/"
+rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
 nbSamples_train = 2000

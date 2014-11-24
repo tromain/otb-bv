@@ -14,6 +14,7 @@
 #
 # =========================================================================
 
+import os
 
 gt = [{'crop':"corn",'esu':1,'doy':200,'y':2013,'gai':2.481259206,'fapar':0.813549481,'fcover':0.586696278,'refls':[39,21,378,116],'lai-bvnet':2.866666667,'fapar-bvnet':0.79,'fcover-bvnet':0.75},
 {'crop':"corn",'esu':2,'doy':200,'y':2013,'gai':3.075730172,'fapar':0.847548732,'fcover':0.672593468,'refls':[35,18,402,108],'lai-bvnet':3.3,'fapar-bvnet':0.83,'fcover-bvnet':0.8},
@@ -89,7 +90,7 @@ gt = [{'crop':"corn",'esu':1,'doy':200,'y':2013,'gai':2.481259206,'fapar':0.8135
 {'crop':"corn",'esu':9,'doy':280,'y':2013,'gai':0.737880863,'fapar':0.472979445,'fcover':0.198232931,'refls':[47,42,247,138],'lai-bvnet':1.333333333,'fapar-bvnet':0.62,'fcover-bvnet':0.46}]
 
 
-rsr_dir = "~/Dev/otb-bv/data/"
+rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 lsat_rsr = rsr_dir+"landsat8_4b.rsr"
 
 lsat_data = ["landsat8", lsat_rsr]
