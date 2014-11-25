@@ -52,7 +52,9 @@ public:
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
-  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
+  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
+                                                           PrecisionType> 
+  NeuralNetworkType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
   
 private:
@@ -61,20 +63,28 @@ private:
     SetName("InverseModelLearning");
     SetDescription("Simulate reflectances using Prospect+Sail.");
 
-    AddParameter(ParameterType_InputFilename, "training", "Input file containing the training samples.");
-    SetParameterDescription( "training", "Input file containing the training samples. This is an ASCII file where each line is a training sample. A line is a set of fields containing numerical values. The first field is the value of the output variable and the other contain the values of the input variables." );
+    AddParameter(ParameterType_InputFilename, "training", 
+                 "Input file containing the training samples.");
+    SetParameterDescription( "training", 
+                             "Input file containing the training samples. This is an ASCII file where each line is a training sample. A line is a set of fields containing numerical values. The first field is the value of the output variable and the other contain the values of the input variables." );
     MandatoryOn("training");
 
-    AddParameter(ParameterType_OutputFilename, "out", "Output regression model.");
-    SetParameterDescription( "out", "Filename where the regression model will be saved." );
+    AddParameter(ParameterType_OutputFilename, "out", 
+                 "Output regression model.");
+    SetParameterDescription( "out", 
+                             "Filename where the regression model will be saved." );
     MandatoryOn("out");
 
-    AddParameter(ParameterType_OutputFilename, "normalization", "Output file containing min and max values per sample component.");
-    SetParameterDescription( "normalization", "Output file containing min and max values per sample component. This file can be used by the inversion application. If no file is given as parameter, the variables are not normalized." );
+    AddParameter(ParameterType_OutputFilename, "normalization", 
+                 "Output file containing min and max values per sample component.");
+    SetParameterDescription( "normalization", 
+                             "Output file containing min and max values per sample component. This file can be used by the inversion application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
 
-    AddParameter(ParameterType_String, "regression", "Regression to use for the training (nn, svr)");
-    SetParameterDescription("regression", "Choice of the regression to use for the training: svr, nn.");
+    AddParameter(ParameterType_String, "regression", 
+                 "Regression to use for the training (nn, svr)");
+    SetParameterDescription("regression", 
+                            "Choice of the regression to use for the training: svr, nn.");
     MandatoryOff("regression");
 
     AddParameter(ParameterType_Int, "bestof", "Select the best of N models.");
@@ -239,7 +249,8 @@ private:
     auto regression = NeuralNetworkType::New();
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // Two hidden layer with 5 neurons and one output variable
-    regression->SetLayerSizes(std::vector<unsigned int>({static_cast<unsigned int>(nbVars), 5, 5, 1}));
+    regression->SetLayerSizes(std::vector<unsigned int>(
+      {static_cast<unsigned int>(nbVars), 5, 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     regression->SetAlpha(1.0);
     regression->SetBeta(1.0);
