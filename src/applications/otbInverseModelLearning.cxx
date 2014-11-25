@@ -164,28 +164,60 @@ private:
   }
 
   template <typename RegressionType>
-  double EstimateRegressionModel(RegressionType rgrsn, ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols)
+  double EstimateRegressionModel(RegressionType rgrsn, 
+                                 ListInputSampleType::Pointer ils, 
+                                 ListOutputSampleType::Pointer ols, 
+                                 unsigned int nbModels=2)
   {
-    rgrsn->SetInputListSample(ils);
-    rgrsn->SetTargetListSample(ols);
-    otbAppLogINFO("Model estimation ..." << std::endl);
-    rgrsn->Train();
-    rgrsn->Save(GetParameterString("out"));
-    otbAppLogINFO("Estimation of prediction error from training samples ..."
-                  << std::endl);
-    auto nbSamples = 0;
-    auto rmse = 0.0;
-    auto sampleIt = ils->Begin();
-    auto resultIt = ols->Begin();
-    while(sampleIt != ils->End() && resultIt != ols->End())
+    double min_rmse{std::numeric_limits<double>::max()};
+    auto sIt = ils->Begin();
+    auto rIt = ols->Begin();
+    auto total_n_samples = ils->Size();
+    otbAppLogINFO("Selecting best of " << nbModels << " models." << std::endl);
+    for(auto iteration=0; iteration<nbModels; ++iteration)
       {
-      rmse += pow(rgrsn->Predict(sampleIt.GetMeasurementVector())[0] -
-                  resultIt.GetMeasurementVector()[0], 2.0);
-      ++sampleIt;
-      ++resultIt;
-      ++nbSamples;
+      auto ils_slice = ListInputSampleType::New();
+      auto ols_slice = ListOutputSampleType::New();
+
+      ils_slice->SetMeasurementVectorSize(ils->GetMeasurementVectorSize());
+      ols_slice->SetMeasurementVectorSize(1);
+
+      for(auto nsamples=0; nsamples<total_n_samples/nbModels; ++nsamples)
+        {
+        ils_slice->PushBack(sIt.GetMeasurementVector());
+        ols_slice->PushBack(rIt.GetMeasurementVector());
+        ++sIt;
+        ++rIt;
+        }
+      rgrsn->SetInputListSample(ils_slice);
+      rgrsn->SetTargetListSample(ols_slice);
+      otbAppLogINFO("Model estimation ..." << std::endl);
+      rgrsn->Train();
+      otbAppLogINFO("Estimation of prediction error from training samples ..."
+                    << std::endl);
+      auto nbSamples = 0;
+      auto rmse = 0.0;
+      auto sampleIt = ils_slice->Begin();
+      auto resultIt = ols_slice->Begin();
+      while(sampleIt != ils_slice->End() && resultIt != ols_slice->End())
+        {
+        rmse += pow(rgrsn->Predict(sampleIt.GetMeasurementVector())[0] -
+                    resultIt.GetMeasurementVector()[0], 2.0);
+        ++sampleIt;
+        ++resultIt;
+        ++nbSamples;
+        }
+      rmse = sqrt(rmse)/nbSamples;
+      otbAppLogINFO("RMSE for model number "<< iteration+1 
+                    << " = " << rmse << std::endl);
+      if(rmse<min_rmse) 
+        {
+        min_rmse=rmse;
+        rgrsn->Save(GetParameterString("out"));
+        otbAppLogINFO("Selecting model number " << iteration+1 << std::endl);
+        }
       }
-    return sqrt(rmse)/nbSamples;
+    return min_rmse;
   }
 
   double EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
