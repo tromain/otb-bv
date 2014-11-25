@@ -73,7 +73,7 @@ private:
     SetParameterDescription( "normalization", "Output file containing min and max values per sample component. This file can be used by the inversion application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
 
-    AddParameter(ParameterType_String, "regression", "Regression to use for the training");
+    AddParameter(ParameterType_String, "regression", "Regression to use for the training (nn, svr)");
     SetParameterDescription("regression", "Choice of the regression to use for the training: svr, nn.");
     MandatoryOff("regression");
 
