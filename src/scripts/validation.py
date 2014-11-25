@@ -29,6 +29,7 @@ input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
 nbSamples_train = 2000
 nbSamples_test = 200
+bestof = 6
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
@@ -67,7 +68,7 @@ for sat in simus_list:
         bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName])
         simuPars['outputFile'] = reflectance_file_test
         bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName])
-        bv.learnBVModel(training_file, model_file, normalization_file)
+        bv.learnBVModel(training_file, model_file, normalization_file, bestof)
         bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True)
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:

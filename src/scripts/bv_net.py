@@ -79,11 +79,12 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                     tf.write(outline)
                 
 
-def learnBVModel(trainingFile, outputFile, normalizationFile):
+def learnBVModel(trainingFile, outputFile, normalizationFile, bestof=1):
     app = otb.Registry.CreateApplication("InverseModelLearning")
     app.SetParameterString("training", trainingFile)
     app.SetParameterString("out", outputFile)
     app.SetParameterString("normalization", normalizationFile)
+    app.SetParameterInt("bestof", bestof)
     app.ExecuteAndWriteOutput()
 
 def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFaparFcover=False):
