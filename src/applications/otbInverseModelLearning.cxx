@@ -77,6 +77,10 @@ private:
     SetParameterDescription("regression", "Choice of the regression to use for the training: svr, nn.");
     MandatoryOff("regression");
 
+    AddParameter(ParameterType_Int, "bestof", "Select the best of N models.");
+    SetParameterDescription("bestof", "");
+    MandatoryOff("bestof");
+
   }
 
   virtual ~InverseModelLearning()
@@ -154,12 +158,17 @@ private:
                   << trainingFileName << std::endl);
     double rmse{0.0};
     std::string regressor_type{"nn"};
+    unsigned int nbModels{1};
+    if (IsParameterEnabled("bestof"))
+      nbModels = static_cast<unsigned int>(GetParameterInt("bestof"));    
     if (IsParameterEnabled("regression"))
       regressor_type = GetParameterString("regression");    
     if (regressor_type == "svr")
-      rmse = EstimateSVRRegresionModel(inputListSample, outputListSample, nbInputVariables);
+      rmse = EstimateSVRRegresionModel(inputListSample, outputListSample, 
+                                       nbInputVariables, nbModels);
     else if (regressor_type == "nn")
-      rmse = EstimateNNRegresionModel(inputListSample, outputListSample, nbInputVariables);
+      rmse = EstimateNNRegresionModel(inputListSample, outputListSample, 
+                                      nbInputVariables, nbModels);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
@@ -167,7 +176,7 @@ private:
   double EstimateRegressionModel(RegressionType rgrsn, 
                                  ListInputSampleType::Pointer ils, 
                                  ListOutputSampleType::Pointer ols, 
-                                 unsigned int nbModels=2)
+                                 unsigned int nbModels=1)
   {
     double min_rmse{std::numeric_limits<double>::max()};
     auto sIt = ils->Begin();
@@ -220,7 +229,9 @@ private:
     return min_rmse;
   }
 
-  double EstimateNNRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
+  double EstimateNNRegresionModel(ListInputSampleType::Pointer ils, 
+                                  ListOutputSampleType::Pointer ols, 
+                                  std::size_t nbVars, unsigned int nbModels)
   {
     otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
@@ -237,10 +248,12 @@ private:
     regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
     regression->SetEpsilon(1e-10);
     regression->SetMaxIter(10000000);
-    return EstimateRegressionModel(regression, ils, ols);
+    return EstimateRegressionModel(regression, ils, ols, nbModels);
   }
 
-  double EstimateSVRRegresionModel(ListInputSampleType::Pointer ils, ListOutputSampleType::Pointer ols, std::size_t nbVars)
+  double EstimateSVRRegresionModel(ListInputSampleType::Pointer ils, 
+                                   ListOutputSampleType::Pointer ols, 
+                                   std::size_t nbVars, unsigned int nbModels)
   {
     otbAppLogINFO("Support vectors");
     auto regression = SVRType::New();
@@ -251,7 +264,7 @@ private:
     regression->SetMaxIter(100000);
     regression->SetEpsilon(FLT_EPSILON);
     regression->SetParameterOptimization(true);
-    return EstimateRegressionModel(regression, ils, ols);
+    return EstimateRegressionModel(regression, ils, ols, nbModels);
   }
 };
 
