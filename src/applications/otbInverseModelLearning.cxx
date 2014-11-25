@@ -182,7 +182,8 @@ private:
     auto sIt = ils->Begin();
     auto rIt = ols->Begin();
     auto total_n_samples = ils->Size();
-    otbAppLogINFO("Selecting best of " << nbModels << " models." << std::endl);
+    otbAppLogINFO("Selecting best of " << nbModels << " models." 
+                  << " Total nb samples is " << total_n_samples << std::endl);
     for(auto iteration=0; iteration<nbModels; ++iteration)
       {
       auto ils_slice = ListInputSampleType::New();
@@ -218,7 +219,8 @@ private:
         }
       rmse = sqrt(rmse)/nbSamples;
       otbAppLogINFO("RMSE for model number "<< iteration+1 
-                    << " = " << rmse << std::endl);
+                    << " = " << rmse << " using " << nbSamples 
+                    << " samples. " << std::endl);
       if(rmse<min_rmse) 
         {
         min_rmse=rmse;
