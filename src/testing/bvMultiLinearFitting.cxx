@@ -61,6 +61,11 @@ int bvMultiLinearFitting(int argc, char * argv[])
     }
   model->Save("/tmp/mrr.txt");
   auto other_model = MRM::New();
+  if(!other_model->CanReadFile("/tmp/mrr.txt"))
+    {
+    std::cout << "Could not read model file!\n";
+    return EXIT_FAILURE;
+    }
   other_model->Load("/tmp/mrr.txt");
   double diff{0};
   for(auto i=0; i<model->GetModel().size(); i++)
@@ -85,6 +90,20 @@ int bvMultiLinearFitting(int argc, char * argv[])
               << "\n";
     return EXIT_FAILURE;
     }
+
+  // check that a dummy model can't be read
+
+  std::ofstream dummy_file;
+  dummy_file.open("/tmp/dummy.txt", std::ofstream::out);
+  dummy_file << "# NN regression model\n";
+  dummy_file.close();
+  auto dummy_model = MRM::New();
+  if(dummy_model->CanReadFile("/tmp/dummy.txt"))
+    {
+    std::cout << "Error: abel to read a dummy model!\n";
+    return EXIT_FAILURE;
+    }
+
   
   return EXIT_SUCCESS;
 }
