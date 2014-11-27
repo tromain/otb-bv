@@ -25,6 +25,7 @@ struct  MultiLinearRegressionModel
   using VectorType = std::vector<PrecisionType>;
   using MatrixType = std::vector<VectorType>;
 
+  MultiLinearRegressionModel() : m_weights(false) {};
   void SetPredictorMatrix(MatrixType x)
   {
     m_x = x;
@@ -36,7 +37,8 @@ struct  MultiLinearRegressionModel
   void SetWeightVector(VectorType w)
   {
     m_w = w;
-  }
+    m_weights = true;
+      }
   VectorType Train()
   {
     this->multi_linear_fit();
@@ -88,29 +90,37 @@ protected:
       for(auto j=0; j<m-1; j++)
         gsl_matrix_set(X, i, j+1, m_x[i][j]);
       gsl_vector_set (y, i, m_y[i]);
-      gsl_vector_set (w, i, 1.0/(m_w[i]*m_w[i]));
+      if(m_weights)
+        {
+        gsl_vector_set (w, i, 1.0/(m_w[i]*m_w[i]));
+        }
+      else
+        {
+        gsl_vector_set (w, i, 1.0);
+        }
       }
-    gsl_multifit_linear_workspace * work 
-      = gsl_multifit_linear_alloc (n, m);
-    double chisq{0};
-    gsl_multifit_wlinear(X, w, y, c, cov, &chisq, work);
-    gsl_multifit_linear_free(work);
+      gsl_multifit_linear_workspace * work 
+        = gsl_multifit_linear_alloc (n, m);
+      double chisq{0};
+      gsl_multifit_wlinear(X, w, y, c, cov, &chisq, work);
+      gsl_multifit_linear_free(work);
 
-    m_model = VectorType{};
-    for(auto j=0; j<m; j++)
-      m_model.push_back(gsl_vector_get(c,j));
-  }
+      m_model = VectorType{};
+      for(auto j=0; j<m; j++)
+        m_model.push_back(gsl_vector_get(c,j));
+      }
 
-  std::string GetNameOfClass()
-  {
-    return std::string{"MultiLinearRegressionModel"};
-  }
-  MatrixType m_x;
-  VectorType m_y;
-  VectorType m_w;
-  VectorType m_model;
+    std::string GetNameOfClass()
+    {
+      return std::string{"MultiLinearRegressionModel"};
+    }
+    MatrixType m_x;
+    VectorType m_y;
+    VectorType m_w;
+    bool m_weights;
+    VectorType m_model;
   
-};
+  };
 }//namespace otb
 
 #ifndef OTB_MANUAL_INSTANTIATION
