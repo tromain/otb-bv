@@ -75,6 +75,15 @@ int bvMultiLinearFitting(int argc, char * argv[])
     std::cout << "\n";
     return EXIT_FAILURE;
     }
+  if(fabs(model.Predict(test_vec)-other_model.Predict(test_vec))>1e-3)
+    {
+    std::cout << "Saved model gives different predictions "
+              << model.Predict(test_vec) << " " 
+              << other_model.Predict(test_vec) << " " 
+              << fabs(model.Predict(test_vec)-other_model.Predict(test_vec)) 
+              << "\n";
+    return EXIT_FAILURE;
+    }
   
   return EXIT_SUCCESS;
 }
