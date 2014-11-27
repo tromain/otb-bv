@@ -75,52 +75,19 @@ struct  MultiLinearRegressionModel
     return m_model;
   }
 protected:
-  void multi_linear_fit()
+  void multi_linear_fit();
+
+  std::string GetNameOfClass()
   {
-    auto n = m_x.size();
-    auto m = m_x[0].size()+1;
-    auto X = gsl_matrix_alloc (n, m);
-    auto y = gsl_vector_alloc (n);
-    auto w = gsl_vector_alloc (n);
-    auto c = gsl_vector_alloc (m);
-    auto cov = gsl_matrix_alloc (m, m);
-    for (auto i = 0; i < n; i++)
-      {
-      gsl_matrix_set (X, i, 0, 1.0);
-      for(auto j=0; j<m-1; j++)
-        gsl_matrix_set(X, i, j+1, m_x[i][j]);
-      gsl_vector_set (y, i, m_y[i]);
-      if(m_weights)
-        {
-        gsl_vector_set (w, i, 1.0/(m_w[i]*m_w[i]));
-        }
-      else
-        {
-        gsl_vector_set (w, i, 1.0);
-        }
-      }
-      gsl_multifit_linear_workspace * work 
-        = gsl_multifit_linear_alloc (n, m);
-      double chisq{0};
-      gsl_multifit_wlinear(X, w, y, c, cov, &chisq, work);
-      gsl_multifit_linear_free(work);
-
-      m_model = VectorType{};
-      for(auto j=0; j<m; j++)
-        m_model.push_back(gsl_vector_get(c,j));
-      }
-
-    std::string GetNameOfClass()
-    {
-      return std::string{"MultiLinearRegressionModel"};
-    }
-    MatrixType m_x;
-    VectorType m_y;
-    VectorType m_w;
-    bool m_weights;
-    VectorType m_model;
+    return std::string{"MultiLinearRegressionModel"};
+  }
+  MatrixType m_x;
+  VectorType m_y;
+  VectorType m_w;
+  bool m_weights;
+  VectorType m_model;
   
-  };
+};
 }//namespace otb
 
 #ifndef OTB_MANUAL_INSTANTIATION
