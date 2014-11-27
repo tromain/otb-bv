@@ -41,46 +41,47 @@ int bvMultiLinearFitting(int argc, char * argv[])
                            2.61466, 3.09834, 3.73597,4.39221};
   MRM::VectorType best_fit = {1.09573, 0.424647, 1.15956};
 
-  auto model = MRM();
-  model.SetPredictorMatrix(x_vec);
-  model.SetTargetVector(y_vec);
-  model.SetWeightVector(w_vec);
-  auto result = model.Train();
+  auto model = MRM::New();
+  model->SetPredictorMatrix(x_vec);
+  model->SetTargetVector(y_vec);
+  model->SetWeightVector(w_vec);
+  model->Train();
+  auto result = model->GetModel();
   if(fabs(result[0]-best_fit[0])>0.01 ||
      fabs(result[1]-best_fit[1])>0.01 ||
      fabs(result[2]-best_fit[2])>0.01)
     return EXIT_FAILURE;
 
   MRM::VectorType test_vec = {x_vec[2][0], x_vec[2][1]};
-  if(fabs(model.Predict(test_vec)-y_vec[2])>0.2)
+  if(fabs(model->Predict(test_vec)-y_vec[2])>0.2)
     {
-    std::cout << model.Predict(test_vec) << " " << y_vec[2] << " " 
-              << fabs(model.Predict(test_vec)-y_vec[2]) << "\n";
+    std::cout << model->Predict(test_vec) << " " << y_vec[2] << " " 
+              << fabs(model->Predict(test_vec)-y_vec[2]) << "\n";
     return EXIT_FAILURE;
     }
-  model.Save("/tmp/mrr.txt");
-  auto other_model = MRM();
-  other_model.Load("/tmp/mrr.txt");
+  model->Save("/tmp/mrr.txt");
+  auto other_model = MRM::New();
+  other_model->Load("/tmp/mrr.txt");
   double diff{0};
-  for(auto i=0; i<model.GetModel().size(); i++)
-    diff += fabs(model.GetModel()[i]-other_model.GetModel()[i]);
+  for(auto i=0; i<model->GetModel().size(); i++)
+    diff += fabs(model->GetModel()[i]-other_model->GetModel()[i]);
   if(diff>1e-6)
     {
     std::cout << "ERROR: Loaded model is different from saved model" << "\n";
-    for(auto& v: model.GetModel())
+    for(auto& v: model->GetModel())
       std::cout << v << " ";
     std::cout << "\n";
-    for(auto& v: other_model.GetModel())
+    for(auto& v: other_model->GetModel())
       std::cout << v << " ";
     std::cout << "\n";
     return EXIT_FAILURE;
     }
-  if(fabs(model.Predict(test_vec)-other_model.Predict(test_vec))>1e-3)
+  if(fabs(model->Predict(test_vec)-other_model->Predict(test_vec))>1e-3)
     {
     std::cout << "Saved model gives different predictions "
-              << model.Predict(test_vec) << " " 
-              << other_model.Predict(test_vec) << " " 
-              << fabs(model.Predict(test_vec)-other_model.Predict(test_vec)) 
+              << model->Predict(test_vec) << " " 
+              << other_model->Predict(test_vec) << " " 
+              << fabs(model->Predict(test_vec)-other_model->Predict(test_vec)) 
               << "\n";
     return EXIT_FAILURE;
     }

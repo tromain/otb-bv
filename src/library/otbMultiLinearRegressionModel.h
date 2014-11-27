@@ -17,15 +17,33 @@
 #include "itkMacro.h"
 #include "gsl/gsl_multifit.h"
 #include <vector>
+#include "otbMachineLearningModel.h"
 
 namespace otb{
 template <typename PrecisionType=double>
-struct  MultiLinearRegressionModel
+struct  MultiLinearRegressionModel : 
+    public MachineLearningModel<PrecisionType, PrecisionType>
 {
   using VectorType = std::vector<PrecisionType>;
   using MatrixType = std::vector<VectorType>;
+  using TargetSampleType = typename 
+    MachineLearningModel<PrecisionType, 
+                         PrecisionType>::TargetSampleType;
+  using InputSampleType = typename 
+    MachineLearningModel<PrecisionType, 
+                         PrecisionType>::InputSampleType;
 
   MultiLinearRegressionModel() : m_weights(false) {};
+
+  /** Standard class typedefs. */
+  typedef MultiLinearRegressionModel           Self;
+  typedef MachineLearningModel<PrecisionType, PrecisionType> Superclass;
+  typedef itk::SmartPointer<Self>                         Pointer;
+  typedef itk::SmartPointer<const Self>                   ConstPointer;
+
+  itkNewMacro(Self);
+  itkTypeMacro(MultiLinearRegressionModel, itk::MachineLearningModel);
+
   void SetPredictorMatrix(MatrixType x)
   {
     m_x = x;
@@ -39,13 +57,12 @@ struct  MultiLinearRegressionModel
     m_w = w;
     m_weights = true;
       }
-  VectorType Train()
+  void Train()
   {
     this->multi_linear_fit();
-    return m_model;
   }
 
-  PrecisionType Predict(VectorType x)
+  PrecisionType Predict(const VectorType x) const
   {
     if(m_model.size()==0)
       {
@@ -63,12 +80,24 @@ struct  MultiLinearRegressionModel
     return result;
   }
 
+  TargetSampleType Predict(const InputSampleType & input) const
+  {
+    VectorType tmp_vec(input.GetSize());
+    TargetSampleType target;
+    target[0] = this->Predict(tmp_vec);
+    return target;
+      }
+
+
   /** Save the model to file */
-  void Save(const std::string & filename);
+  void Save(const std::string & filename, const std::string & name="");
 
   /** Load the model from file */
-  void Load(const std::string & filename);
+  void Load(const std::string & filename, const std::string & name="");
 
+  bool CanReadFile(const std::string &);
+
+  bool CanWriteFile(const std::string &);
 
   VectorType GetModel()
   {
