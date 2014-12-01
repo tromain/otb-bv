@@ -33,6 +33,9 @@ struct  MultiLinearRegressionModel :
     MachineLearningModel<PrecisionType, 
                          PrecisionType>::InputSampleType;
 
+  typedef itk::Statistics::ListSample<TargetSampleType> TargetListSampleType;
+  typedef itk::Statistics::ListSample<InputSampleType> InputListSampleType;
+
   MultiLinearRegressionModel() : m_weights(false) {};
 
   /** Standard class typedefs. */
@@ -82,12 +85,37 @@ struct  MultiLinearRegressionModel :
 
   TargetSampleType Predict(const InputSampleType & input) const
   {
-    VectorType tmp_vec(input.GetSize());
+    VectorType tmp_vec(this->SampleToVector(input));
     TargetSampleType target;
     target[0] = this->Predict(tmp_vec);
     return target;
-      }
+  }
 
+  void SetInputListSample(typename InputListSampleType::Pointer ils)
+  {
+    MatrixType tmp_m;
+    auto slIt = ils->Begin();
+    auto slEnd = ils->End();
+    while(slIt != slEnd)
+      {
+      tmp_m.push_back(this->SampleToVector(slIt.GetMeasurementVector()));
+      ++slIt;
+      }
+    this->SetPredictorMatrix(tmp_m);
+  }
+  void SetTargetListSample(typename TargetListSampleType::Pointer tls)
+  {
+    VectorType tmp_v;
+    auto slIt = tls->Begin();
+    auto slEnd = tls->End();
+    while(slIt != slEnd)
+      {
+      tmp_v.push_back(slIt.GetMeasurementVector()[0]);
+      ++slIt;
+      }
+    this->SetTargetVector(tmp_v);
+
+  }
 
   /** Save the model to file */
   void Save(const std::string & filename, const std::string & name="");
@@ -103,12 +131,32 @@ struct  MultiLinearRegressionModel :
   {
     return m_model;
   }
+
+  MatrixType GetPredictorMatrix() const
+  {
+    return m_x;
+  }
+
+  VectorType GetTargetVector() const
+  {
+    return m_y;
+  }
+
 protected:
   void multi_linear_fit();
 
   std::string GetNameOfClass()
   {
     return std::string{"MultiLinearRegressionModel"};
+  }
+
+  template<typename MVType>
+  VectorType SampleToVector(MVType mv) const
+  {
+    VectorType tmp_vec(mv.Size());
+    for(auto i=0; i<mv.Size(); ++i)
+      tmp_vec[i] = mv[i];
+    return tmp_vec;
   }
   MatrixType m_x;
   VectorType m_y;
