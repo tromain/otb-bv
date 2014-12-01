@@ -22,11 +22,11 @@ OTB_CREATE_APPLICATION(NAME           ProSailSimulator
 
 OTB_CREATE_APPLICATION(NAME           InverseModelLearning
                        SOURCES        otbInverseModelLearning.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
 
-OTB_CREATE_APPLICATION(NAME           BVInversion
+                     OTB_CREATE_APPLICATION(NAME           BVInversion
                        SOURCES        otbBVInversion.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil)
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
                      
-add_executable(testSimus testSimus.cxx)
-target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil)
+                     add_executable(testSimus testSimus.cxx)
+                     target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil gsl gslcblas)

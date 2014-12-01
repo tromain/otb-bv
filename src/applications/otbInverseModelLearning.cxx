@@ -26,6 +26,7 @@
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkRegressionMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
+#include "otbMultiLinearRegressionModel.h"
 #include "itkListSample.h"
 
 namespace otb
@@ -56,6 +57,7 @@ public:
                                                            PrecisionType> 
   NeuralNetworkType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
+  typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
 private:
   void DoInit()
@@ -82,9 +84,9 @@ private:
     MandatoryOff("normalization");
 
     AddParameter(ParameterType_String, "regression", 
-                 "Regression to use for the training (nn, svr)");
+                 "Regression to use for the training (nn, svr, mlr)");
     SetParameterDescription("regression", 
-                            "Choice of the regression to use for the training: svr, nn.");
+                            "Choice of the regression to use for the training: svr, nn, mlr.");
     MandatoryOff("regression");
 
     AddParameter(ParameterType_Int, "bestof", "Select the best of N models.");
@@ -179,6 +181,9 @@ private:
     else if (regressor_type == "nn")
       rmse = EstimateNNRegresionModel(inputListSample, outputListSample, 
                                       nbInputVariables, nbModels);
+    else if (regressor_type == "mlr")
+      rmse = EstimateMLRRegresionModel(inputListSample, outputListSample, 
+                                       nbInputVariables, nbModels);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
   }
 
@@ -277,6 +282,15 @@ private:
     regression->SetMaxIter(100000);
     regression->SetEpsilon(FLT_EPSILON);
     regression->SetParameterOptimization(true);
+    return EstimateRegressionModel(regression, ils, ols, nbModels);
+  }
+
+  double EstimateMLRRegresionModel(ListInputSampleType::Pointer ils, 
+                                   ListOutputSampleType::Pointer ols, 
+                                   std::size_t nbVars, unsigned int nbModels)
+  {
+    otbAppLogINFO("Multilinear regression");
+    auto regression = MLRType::New();
     return EstimateRegressionModel(regression, ils, ols, nbModels);
   }
 };
