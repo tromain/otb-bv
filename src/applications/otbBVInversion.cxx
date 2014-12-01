@@ -25,6 +25,7 @@
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkRegressionMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
+#include "otbMultiLinearRegressionModel.h"
 #include "itkListSample.h"
 
 namespace otb
@@ -51,8 +52,11 @@ public:
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
   typedef MachineLearningModel<PrecisionType, PrecisionType> ModelType;
-  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, PrecisionType> NeuralNetworkType;
+  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
+                                                           PrecisionType> 
+  NeuralNetworkType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
+  typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
 private:
   void DoInit()
@@ -99,7 +103,8 @@ private:
       }
     catch(...)
       {
-      itkGenericExceptionMacro(<< "Could not open file " << reflectancesFileName);
+      itkGenericExceptionMacro(<< "Could not open file " 
+                               << reflectancesFileName);
       }
 
 
@@ -124,17 +129,22 @@ private:
       otbAppLogINFO("Variable normalization."<< std::endl);            
       var_minmax = read_normalization_file(GetParameterString("normalization"));
       if(var_minmax.size()!=nbInputVariables+1)
-        itkGenericExceptionMacro(<< "Normalization file ("<< var_minmax.size() << " - 1) is not coherent with the number of input variables ("<< nbInputVariables <<").");
+        itkGenericExceptionMacro(<< "Normalization file ("<< var_minmax.size() 
+                                 << " - 1) is not coherent with the number of "
+                                 << "input variables ("<< nbInputVariables 
+                                 <<").");
       for(auto var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
-                      " max=" << var_minmax[nbInputVariables].second <<std::endl)
-      }
+                    " max=" << var_minmax[nbInputVariables].second 
+                    << std::endl)
+        }
     auto model_file = GetParameterString("model");
     ModelType* regressor;
     auto nn_regressor = NeuralNetworkType::New();
     auto svr_regressor = SVRType::New();
+    auto mlr_regressor = MLRType::New();
     if(nn_regressor->CanReadFile(model_file))
       {
       regressor = dynamic_cast<ModelType*>(nn_regressor.GetPointer());
@@ -145,9 +155,15 @@ private:
       regressor = dynamic_cast<ModelType*>(svr_regressor.GetPointer());
       otbAppLogINFO("Applying SVR regression ..." << std::endl);
       }
+    else if(mlr_regressor->CanReadFile(model_file))
+      {
+      regressor = dynamic_cast<ModelType*>(mlr_regressor.GetPointer());
+      otbAppLogINFO("Applying MLR regression ..." << std::endl);
+      }
     else
       {
-      itkGenericExceptionMacro(<< "Model in file " << model_file << " is not valid.\n");
+      itkGenericExceptionMacro(<< "Model in file " << model_file 
+                               << " is not valid.\n");
       }
     regressor->Load(model_file);    
 
@@ -167,7 +183,8 @@ private:
             }
           OutputSampleType outputValue = regressor->Predict(inputValue);
           if( HasValue( "normalization" )==true )
-            outputValue[0] = denormalize(outputValue[0],var_minmax[nbInputVariables]);
+            outputValue[0] = denormalize(outputValue[0],
+                                         var_minmax[nbInputVariables]);
           outFile << outputValue[0] << std::endl;
           ++sampleCount;
           }
