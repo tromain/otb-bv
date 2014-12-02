@@ -12,31 +12,6 @@
 #
 # =========================================================================
 
-set(OTBBV_TESTS ${otb-bv_BINARY_DIR}/testing/otbBVTests)
-
-add_test(bvProSailSimulatorFunctor ${OTBBV_TESTS}
-  bvProSailSimulatorFunctor ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr)
-
-add_test(bvMultiLinearFitting ${OTBBV_TESTS}
-  bvMultiLinearFitting)       
-
-add_test(bvMultiLinearFittingConversions ${OTBBV_TESTS}
-  bvMultiLinearFittingConversions)
-
-add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
-  bvMultiTemporalInversion ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr)
-
-set(BVTests_SRCS
-  otbBVTests.cxx
-  bvProSailSimulatorFunctor.cxx
-  bvMultiLinearFitting.cxx
-  bvMultiTemporalInversion.cxx)
-
-add_executable(otbBVTests ${BVTests_SRCS})
-target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting OTBSimulation gsl gslcblas)
-
-
-
 ### Test the applications
 add_test(appBvGenInputVars ${OTB_DIR}/bin/otbApplicationLauncherCommandLine 
   BVInputVariableGeneration ${otb-bv_BINARY_DIR}/applications/ 
@@ -63,3 +38,34 @@ add_test(appBvInversion ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   -reflectances ${otb-bv_SOURCE_DIR}/../data/refls.txt
   -model ${otb-bv_SOURCE_DIR}/../data/model.txt
   -out ${TEMP}/appInvMod.txt)
+
+### Test functions and classes
+set(OTBBV_TESTS ${otb-bv_BINARY_DIR}/testing/otbBVTests)
+
+add_test(bvProSailSimulatorFunctor ${OTBBV_TESTS}
+  bvProSailSimulatorFunctor ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr)
+
+add_test(bvMultiLinearFitting ${OTBBV_TESTS}
+  bvMultiLinearFitting)       
+
+add_test(bvMultiLinearFittingConversions ${OTBBV_TESTS}
+  bvMultiLinearFittingConversions)
+
+add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
+  bvMultiTemporalInversion ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr
+  33.469
+  20.071
+  169.0
+  ${otb-bv_SOURCE_DIR}/../data/formosat2_126_model)
+
+set(BVTests_SRCS
+  otbBVTests.cxx
+  bvProSailSimulatorFunctor.cxx
+  bvMultiLinearFitting.cxx
+  bvMultiTemporalInversion.cxx)
+
+add_executable(otbBVTests ${BVTests_SRCS})
+target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting OTBSimulation OTBBVUtil gsl gslcblas)
+
+
+

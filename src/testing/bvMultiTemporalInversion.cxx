@@ -14,10 +14,14 @@
 
 #include "itkMacro.h"
 
+#include "phenoFunctions.h"
+#include "otbBVUtil.h"
+#include "otbProSailSimulatorFunctor.h"
+#include "otbMachineLearningModelFactory.h"
+#include "otbNeuralNetworkRegressionMachineLearningModel.h"
+
 #include <vector>
 #include <random>
-#include "phenoFunctions.h"
-#include "otbProSailSimulatorFunctor.h"
 
 using PrecisionType=double;
 using VectorType=std::vector<PrecisionType>;
@@ -25,6 +29,10 @@ using SatRSRType = otb::SatelliteRSR<PrecisionType, PrecisionType>;
 using ProSailType = otb::Functor::ProSailSimulator<SatRSRType>;
 using SimulationType = typename ProSailType::OutputType;
 using PixelType = ProSailType::OutputType;
+typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
+typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
+                                                         PrecisionType> 
+NeuralNetworkType;
 
 
 std::pair<VectorType, VectorType> generate_lai(const VectorType doys)
@@ -46,17 +54,21 @@ std::pair<VectorType, VectorType> generate_lai(const VectorType doys)
 }
 
 std::vector<PixelType> generate_reflectances(VectorType lai_vec, 
-                                             std::string rsr_file)
+                                             std::string rsr_file,
+                                             double solarzenith,
+                                             double sensorzenith,
+                                             double azimuth)
 {
   auto satRSR = SatRSRType::New();
-  satRSR->SetNbBands(4);
+  short int nbBands = otb::countColumns(rsr_file.c_str())-2;
+  satRSR->SetNbBands(nbBands);
   satRSR->SetSortBands(false);
   satRSR->Load(rsr_file.c_str());
 
   typename otb::AcquisitionParsType prosailPars;
-  prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);
-  prosailPars[otb::TTO] = 0.30456*(180.0/3.141592);
-  prosailPars[otb::PSI] = -2.5952*(180.0/3.141592);
+  prosailPars[otb::TTS] = solarzenith;
+  prosailPars[otb::TTO] = sensorzenith;
+  prosailPars[otb::PSI] = azimuth;
 
   ProSailType prosail;
   prosail.SetRSR(satRSR);
@@ -83,6 +95,8 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
     prosail.SetBVs(prosailBV);
     auto pix = prosail();
 
+    std::cout << pix.size() << " ---------" << std::endl;
+
     //add noise to simulations
     simus.push_back(pix);
     }
@@ -92,6 +106,11 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
 
 int bvMultiTemporalInversion(int argc, char * argv[])
 {
+
+  double solarzenith = std::atof(argv[2]);
+  double sensorzenith = std::atof(argv[3]);
+  double azimuth = std::atof(argv[4]);
+  std::string rsr_file{argv[1]};
   VectorType doys;
   for(auto d=0; d<365; d+=10)
     doys.push_back(d);
@@ -99,7 +118,8 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   VectorType simu_lai, noisy_lai;
 
   std::tie(simu_lai, noisy_lai) = generate_lai(doys);
-  auto simu_refls = generate_reflectances(noisy_lai, argv[1]);
+  auto simu_refls = generate_reflectances(noisy_lai, rsr_file, solarzenith,
+                                          sensorzenith, azimuth);
 
 
   for(auto i=0; i<simu_lai.size(); ++i)
@@ -108,6 +128,16 @@ int bvMultiTemporalInversion(int argc, char * argv[])
               << "  " << simu_refls[i][3] << std::endl;
 
 
+  auto nn_regressor = NeuralNetworkType::New();
+  nn_regressor->Load(argv[5]);
+
+
+  std::cout << simu_refls[0].size() << " -----------" << std::endl;
+  for(auto i=0; i<simu_lai.size(); ++i)
+    {
+    InputSampleType pix(simu_refls[i].data(), simu_refls[i].size());
+    nn_regressor->Predict(pix);
+    }
   return EXIT_SUCCESS;
 }
 
