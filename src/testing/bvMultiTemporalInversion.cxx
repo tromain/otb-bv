@@ -99,7 +99,6 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   VectorType simu_lai, noisy_lai;
 
   std::tie(simu_lai, noisy_lai) = generate_lai(doys);
-
   auto simu_refls = generate_reflectances(noisy_lai, argv[1]);
 
 
