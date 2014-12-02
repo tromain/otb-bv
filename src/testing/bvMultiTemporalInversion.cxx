@@ -1,0 +1,101 @@
+/*=========================================================================
+  Program:   otb-bv
+  Language:  C++
+
+  Copyright (c) CESBIO. All rights reserved.
+
+  See otb-bv-copyright.txt for details.
+
+  This software is distributed WITHOUT ANY WARRANTY; without even
+  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
+
+#include "itkMacro.h"
+
+#include <vector>
+#include <random>
+#include "phenoFunctions.h"
+#include "otbProSailSimulatorFunctor.h"
+
+using PrecisionType=double;
+using VectorType=std::vector<PrecisionType>;
+
+std::pair<VectorType, VectorType> generate_lai(const VectorType doys)
+{
+  VectorType sigmo_pars{100, 3, 200, 3, 6, 0.1};
+  auto simu_lai = pheno::sigmoid::F(doys, sigmo_pars);
+  auto noisy_lai = simu_lai;
+
+  auto rng = std::mt19937(std::random_device{}());
+  std::normal_distribution<> d(0.0,0.1);
+  for(auto& l : noisy_lai)
+    {
+    l+=d(rng);
+    l=(l<0)?0:l;
+    }
+
+  return std::make_pair(simu_lai, noisy_lai);
+
+}
+
+int bvMultiTemporalInversion(int argc, char * argv[])
+{
+  VectorType doys;
+  for(auto d=0; d<365; d+=10)
+    doys.push_back(d);
+
+  VectorType simu_lai, noisy_lai;
+
+  std::tie(simu_lai, noisy_lai) = generate_lai(doys);
+
+  using SatRSRType = otb::SatelliteRSR<PrecisionType, PrecisionType>;
+  using ProSailType = otb::Functor::ProSailSimulator<SatRSRType>;
+  using SimulationType = typename ProSailType::OutputType;
+
+  auto satRSR = SatRSRType::New();
+  satRSR->SetNbBands(4);
+  satRSR->SetSortBands(false);
+  satRSR->Load(argv[1]);
+
+  typename otb::AcquisitionParsType prosailPars;
+  prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);
+  prosailPars[otb::TTO] = 0.30456*(180.0/3.141592);
+  prosailPars[otb::PSI] = -2.5952*(180.0/3.141592);
+
+  ProSailType prosail;
+  prosail.SetRSR(satRSR);
+  prosail.SetParameters(prosailPars);
+
+  typename otb::BVType prosailBV;
+  prosailBV[otb::IVNames::ALA] = 59.755;
+  prosailBV[otb::IVNames::CrownCover] = 0.95768;
+  prosailBV[otb::IVNames::HsD] = 0.18564;
+  prosailBV[otb::IVNames::N] = 1.4942;
+  prosailBV[otb::IVNames::Cab] = 64.632;
+  prosailBV[otb::IVNames::Car] = 0;
+  prosailBV[otb::IVNames::Cdm] = 0.0079628;
+  prosailBV[otb::IVNames::CwRel] = 0.73298;
+  prosailBV[otb::IVNames::Cbp] = 0.075167;
+  prosailBV[otb::IVNames::Bs] = 0.72866;
+
+  using PixelType = ProSailType::OutputType;
+
+  std::vector<PixelType> simus;
+  for(auto l : noisy_lai)
+    {
+    prosailBV[otb::IVNames::MLAI] = l;
+    prosail.SetBVs(prosailBV);
+    simus.push_back(prosail());
+    }
+
+  for(auto i=0; i<simu_lai.size(); ++i)
+    std::cout << doys[i] << " " << simu_lai[i] 
+              << "  " << noisy_lai[i] 
+              << "  " << simus[i][3] << std::endl;
+
+
+  return EXIT_SUCCESS;
+}
+

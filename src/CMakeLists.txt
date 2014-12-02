@@ -23,6 +23,13 @@ else(OTB_FOUND)
           "OTB not found. Please set OTB_DIR")
 endif(OTB_FOUND)
 
+## phenotb
+find_path(PHENOTB_INCLUDE_DIR phenoTypes.h)
+find_library(PHENOTB_LIBRARY NAMES libOTBPheno)
+message(STATUS "  PHENOTB includes: ${PHENOTB_INCLUDE_DIR}")
+message(STATUS "  PHENOTB library: ${PHENOTB_LIBRARY}")
+include_directories(${PHENOTB_INCLUDE_DIR})
+
 if(NOT OTBBV_INSTALL_BIN_DIR)
   set(OTBBV_INSTALL_BIN_DIR "bin")
 endif()

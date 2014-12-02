@@ -24,7 +24,7 @@ add_test(bvMultiLinearFittingConversions ${OTBBV_TESTS}
   bvMultiLinearFittingConversions)
 
 add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
-  bvMultiTemporalInversion)
+  bvMultiTemporalInversion ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr)
 
 set(BVTests_SRCS
   otbBVTests.cxx
