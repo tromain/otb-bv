@@ -21,6 +21,11 @@
 
 using PrecisionType=double;
 using VectorType=std::vector<PrecisionType>;
+using SatRSRType = otb::SatelliteRSR<PrecisionType, PrecisionType>;
+using ProSailType = otb::Functor::ProSailSimulator<SatRSRType>;
+using SimulationType = typename ProSailType::OutputType;
+using PixelType = ProSailType::OutputType;
+
 
 std::pair<VectorType, VectorType> generate_lai(const VectorType doys)
 {
@@ -40,24 +45,13 @@ std::pair<VectorType, VectorType> generate_lai(const VectorType doys)
 
 }
 
-int bvMultiTemporalInversion(int argc, char * argv[])
+std::vector<PixelType> generate_reflectances(VectorType lai_vec, 
+                                             std::string rsr_file)
 {
-  VectorType doys;
-  for(auto d=0; d<365; d+=10)
-    doys.push_back(d);
-
-  VectorType simu_lai, noisy_lai;
-
-  std::tie(simu_lai, noisy_lai) = generate_lai(doys);
-
-  using SatRSRType = otb::SatelliteRSR<PrecisionType, PrecisionType>;
-  using ProSailType = otb::Functor::ProSailSimulator<SatRSRType>;
-  using SimulationType = typename ProSailType::OutputType;
-
   auto satRSR = SatRSRType::New();
   satRSR->SetNbBands(4);
   satRSR->SetSortBands(false);
-  satRSR->Load(argv[1]);
+  satRSR->Load(rsr_file.c_str());
 
   typename otb::AcquisitionParsType prosailPars;
   prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);
@@ -80,20 +74,39 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   prosailBV[otb::IVNames::Cbp] = 0.075167;
   prosailBV[otb::IVNames::Bs] = 0.72866;
 
-  using PixelType = ProSailType::OutputType;
+
 
   std::vector<PixelType> simus;
-  for(auto l : noisy_lai)
+  for(auto l : lai_vec)
     {
     prosailBV[otb::IVNames::MLAI] = l;
     prosail.SetBVs(prosailBV);
-    simus.push_back(prosail());
+    auto pix = prosail();
+
+    //add noise to simulations
+    simus.push_back(pix);
     }
+
+  return simus;
+}
+
+int bvMultiTemporalInversion(int argc, char * argv[])
+{
+  VectorType doys;
+  for(auto d=0; d<365; d+=10)
+    doys.push_back(d);
+
+  VectorType simu_lai, noisy_lai;
+
+  std::tie(simu_lai, noisy_lai) = generate_lai(doys);
+
+  auto simu_refls = generate_reflectances(noisy_lai, argv[1]);
+
 
   for(auto i=0; i<simu_lai.size(); ++i)
     std::cout << doys[i] << " " << simu_lai[i] 
               << "  " << noisy_lai[i] 
-              << "  " << simus[i][3] << std::endl;
+              << "  " << simu_refls[i][3] << std::endl;
 
 
   return EXIT_SUCCESS;
