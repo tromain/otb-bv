@@ -38,11 +38,13 @@ target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting OTBSimulation gsl gs
 
 
 ### Test the applications
-add_test(appBvGenInputVars ${OTB_DIR}/bin/otbApplicationLauncherCommandLine BVInputVariableGeneration ${otb-bv_BINARY_DIR}/applications/ 
+add_test(appBvGenInputVars ${OTB_DIR}/bin/otbApplicationLauncherCommandLine 
+  BVInputVariableGeneration ${otb-bv_BINARY_DIR}/applications/ 
   -samples 200 
   -out ${TEMP}/appBvGenInputVarssamples.txt)
 
-add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine ProSailSimulator ${otb-bv_BINARY_DIR}/applications/ 
+add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
+  ProSailSimulator ${otb-bv_BINARY_DIR}/applications/ 
   -bvfile ${otb-bv_SOURCE_DIR}/../data/vars.txt
   -soilfile dummy
   -rsrfile ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr
