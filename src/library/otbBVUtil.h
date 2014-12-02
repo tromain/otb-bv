@@ -14,6 +14,7 @@
 #ifndef __OTBBVUTIL_H
 #define __OTBBVUTIL_H
 
+#include <iomanip>
 #include <string>
 #include "otbBVTypes.h"
 
