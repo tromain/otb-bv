@@ -23,10 +23,14 @@ add_test(bvMultiLinearFitting ${OTBBV_TESTS}
 add_test(bvMultiLinearFittingConversions ${OTBBV_TESTS}
   bvMultiLinearFittingConversions)
 
+add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
+  bvMultiTemporalInversion)
+
 set(BVTests_SRCS
   otbBVTests.cxx
   bvProSailSimulatorFunctor.cxx
-  bvMultiLinearFitting.cxx)
+  bvMultiLinearFitting.cxx
+  bvMultiTemporalInversion.cxx)
 
 add_executable(otbBVTests ${BVTests_SRCS})
 target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting OTBSimulation gsl gslcblas)
