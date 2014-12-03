@@ -15,7 +15,7 @@
 ### Test the applications
 add_test(appBvGenInputVars ${OTB_DIR}/bin/otbApplicationLauncherCommandLine 
   BVInputVariableGeneration ${otb-bv_BINARY_DIR}/applications/ 
-  -samples 200 
+  -samples 2000 
   -out ${TEMP}/appBvGenInputVarssamples.txt)
 
 add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
@@ -30,14 +30,14 @@ add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
 
 add_test(appBvInvModLear ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   InverseModelLearning ${otb-bv_BINARY_DIR}/applications/
-  -training ${otb-bv_SOURCE_DIR}/../data/train.txt
+  -training ${otb-bv_SOURCE_DIR}/../data/refls_sim.txt
   -out ${TEMP}/appInvMod.txt)
 
 add_test(appBvInversion ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   BVInversion ${otb-bv_BINARY_DIR}/applications/
-  -reflectances ${otb-bv_SOURCE_DIR}/../data/refls.txt
-  -model ${otb-bv_SOURCE_DIR}/../data/model.txt
-  -out ${TEMP}/appInvMod.txt)
+  -reflectances ${otb-bv_SOURCE_DIR}/../data/refls_sim.txt
+  -model ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt
+  -out ${TEMP}/appInvLai.txt)
 
 ### Test functions and classes
 set(OTBBV_TESTS ${otb-bv_BINARY_DIR}/testing/otbBVTests)
@@ -56,7 +56,7 @@ add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
   33.469
   20.071
   169.0
-  ${otb-bv_SOURCE_DIR}/../data/formosat2_126_model)
+  ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt)
 
 set(BVTests_SRCS
   otbBVTests.cxx
