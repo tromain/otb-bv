@@ -61,6 +61,7 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
 {
   auto satRSR = SatRSRType::New();
   short int nbBands = otb::countColumns(rsr_file.c_str())-2;
+  std::cout << "Simulating " << nbBands << " bands " << std::endl;
   satRSR->SetNbBands(nbBands);
   satRSR->SetSortBands(false);
   satRSR->Load(rsr_file.c_str());
@@ -132,10 +133,10 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   nn_regressor->Load(argv[5]);
 
 
-  std::cout << simu_refls[0].size() << " -----------" << std::endl;
+  std::cout << simu_refls[0].size() << " ----------- reflectances" << std::endl;
   for(auto i=0; i<simu_lai.size(); ++i)
     {
-    InputSampleType pix(simu_refls[i].data(), simu_refls[i].size());
+    InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
     nn_regressor->Predict(pix);
     }
   return EXIT_SUCCESS;
