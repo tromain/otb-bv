@@ -61,7 +61,6 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
 {
   auto satRSR = SatRSRType::New();
   short int nbBands = otb::countColumns(rsr_file.c_str())-2;
-  std::cout << "Simulating " << nbBands << " bands " << std::endl;
   satRSR->SetNbBands(nbBands);
   satRSR->SetSortBands(false);
   satRSR->Load(rsr_file.c_str());
@@ -87,21 +86,19 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
   prosailBV[otb::IVNames::Cbp] = 0.075167;
   prosailBV[otb::IVNames::Bs] = 0.72866;
 
-
-
   std::vector<PixelType> simus;
+  auto rng = std::mt19937(std::random_device{}());
+  std::normal_distribution<> d(0.0,0.1);
   for(auto l : lai_vec)
     {
     prosailBV[otb::IVNames::MLAI] = l;
     prosail.SetBVs(prosailBV);
     auto pix = prosail();
-
-    std::cout << pix.size() << " ---------" << std::endl;
-
     //add noise to simulations
+    for(auto& v : pix)
+      v+=d(rng);
     simus.push_back(pix);
     }
-
   return simus;
 }
 
