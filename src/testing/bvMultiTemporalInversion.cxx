@@ -129,13 +129,15 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   auto nn_regressor = NeuralNetworkType::New();
   nn_regressor->Load(argv[5]);
 
-
-  std::cout << simu_refls[0].size() << " ----------- reflectances" << std::endl;
+  VectorType estim_lai;
   for(auto i=0; i<simu_lai.size(); ++i)
     {
     InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
-    nn_regressor->Predict(pix);
+    estim_lai.push_back(nn_regressor->Predict(pix)[0]);
     }
+
+  for(auto i=0; i<simu_lai.size(); ++i)
+    std::cout << simu_lai[i] << " -- " << estim_lai[i] << std::endl;
   return EXIT_SUCCESS;
 }
 
