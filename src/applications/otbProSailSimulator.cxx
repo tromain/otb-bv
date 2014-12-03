@@ -55,7 +55,7 @@ private:
   void DoInit()
   {
     SetName("ProSailSimulator");
-    SetDescription("Simulate reflectances using Prospect+Sail.");
+    SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
 
     AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples.");
     SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
@@ -70,7 +70,7 @@ private:
     MandatoryOn("rsrfile");
     
     AddParameter(ParameterType_OutputFilename, "out", "Output file");
-    SetParameterDescription( "out", "Filename where the simulations are saved." );
+    SetParameterDescription( "out", "Filename where the simulations are saved. The last 2 bands are fcover and fapar." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_Float, "solarzenith", "");
