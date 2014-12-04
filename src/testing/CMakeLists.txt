@@ -20,7 +20,7 @@ add_test(appBvGenInputVars ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
 
 add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   ProSailSimulator ${otb-bv_BINARY_DIR}/applications/ 
-  -bvfile ${otb-bv_SOURCE_DIR}/../data/vars.txt
+  -bvfile ${otb-bv_SOURCE_DIR}/../data/appBvGenInputVarssamples.txt
   -soilfile dummy
   -rsrfile ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr
   -out ${TEMP}/appProSailSimus.txt
@@ -30,12 +30,13 @@ add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
 
 add_test(appBvInvModLear ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   InverseModelLearning ${otb-bv_BINARY_DIR}/applications/
-  -training ${otb-bv_SOURCE_DIR}/../data/refls_sim.txt
+  -training ${otb-bv_SOURCE_DIR}/../data/train-refls-lai.txt
+  -regression nn
   -out ${TEMP}/appInvMod.txt)
 
 add_test(appBvInversion ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   BVInversion ${otb-bv_BINARY_DIR}/applications/
-  -reflectances ${otb-bv_SOURCE_DIR}/../data/refls_sim.txt
+  -reflectances ${otb-bv_SOURCE_DIR}/../data/relfs_sim.txt
   -model ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt
   -out ${TEMP}/appInvLai.txt)
 
