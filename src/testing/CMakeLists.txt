@@ -57,7 +57,8 @@ add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
   33.469
   20.071
   169.0
-  ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt)
+  ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt
+  ${TEMP}/bvMulTeInvRes.txt)
 
 set(BVTests_SRCS
   otbBVTests.cxx

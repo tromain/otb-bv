@@ -42,6 +42,7 @@ std::pair<VectorType, VectorType> generate_lai(const VectorType doys)
   auto noisy_lai = simu_lai;
 
   auto rng = std::mt19937(std::random_device{}());
+  rng.seed(5);
   std::normal_distribution<> d(0.0,0.1);
   for(auto& l : noisy_lai)
     {
@@ -88,7 +89,8 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
 
   std::vector<PixelType> simus;
   auto rng = std::mt19937(std::random_device{}());
-  std::normal_distribution<> d(0.0,0.1);
+  rng.seed(1);
+  std::normal_distribution<> d(0.0,0.05);
   for(auto l : lai_vec)
     {
     prosailBV[otb::IVNames::MLAI] = l;
@@ -100,6 +102,27 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
     simus.push_back(pix);
     }
   return simus;
+}
+
+VectorType smooth_time_series(VectorType ts, PrecisionType alpha, 
+                              bool online=true)
+{
+  auto result = ts;
+  auto it = ts.begin();
+  auto ot = result.begin();
+  auto last = ts.end();
+  auto prev = *it;
+  while(it!=last)
+    {
+    *ot = (*it)*(1-alpha)+alpha*prev;
+    if(online)
+      prev = *ot;
+    else
+      prev = *it;
+    ++it;
+    ++ot;
+    }
+  return result;
 }
 
 int bvMultiTemporalInversion(int argc, char * argv[])
@@ -119,13 +142,6 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   auto simu_refls = generate_reflectances(noisy_lai, rsr_file, solarzenith,
                                           sensorzenith, azimuth);
 
-
-  for(auto i=0; i<simu_lai.size(); ++i)
-    std::cout << doys[i] << " " << simu_lai[i] 
-              << "  " << noisy_lai[i] 
-              << "  " << simu_refls[i][3] << std::endl;
-
-
   auto nn_regressor = NeuralNetworkType::New();
   nn_regressor->Load(argv[5]);
 
@@ -135,9 +151,14 @@ int bvMultiTemporalInversion(int argc, char * argv[])
     InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
     estim_lai.push_back(nn_regressor->Predict(pix)[0]);
     }
+  auto smooth_lai = smooth_time_series(estim_lai, 0.5, true);
 
+  std::ofstream res_file;
+  res_file.open(argv[6]);
   for(auto i=0; i<simu_lai.size(); ++i)
-    std::cout << simu_lai[i] << " -- " << estim_lai[i] << std::endl;
+    res_file << doys[i] << " " << noisy_lai[i] << " " << estim_lai[i] << " " 
+             << smooth_lai[i] << std::endl;
+  res_file.close();
   return EXIT_SUCCESS;
 }
 
