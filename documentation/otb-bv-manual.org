@@ -2049,7 +2049,6 @@ return result
 |    5.182 |  0.8666165952830993 | 12.179052581623068 |  0.8584694599073509 |   1.0470503899204444 |  0.6840788111956265 |
 
 #+begin_src gnuplot :var data=lai-ndvi :file lai-ndvi.png
-set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 256, 256 
 set xlabel "NDVI"
 set ylabel "LAI"
 set grid on
@@ -2064,12 +2063,13 @@ plot data using 2:1 t "NDVI"
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 256, 256 
 set xlabel "RVI"
 set ylabel "LAI"
-set xrange [0:20]
+set xrange [0:25]
 plot data using 3:1 t "rvi"
 #+end_src
 
 #+RESULTS:
 [[file:lai-rvi.png]]
+
 
 #+begin_src gnuplot :var data=lai-ndvi :file lai-arvi.png
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 256, 256 
