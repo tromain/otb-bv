@@ -39,13 +39,38 @@ def parseConfigFile(cfg):
     modelFile = cfg.learning.outputFileName
     return (distFileName, nSamples, simuPars, trainingFile, modelFile)
 
+def addVI(reflectances_file, red_index, nir_index):
+    rff = open(reflectances_file)
+    allfields = rff.readlines()
+    rff.close()
+    with open(reflectances_file, 'w') as rf:
+        for l in allfields:
+            rfls = string.split(l)
+            if len(rfls)>0:
+                outline = string.join(string.split(l))
+                red = float(rfls[red_index-1])
+                pir = float(rfls[nir_index-1])
+                epsilon = 0.001
+                ndvi = (pir-red)/(pir+red+epsilon)
+                rvi = pir/(red+epsilon)
+                outline += " "+str(ndvi)+" "+str(rvi)+"\n"
+                rf.write(outline)
+
+
 def generateInputBVDistribution(bvFile, nSamples):
     app = otb.Registry.CreateApplication("BVInputVariableGeneration")
     app.SetParameterInt("samples", nSamples)
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
-def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False):
+def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False, red_index=0, nir_index=0):
+    """
+    Generate a training file using the file of biophysical vars (bvFile) and the simulation parameters dictionary (simuPars).
+    Write the result to trainingFile. The first column will be the biovar to learn and the following columns will be 
+    the reflectances. The add_angles parameter is used to store the viewing and solar angles as features. If red_index and
+    nir_index are set, the ndvi and the rvi are also used as features. red_index=3 means that the red reflectance is the 3rd column
+    (starting at 1) in the reflectances file.
+    """
     app = otb.Registry.CreateApplication("ProSailSimulator")
     app.SetParameterString("bvfile", bvFile)
     app.SetParameterString("soilfile", simuPars['soilFile'])
@@ -73,10 +98,11 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                     outline.rstrip()
                     if add_angles:
                         angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
-                        outline += " "+angles+"\n"
-                    else:
-                        outline += "\n"
+                        outline += " "+angles
+                    outline += "\n"
                     tf.write(outline)
+    if red_index!=0 and nir_index!=0:
+        addVI(trainingFile, red_index, nir_index)
                 
 
 def learnBVModel(trainingFile, outputFile, normalizationFile, bestof=1):
@@ -87,7 +113,7 @@ def learnBVModel(trainingFile, outputFile, normalizationFile, bestof=1):
     app.SetParameterInt("bestof", bestof)
     app.ExecuteAndWriteOutput()
 
-def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFaparFcover=False):
+def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFaparFcover=False, red_index=0, nir_index=0):
     if removeFaparFcover:
         #the reflectance file contains also the simulations of fapar and fcover
         rff = open(reflectanceFile)
@@ -97,6 +123,10 @@ def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFa
             for l in allfields:
                 outline = string.join(string.split(l)[:-2])+"\n"
                 rf.write(outline)
+
+    if red_index!=0 and nir_index!=0:
+        addVI(reflectanceFile, red_index, nir_index)
+
                 
     app = otb.Registry.CreateApplication("BVInversion")
     app.SetParameterString("reflectances", reflectanceFile)

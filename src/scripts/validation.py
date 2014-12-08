@@ -16,6 +16,7 @@
 
 import string
 import os
+import sys
 import otbApplication as otb
 import bv_net as bv
 from formosat_data import *
@@ -27,8 +28,8 @@ working_dir = "/tmp/"+varName+"/"
 rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 2000
-nbSamples_test = 200
+nbSamples_train = 20
+nbSamples_test = 20
 bestof = 6
 
 d = os.path.dirname(working_dir)
@@ -40,12 +41,23 @@ bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
 
 simus_list = []
 simus_list.append(fsat_data)
-# simus_list.append(spot4_data)
-# simus_list.append(lsat_data)
+simus_list.append(spot4_data)
+simus_list.append(lsat_data)
 
 for sat in simus_list:
     sat_name = sat[0]
     rsr_file = sat[1]
+    red_index = 0
+    nir_index = 0
+    if sat_name == "formosat2":
+        red_index = 3
+        nir_index = 4
+    if sat_name == "spot4":
+        red_index = 2
+        nir_index = 3
+    if sat_name == "landsat8":
+        red_index = 2
+        nir_index = 3
     for acqu in sat[2:]:
         reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
         training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
@@ -65,11 +77,11 @@ for sat in simus_list:
         simuPars['sensorZenithAngle'] = acqu['to']
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
-        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName])
+        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index)
         simuPars['outputFile'] = reflectance_file_test
-        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName])
+        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index)
         bv.learnBVModel(training_file, model_file, normalization_file, bestof)
-        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True)
+        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, 3, 4)
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:
                 with open(validation_file, 'w') as vaf:
@@ -85,6 +97,8 @@ for sat in simus_list:
                 rfgtf.write("\n")
                 var_values_gt.append(gt_case[bv.bv_val_names[varName][0]])
                 var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
+        bv.addVI(reflectances_gt_file, red_index, nir_index)
+
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:
