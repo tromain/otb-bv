@@ -142,6 +142,11 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   auto simu_refls = generate_reflectances(noisy_lai, rsr_file, solarzenith,
                                           sensorzenith, azimuth);
 
+  auto ndvi = noisy_lai;
+  for(auto i=0; i<simu_lai.size(); ++i)
+    ndvi[i] = (simu_refls[i][3]-simu_refls[i][2])/
+      (simu_refls[i][3]+simu_refls[i][2]+0.01);
+
   auto nn_regressor = NeuralNetworkType::New();
   nn_regressor->Load(argv[5]);
 
@@ -157,7 +162,8 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   res_file.open(argv[6]);
   for(auto i=0; i<simu_lai.size(); ++i)
     res_file << doys[i] << " " << noisy_lai[i] << " " << estim_lai[i] << " " 
-             << smooth_lai[i] << std::endl;
+             << smooth_lai[i]  << " " 
+             << ndvi[i] << std::endl;
   res_file.close();
   return EXIT_SUCCESS;
 }

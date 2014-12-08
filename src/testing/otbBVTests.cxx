@@ -19,4 +19,5 @@ void RegisterTests()
   REGISTER_TEST(bvMultiLinearFitting);
   REGISTER_TEST(bvMultiLinearFittingConversions);
   REGISTER_TEST(bvMultiTemporalInversion);
+  REGISTER_TEST(bvLaiLogNdvi);
 }
