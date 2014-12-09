@@ -30,6 +30,32 @@ namespace otb
 {
 
 
+std::vector<BVType> ParseBVSampleFile(std::ifstream& sample_file)
+{    
+//read variable names (first line)
+  std::string line;
+  std::getline(sample_file, line);
+
+  std::vector<BVType> bv_vec{};
+  while(sample_file.good())
+    {
+    BVType prosailBV;
+    // Read the variable values
+    std::getline(sample_file, line);
+    std::stringstream ss(line);
+    for(auto varName = 0; 
+        varName != static_cast<unsigned int>(IVNames::IVNamesEnd);
+        ++ varName)
+      {
+      double bvValue;
+      ss >> bvValue;
+      prosailBV[static_cast<IVNames>(varName)] = bvValue;
+      }
+    bv_vec.push_back(prosailBV);
+    }
+  sample_file.close();
+  return bv_vec;
+}
 
 namespace Wrapper
 {
@@ -197,36 +223,16 @@ private:
     
     //TODO : the soil file is not used --> implement a version of Sail using an external soil model instead of DataSpecP5B, then multipmy by Bs
     
-    otbAppLogINFO("Processing simulations ..." << std::endl)
-    //read variable names (first line)
-    std::string line;
-    std::getline(m_SampleFile, line);
-
-    std::vector<BVType> bv_vec{};
-    while(m_SampleFile.good())
-      {
-      BVType prosailBV;
-      // Read the variable values
-      std::getline(m_SampleFile, line);
-      std::stringstream ss(line);
-      for(auto varName = 0; varName != static_cast<unsigned int>(IVNames::IVNamesEnd);
-          ++ varName)
-        {
-        double bvValue;
-        ss >> bvValue;
-        prosailBV[static_cast<IVNames>(varName)] = bvValue;
-        }
-      bv_vec.push_back(prosailBV);
-      }
-    m_SampleFile.close();
+    otbAppLogINFO("Processing simulations ..." << std::endl);
+    auto bv_vec = ParseBVSampleFile(m_SampleFile);
     auto sampleCount = bv_vec.size();
     otbAppLogINFO("" << sampleCount << " samples read."<< std::endl);
 
     std::vector<SimulationType> simus{sampleCount};
     
     auto simulator = [&](std::vector<BVType>::const_iterator sample_first,
-                          std::vector<BVType>::const_iterator sample_last,
-                          std::vector<SimulationType>::iterator simu_first){
+                         std::vector<BVType>::const_iterator sample_last,
+                         std::vector<SimulationType>::iterator simu_first){
       ProSailType prosail;
       prosail.SetRSR(satRSR);
       prosail.SetParameters(prosailPars);
