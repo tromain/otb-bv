@@ -30,7 +30,7 @@ namespace otb
 {
 
 
-std::vector<BVType> ParseBVSampleFile(std::ifstream& sample_file)
+std::vector<BVType> parse_bv_sample_file(std::ifstream& sample_file)
 {    
 //read variable names (first line)
   std::string line;
@@ -224,7 +224,7 @@ private:
     //TODO : the soil file is not used --> implement a version of Sail using an external soil model instead of DataSpecP5B, then multipmy by Bs
     
     otbAppLogINFO("Processing simulations ..." << std::endl);
-    auto bv_vec = ParseBVSampleFile(m_SampleFile);
+    auto bv_vec = parse_bv_sample_file(m_SampleFile);
     auto sampleCount = bv_vec.size();
     otbAppLogINFO("" << sampleCount << " samples read."<< std::endl);
 
