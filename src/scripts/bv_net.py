@@ -46,7 +46,7 @@ def addVI(reflectances_file, red_index, nir_index):
     with open(reflectances_file, 'w') as rf:
         for l in allfields:
             rfls = string.split(l)
-            if len(rfls)>0:
+            if len(rfls)>red_index:
                 outline = string.join(string.split(l))
                 red = float(rfls[red_index-1])
                 pir = float(rfls[nir_index-1])
