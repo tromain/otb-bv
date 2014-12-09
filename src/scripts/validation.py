@@ -28,9 +28,10 @@ working_dir = "/tmp/"+varName+"/"
 rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 20
-nbSamples_test = 20
-bestof = 6
+nbSamples_train = 10000
+nbSamples_test = 200
+noise_var = 0.01
+bestof = 1
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
@@ -40,9 +41,9 @@ bv.generateInputBVDistribution(input_var_file, nbSamples_train)
 bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
 
 simus_list = []
-simus_list.append(fsat_data)
+#simus_list.append(fsat_data)
 simus_list.append(spot4_data)
-simus_list.append(lsat_data)
+#simus_list.append(lsat_data)
 
 for sat in simus_list:
     sat_name = sat[0]
@@ -77,11 +78,12 @@ for sat in simus_list:
         simuPars['sensorZenithAngle'] = acqu['to']
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
+        simuPars['noisevar'] = noise_var
         bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index)
         simuPars['outputFile'] = reflectance_file_test
         bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index)
         bv.learnBVModel(training_file, model_file, normalization_file, bestof)
-        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, 3, 4)
+        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, red_index, nir_index)
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:
                 with open(validation_file, 'w') as vaf:
