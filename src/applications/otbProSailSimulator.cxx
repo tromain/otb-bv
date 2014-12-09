@@ -249,7 +249,7 @@ private:
     auto num_threads = std::thread::hardware_concurrency();
     otbAppLogINFO("" << num_threads << " CPUs available."<< std::endl);
 
-    const auto block_size = sampleCount/num_threads;
+    auto block_size = sampleCount/num_threads;
     if(num_threads>=sampleCount) block_size = sampleCount;
     std::vector<std::thread> threads(num_threads);
     auto input_start = std::begin(bv_vec);
