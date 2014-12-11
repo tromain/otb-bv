@@ -297,12 +297,13 @@ private:
   {
     otbAppLogINFO("Support vectors");
     auto regression = RFRType::New();
-    regression->SetMaxDepth(5);
-    regression->SetMinSampleCount(10);
+    regression->SetMaxDepth(10);
+    regression->SetMinSampleCount(1000);
     regression->SetRegressionAccuracy(0.01);
     regression->SetMaxNumberOfVariables(4);
     regression->SetMaxNumberOfTrees(100);
     regression->SetForestAccuracy(0.01);
+    regression->SetRegressionMode(true);
     return EstimateRegressionModel(regression, ils, ols, nbModels);
   }
 
