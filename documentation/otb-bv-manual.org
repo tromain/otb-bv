@@ -2400,15 +2400,69 @@ awk '{print $2,$1}' /tmp/val > $validationfile
 
 * Validation
 #+begin_src sh
-cat /tmp/MLAI/formosat2_*validation > /tmp/MLAI/f2validation
-cat /tmp/MLAI/formosat2_*validation_gt > /tmp/MLAI/f2validation_gt
-cat /tmp/MLAI/landsat8_*validation > /tmp/MLAI/l8validation
-cat /tmp/MLAI/landsat8_*validation_gt > /tmp/MLAI/l8validation_gt
-cat /tmp/MLAI/spot4_*validation > /tmp/MLAI/s4validation
-cat /tmp/MLAI/spot4_*validation_gt > /tmp/MLAI/s4validation_gt
+# cat /tmp/MLAI/formosat2_*validation > /tmp/MLAI/f2validation
+# cat /tmp/MLAI/formosat2_*validation_gt > /tmp/MLAI/f2validation_gt
+# cat /tmp/MLAI/landsat8_*validation > /tmp/MLAI/l8validation
+# cat /tmp/MLAI/landsat8_*validation_gt > /tmp/MLAI/l8validation_gt
+cat /tmp/MLAI/spot4_*validation_nn > /tmp/MLAI/s4validation_nn
+cat /tmp/MLAI/spot4_*validation_gt_nn > /tmp/MLAI/s4validation_gt_nn
+cat /tmp/MLAI/spot4_*validation_mlr > /tmp/MLAI/s4validation_mlr
+cat /tmp/MLAI/spot4_*validation_gt_mlr > /tmp/MLAI/s4validation_gt_mlr
+cat /tmp/MLAI/spot4_*validation_svr > /tmp/MLAI/s4validation_svr
+cat /tmp/MLAI/spot4_*validation_gt_svr > /tmp/MLAI/s4validation_gt_svr
+cat /tmp/MLAI/spot4_*validation_rfr > /tmp/MLAI/s4validation_rfr
+cat /tmp/MLAI/spot4_*validation_gt_rfr > /tmp/MLAI/s4validation_gt_rfr
 #+end_src
 
 #+RESULTS:
+
+#+begin_src python :var data="/tmp/MLAI/s4validation_svr"
+import math
+import string
+rmseotb = 0.0
+relerr = 0.0
+measures = 0
+with open(data, 'r') as df:
+    for vals in df.readlines():
+        if len(vals)>0:
+            (r,otb) = string.split(vals)
+            rmseotb += math.pow(float(r)-float(otb),2.0)
+            relerr += math.fabs(float(r)-float(otb))/math.fabs(float(r))
+            measures += 1
+rmseotb /= measures
+relerr /= measures
+return math.sqrt(rmseotb), relerr
+#+end_src
+
+#+RESULTS:
+| 0.6791911039766801 | 1.1799646687864866 |
+
+#+begin_src python :var data="/tmp/MLAI/s4validation_gt_svr"
+import math
+import string
+rmsebvn = 0.0
+rmseotb = 0.0
+relerrbvn = 0.0
+relerrotb = 0.0
+measures = 0
+with open(data, 'r') as df:
+    for vals in df.readlines():
+        if len(vals)>0:
+            (r,bvn,otb) = string.split(vals)
+            rmsebvn += math.pow(float(r)-float(bvn),2.0)
+            rmseotb += math.pow(float(r)-float(otb),2.0)
+            relerrotb += math.fabs(float(r)-float(otb))/math.fabs(float(r))
+            relerrbvn += math.fabs(float(r)-float(bvn))/math.fabs(float(r))
+            measures += 1
+rmsebvn /= measures
+rmseotb /= measures
+relerrotb /= measures
+relerrbvn /= measures
+return (math.sqrt(rmsebvn), relerrbvn, math.sqrt(rmseotb), relerrotb)
+#+end_src
+
+#+RESULTS:
+| 0.5655395260344102 | 0.9798962606525804 | 0.5112346297030971 | 0.6999200399505124 |
 
 #+begin_src gnuplot :file formosat.png 
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 1024, 768 
@@ -2417,6 +2471,8 @@ set xlabel "Field LAI"
 set ylabel "Estimated LAI"
 set grid on
 set key left box
+set xrange [0:8]
+set yrange [0:8]
 plot "/tmp/MLAI/f2validation" using 1:2 t "simus", "/tmp/MLAI/f2validation_gt" using 1:3 lw 3 t "OTB", \
      "/tmp/MLAI/f2validation_gt" using 1:2 lw 3 t "bvnet", x
 #+end_src
@@ -2436,15 +2492,22 @@ plot "/tmp/MLAI/l8validation" using 1:2 t "simus", "/tmp/MLAI/l8validation_gt" u
 #+end_src
 
 #+begin_src gnuplot :file spot.png 
-set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 1024, 768 
+set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 512, 512
 set title "SPOT-4"
 set xlabel "Field LAI"
 set ylabel "Estimated LAI"
 set grid on
+set xrange [0:5]
+set yrange [0:5]
 set key left box
-plot "/tmp/MLAI/s4validation" using 1:2 t "simus", "/tmp/MLAI/s4validation_gt" using 1:3 lw 3 t "OTB", \
-     "/tmp/MLAI/s4validation_gt" using 1:2 lw 3 t "bvnet", x
+plot "/tmp/MLAI/s4validation_gt_svr" using 1:2 lw 3 t "bvnet", x, \
+     "/tmp/MLAI/s4validation_gt_rfr" using 1:3 lw 3 t "SVR"#, \
+     "/tmp/MLAI/s4validation_gt_nn" using 1:3 lw 3 t "NN", \
+     "/tmp/MLAI/s4validation_svr" using 1:2 t "simus SVR", \
+     "/tmp/MLAI/s4validation_nn" using 1:2 t "simus NN"
 #+end_src
+
+
 
 ** notes gnuplot                                                   :noexport:
 plot "/tmp/MLAI/formosat2_126_validation" using 1:2 t "simus", "/tmp/MLAI/formosat2_126_validation_gt" using 1:3 lw 3 t "OTB", "/tmp/MLAI/formosat2_126_validation_gt" using 1:2 lw 3 t "bvnet", x

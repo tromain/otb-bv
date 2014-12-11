@@ -28,12 +28,12 @@ working_dir = "/tmp/"+varName+"/"
 rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 100000
+nbSamples_train = 2000
 nbSamples_test = 200
 noise_var = 0.01
-bestof = 20
+bestof = 1
 simulate = False
-regressor = "svr" # nn svr mlr
+regressor = "rfr" # nn svr rfr mlr
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
