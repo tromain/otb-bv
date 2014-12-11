@@ -28,17 +28,20 @@ working_dir = "/tmp/"+varName+"/"
 rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 10000
+nbSamples_train = 100000
 nbSamples_test = 200
 noise_var = 0.01
-bestof = 1
+bestof = 20
+simulate = False
+regressor = "svr" # nn svr mlr
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
     os.makedirs(d)
 
-bv.generateInputBVDistribution(input_var_file, nbSamples_train)
-bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
+if simulate :
+    bv.generateInputBVDistribution(input_var_file, nbSamples_train)
+    bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
 
 simus_list = []
 #simus_list.append(fsat_data)
@@ -60,17 +63,18 @@ for sat in simus_list:
         red_index = 2
         nir_index = 3
     for acqu in sat[2:]:
+        print "-------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor
         reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
         training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
         reflectance_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_test"
         training_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_training_test"
         normalization_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_normalization"
-        inversion_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion"
-        model_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_model"
-        validation_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation"
+        inversion_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_"+regressor
+        model_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_model_"+regressor
+        validation_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_"+regressor
         reflectances_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_gt"
-        inversion_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_gt"
-        validation_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_gt"
+        inversion_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_gt_"+regressor
+        validation_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_gt_"+regressor
         simuPars = {}
         simuPars['rsrFile'] = rsr_file
         simuPars['outputFile'] = reflectance_file
@@ -79,10 +83,16 @@ for sat in simus_list:
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
         simuPars['noisevar'] = noise_var
-        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index)
+        if simulate :
+            print "\tSimulation training"
+            bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index)
         simuPars['outputFile'] = reflectance_file_test
-        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index)
-        bv.learnBVModel(training_file, model_file, normalization_file, bestof)
+        if simulate :
+            print "\tSimulation testing data"
+            bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index)
+        print "\tLearning model"
+        bv.learnBVModel(training_file, model_file, regressor, normalization_file, bestof)
+        print "\tInversion for test data"
         bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, red_index, nir_index)
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:
@@ -100,7 +110,7 @@ for sat in simus_list:
                 var_values_gt.append(gt_case[bv.bv_val_names[varName][0]])
                 var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
         bv.addVI(reflectances_gt_file, red_index, nir_index)
-
+        print "\tInversion for validation data"
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:

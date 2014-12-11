@@ -106,11 +106,12 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
         # we need to add 1 to the indices since the file already contains the variable in the first column
         addVI(trainingFile, red_index+1, nir_index+1)
                 
-
-def learnBVModel(trainingFile, outputFile, normalizationFile, bestof=1):
+                
+def learnBVModel(trainingFile, outputFile, regressionType, normalizationFile, bestof=1):
     app = otb.Registry.CreateApplication("InverseModelLearning")
     app.SetParameterString("training", trainingFile)
     app.SetParameterString("out", outputFile)
+    app.SetParameterString("regression", regressionType)
     app.SetParameterString("normalization", normalizationFile)
     app.SetParameterInt("bestof", bestof)
     app.ExecuteAndWriteOutput()
