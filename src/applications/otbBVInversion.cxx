@@ -25,6 +25,7 @@
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkRegressionMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
+#include "otbRandomForestsMachineLearningModel.h"
 #include "otbMultiLinearRegressionModel.h"
 #include "itkListSample.h"
 
@@ -55,6 +56,8 @@ public:
   typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
                                                            PrecisionType> 
   NeuralNetworkType;
+  typedef otb::RandomForestsMachineLearningModel<PrecisionType, 
+                                                 PrecisionType> RFRType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
   typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
@@ -144,6 +147,7 @@ private:
     ModelType* regressor;
     auto nn_regressor = NeuralNetworkType::New();
     auto svr_regressor = SVRType::New();
+    auto rfr_regressor = RFRType::New();
     auto mlr_regressor = MLRType::New();
     if(nn_regressor->CanReadFile(model_file))
       {
@@ -154,6 +158,11 @@ private:
       {
       regressor = dynamic_cast<ModelType*>(svr_regressor.GetPointer());
       otbAppLogINFO("Applying SVR regression ..." << std::endl);
+      }
+    else if(rfr_regressor->CanReadFile(model_file))
+      {
+      regressor = dynamic_cast<ModelType*>(rfr_regressor.GetPointer());
+      otbAppLogINFO("Applying RF regression ..." << std::endl);
       }
     else if(mlr_regressor->CanReadFile(model_file))
       {
