@@ -258,7 +258,7 @@ private:
       {static_cast<unsigned int>(nbVars), 5, 10, 10, 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     regression->SetAlpha(1.0);
-    regression->SetBeta(1.0);
+    regression->SetBeta(0.01);
     regression->SetBackPropDWScale(0.1);
     regression->SetBackPropMomentScale(0.1);
     regression->SetRegPropDW0(0.1);
