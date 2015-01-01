@@ -125,6 +125,28 @@ VectorType smooth_time_series(VectorType ts, PrecisionType alpha,
   return result;
 }
 
+//assumes regular time sampling
+VectorType smooth_time_series_n_minus_1(VectorType ts, PrecisionType alpha)
+{
+  auto result = ts;
+  auto ot = result.begin();
+  auto last = ts.end();
+  auto prev = ts.begin();
+  auto next = ts.begin();
+  //advance iterators
+  ++ot;
+  ++next;
+  while(next!=last)
+    {
+    auto lin_interp = ((*prev)+(*next))/2.0;
+    *ot = (lin_interp)*(1-alpha)+alpha*(*ot);
+    ++prev;
+    ++next;
+    ++ot;
+    }
+  return result;
+}
+
 int bvMultiTemporalInversion(int argc, char * argv[])
 {
 
@@ -156,7 +178,7 @@ int bvMultiTemporalInversion(int argc, char * argv[])
     InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
     estim_lai.push_back(nn_regressor->Predict(pix)[0]);
     }
-  auto smooth_lai = smooth_time_series(estim_lai, 0.5, true);
+  auto smooth_lai = smooth_time_series_n_minus_1(estim_lai, 0.5);
 
   std::ofstream res_file;
   res_file.open(argv[6]);
