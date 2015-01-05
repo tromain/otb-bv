@@ -80,6 +80,12 @@ private:
                              "Filename where the regression model will be saved." );
     MandatoryOn("out");
 
+    AddParameter(ParameterType_OutputFilename, "errest", 
+                 "Regression model for the error.");
+    SetParameterDescription( "errest", 
+                             "Filename where the regression model for the estimation of the regression error will be saved." );
+    MandatoryOff("errest");
+
     AddParameter(ParameterType_OutputFilename, "normalization", 
                  "Output file containing min and max values per sample component.");
     SetParameterDescription( "normalization", 
@@ -137,19 +143,19 @@ private:
     auto nbSamples = 0;
     for(std::string line; std::getline(trainingFile, line); )
       {
-        if(line.size() > 1)
-          {
-          std::istringstream ss(line);
-          OutputSampleType outputValue;
-          ss >> outputValue[0];
-          InputSampleType inputValue;
-          inputValue.Reserve(nbInputVariables);
-          for(auto var = 0; var < nbInputVariables; ++var)
-            ss >> inputValue[var];
-          inputListSample->PushBack(inputValue);
-          outputListSample->PushBack(outputValue);
-          ++nbSamples;
-          }
+      if(line.size() > 1)
+        {
+        std::istringstream ss(line);
+        OutputSampleType outputValue;
+        ss >> outputValue[0];
+        InputSampleType inputValue;
+        inputValue.Reserve(nbInputVariables);
+        for(auto var = 0; var < nbInputVariables; ++var)
+          ss >> inputValue[var];
+        inputListSample->PushBack(inputValue);
+        outputListSample->PushBack(outputValue);
+        ++nbSamples;
+        }
       }
     trainingFile.close();
 
@@ -167,8 +173,8 @@ private:
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
-                      " max=" << var_minmax[nbInputVariables].second <<std::endl)
-      }
+                    " max=" << var_minmax[nbInputVariables].second <<std::endl)
+        }
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
     double rmse{0.0};
@@ -191,6 +197,23 @@ private:
       rmse = EstimateMLRRegresionModel(inputListSample, outputListSample, 
                                        nbInputVariables, nbModels);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
+    if (IsParameterEnabled("errest"))
+      {
+      otbAppLogINFO("Learning regression model for the error " << std::endl);
+
+      if (regressor_type == "svr")       
+        EstimateErrorModel<SVRType>(inputListSample, outputListSample,
+                                    nbInputVariables);
+      if (regressor_type == "rfr")
+        EstimateErrorModel<RFRType>(inputListSample, outputListSample,
+                                    nbInputVariables);
+      else if (regressor_type == "nn")
+        EstimateErrorModel<NeuralNetworkType>(inputListSample, outputListSample,
+                                              nbInputVariables);
+      else if (regressor_type == "mlr")
+        EstimateErrorModel<MLRType>(inputListSample, outputListSample,
+                                    nbInputVariables);
+      }
   }
 
   template <typename RegressionType>
@@ -314,6 +337,51 @@ private:
     otbAppLogINFO("Multilinear regression");
     auto regression = MLRType::New();
     return EstimateRegressionModel(regression, ils, ols, nbModels);
+  }
+
+  template <typename RegressionType>
+  double EstimateErrorModel(ListInputSampleType::Pointer ils, 
+                            ListOutputSampleType::Pointer ols,
+                            std::size_t nbVars)
+  {
+    // Generate the values of the error
+    auto bv_regression = RegressionType::New();
+    bv_regression->Load(GetParameterString("out"));    
+
+    auto err_ls = ListOutputSampleType::New();
+    auto sIt = ils->Begin();
+    auto rIt = ols->Begin();
+    while(sIt != ils->End() && rIt != ols->End())
+      {
+      auto est_err = (bv_regression->Predict(sIt.GetMeasurementVector())[0] -
+                      rIt.GetMeasurementVector()[0]);
+      OutputSampleType outputValue;
+      outputValue[0] = est_err;
+      err_ls->PushBack(outputValue);
+      ++sIt;
+      ++rIt;
+      }
+
+    auto err_regression = NeuralNetworkType::New();
+    err_regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
+    // Two hidden layer with 5 neurons and one output variable
+    err_regression->SetLayerSizes(std::vector<unsigned int>(
+      {static_cast<unsigned int>(nbVars), 5, 5, 1}));
+    err_regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
+    err_regression->SetAlpha(1.0);
+    err_regression->SetBeta(0.01);
+    err_regression->SetBackPropDWScale(0.1);
+    err_regression->SetBackPropMomentScale(0.1);
+    err_regression->SetRegPropDW0(0.1);
+    err_regression->SetRegPropDWMin(1e-7);
+    err_regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
+    err_regression->SetEpsilon(1e-20);
+    err_regression->SetMaxIter(1e7);
+    err_regression->SetInputListSample(ils);
+    err_regression->SetTargetListSample(err_ls);
+    otbAppLogINFO("Error model estimation ..." << std::endl);
+    err_regression->Train();
+    err_regression->Save(GetParameterString("errest"));
   }
 };
 
