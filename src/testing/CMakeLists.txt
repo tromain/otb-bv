@@ -32,7 +32,8 @@ add_test(appBvInvModLear ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   InverseModelLearning ${otb-bv_BINARY_DIR}/applications/
   -training ${otb-bv_SOURCE_DIR}/../data/train-refls-lai.txt
   -regression nn
-  -out ${TEMP}/appInvMod.txt)
+  -out ${TEMP}/appInvMod.txt
+  -errest ${TEMP}/appInvModErrEst.txt)
 
 add_test(appBvInversion ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   BVInversion ${otb-bv_BINARY_DIR}/applications/
@@ -58,6 +59,7 @@ add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
   20.071
   169.0
   ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt
+  ${otb-bv_SOURCE_DIR}/../data/appInvModErrEst.txt
   ${TEMP}/bvMulTeInvRes.txt)
 
 add_test(bvLaiLogNdvi ${OTBBV_TESTS}
