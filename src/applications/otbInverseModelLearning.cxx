@@ -139,6 +139,13 @@ private:
 
     inputListSample->SetMeasurementVectorSize(nbInputVariables);
     outputListSample->SetMeasurementVectorSize(1);
+
+    // Samples for the error estimation
+    auto inputListSample_err = ListInputSampleType::New();
+    auto outputListSample_err = ListOutputSampleType::New();
+
+    inputListSample_err->SetMeasurementVectorSize(nbInputVariables);
+    outputListSample_err->SetMeasurementVectorSize(1);
     
     auto nbSamples = 0;
     for(std::string line; std::getline(trainingFile, line); )
@@ -152,8 +159,16 @@ private:
         inputValue.Reserve(nbInputVariables);
         for(auto var = 0; var < nbInputVariables; ++var)
           ss >> inputValue[var];
-        inputListSample->PushBack(inputValue);
-        outputListSample->PushBack(outputValue);
+        if (IsParameterEnabled("errest") && (nbSamples%2 == 0))
+          {
+          inputListSample_err->PushBack(inputValue);
+          outputListSample_err->PushBack(outputValue);
+          }
+        else
+          {
+          inputListSample->PushBack(inputValue);
+          outputListSample->PushBack(outputValue);
+          }
         ++nbSamples;
         }
       }
@@ -177,6 +192,8 @@ private:
         }
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
+
+
     double rmse{0.0};
     std::string regressor_type{"nn"};
     unsigned int nbModels{1};
@@ -202,16 +219,20 @@ private:
       otbAppLogINFO("Learning regression model for the error " << std::endl);
 
       if (regressor_type == "svr")       
-        EstimateErrorModel<SVRType>(inputListSample, outputListSample,
+        EstimateErrorModel<SVRType>(inputListSample_err, 
+                                    outputListSample_err,
                                     nbInputVariables);
       if (regressor_type == "rfr")
-        EstimateErrorModel<RFRType>(inputListSample, outputListSample,
+        EstimateErrorModel<RFRType>(inputListSample_err, 
+                                    outputListSample_err,
                                     nbInputVariables);
       else if (regressor_type == "nn")
-        EstimateErrorModel<NeuralNetworkType>(inputListSample, outputListSample,
+        EstimateErrorModel<NeuralNetworkType>(inputListSample_err, 
+                                              outputListSample_err,
                                               nbInputVariables);
       else if (regressor_type == "mlr")
-        EstimateErrorModel<MLRType>(inputListSample, outputListSample,
+        EstimateErrorModel<MLRType>(inputListSample_err, 
+                                    outputListSample_err,
                                     nbInputVariables);
       }
   }
