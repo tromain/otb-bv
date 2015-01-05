@@ -166,7 +166,7 @@ private:
       typename ListOutputSampleType::Iterator olFirst = outputListSample->Begin();
       typename ListInputSampleType::Iterator ilLast = inputListSample->End();
       typename ListOutputSampleType::Iterator olLast = outputListSample->End();
-      auto var_minmax = estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
+      var_minmax = estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
       write_normalization_file(var_minmax, GetParameterString("normalization"));
       normalize_variables(inputListSample, outputListSample, var_minmax);
       for(auto var = 0; var < nbInputVariables; ++var)
@@ -356,7 +356,11 @@ private:
       auto est_err = (bv_regression->Predict(sIt.GetMeasurementVector())[0] -
                       rIt.GetMeasurementVector()[0]);
       OutputSampleType outputValue;
-      outputValue[0] = est_err;
+      if( HasValue( "normalization" )==true )
+        // we use the same normalization as for the BV
+        outputValue[0] = normalize(est_err, var_minmax[nbVars]);
+      else
+        outputValue[0] = est_err;
       err_ls->PushBack(outputValue);
       ++sIt;
       ++rIt;
@@ -383,6 +387,8 @@ private:
     err_regression->Train();
     err_regression->Save(GetParameterString("errest"));
   }
+protected:
+  NormalizationVectorType var_minmax;
 };
 
 }
