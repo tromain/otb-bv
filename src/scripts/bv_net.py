@@ -111,6 +111,7 @@ def learnBVModel(trainingFile, outputFile, regressionType, normalizationFile, be
     app = otb.Registry.CreateApplication("InverseModelLearning")
     app.SetParameterString("training", trainingFile)
     app.SetParameterString("out", outputFile)
+    app.SetParameterString("errest", outputFile+"_errest")
     app.SetParameterString("regression", regressionType)
     app.SetParameterString("normalization", normalizationFile)
     app.SetParameterInt("bestof", bestof)
