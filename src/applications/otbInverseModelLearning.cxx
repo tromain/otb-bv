@@ -305,7 +305,7 @@ private:
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // Two hidden layer with 5 neurons and one output variable
     regression->SetLayerSizes(std::vector<unsigned int>(
-      {static_cast<unsigned int>(nbVars), 5, 10, 10, 5, 1}));
+      {static_cast<unsigned int>(nbVars), 5, 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     regression->SetAlpha(1.0);
     regression->SetBeta(0.01);
@@ -314,7 +314,7 @@ private:
     regression->SetRegPropDW0(0.1);
     regression->SetRegPropDWMin(1e-7);
     regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
-    regression->SetEpsilon(1e-20);
+    regression->SetEpsilon(1e-10);
     regression->SetMaxIter(1e7);
     return EstimateRegressionModel(regression, ils, ols, nbModels);
   }
