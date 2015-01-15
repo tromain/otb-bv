@@ -161,7 +161,6 @@ private:
     SetParameterDescription("algo", 
                             "Reprocessing algorithm: n1 is reprocessing the n-1 date, fit is a double logisting fitting of the complete profile.");
     MandatoryOff("algo");
-    SetDocExampleParameterValue("filename", "myFilename.foo");
   }
 
   void DoUpdateParameters()
