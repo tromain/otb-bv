@@ -24,9 +24,13 @@ OTB_CREATE_APPLICATION(NAME           InverseModelLearning
                        SOURCES        otbInverseModelLearning.cxx
                        LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
 
-                     OTB_CREATE_APPLICATION(NAME           BVInversion
+OTB_CREATE_APPLICATION(NAME           BVInversion
                        SOURCES        otbBVInversion.cxx
                        LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+
+                     OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
+                       SOURCES        otbProfileReprocessing.cxx
+                       LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
                      
                      add_executable(testSimus testSimus.cxx)
                      target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil gsl gslcblas)
