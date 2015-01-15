@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "dateUtils.h"
+#include "phenoFunctions.h"
 
 using PrecisionType = double;
 using VectorType = std::vector<PrecisionType>;
@@ -38,12 +39,47 @@ T compute_weight(T delta, T err)
   T one{1};
   return (one/(one+delta)+one/(one+err));
 }
+
+std::pair<VectorType, VectorType> 
+fit_csdm(VectorType dts, VectorType ts, VectorType ets)
+{
+  assert(ts.size()==ets.size() && ts.size()==dts.size());
+  auto result = ts;
+  auto result_flag = ts;
+  // std::vector to vnl_vector
+  pheno::VectorType profile_vec(ts.size());
+  pheno::VectorType date_vec(dts.size());
+
+  for(auto i=0; i<ts.size(); i++)
+    {
+    profile_vec[i] = ts[i];
+    date_vec[i] = dts[i];
+    }
+
+  // fit
+  auto approximation_result = 
+    pheno::normalized_sigmoid::TwoCycleApproximation(profile_vec, date_vec);
+  auto princ_cycle = std::get<1>(approximation_result);
+  auto x_hat = std::get<0>(princ_cycle);
+  auto min_max = std::get<1>(princ_cycle);
+  auto A_hat = min_max.second - min_max.first;
+  auto B_hat = min_max.first;
+  auto p = pheno::normalized_sigmoid::F(date_vec, x_hat);
+  //fill the result vectors
+  for(auto i=0; i<ts.size(); i++)
+    {
+    result[i] = p[i]*A_hat+B_hat;
+    result_flag[i] = processed_value;
+    }
+
+  return std::make_pair(result,result_flag);
+}
 std::pair<VectorType, VectorType> 
 smooth_time_series_n_minus_1_with_error(VectorType dts,
                                         VectorType ts, 
                                         VectorType ets)
 {
-  assert(ts.size()==ets.size());
+  assert(ts.size()==ets.size() && ts.size()==dts.size());
   auto result = ts;
   auto result_flag = ts;
   auto ot = result.begin();
@@ -180,8 +216,18 @@ private:
     VectorType out_bv_vec{};
     VectorType out_flag_vec{};
 
-    std::tie(out_bv_vec, out_flag_vec) = 
-      smooth_time_series_n_minus_1_with_error(date_vec, bv_vec, err_vec);
+    std::string algo{"n1"};
+    if (IsParameterEnabled("algo"))
+      algo = GetParameterString("algo");    
+    if (algo == "n1")
+      std::tie(out_bv_vec, out_flag_vec) = 
+        smooth_time_series_n_minus_1_with_error(date_vec, bv_vec, err_vec);
+    else if (algo == "fit")
+      std::tie(out_bv_vec, out_flag_vec) = 
+        fit_csdm(date_vec, bv_vec, err_vec);
+    else
+      itkGenericExceptionMacro(<< "Unknown algorithm " << algo 
+                               << ". Available algorithms are: n1, fit.\n");
 
     auto opfn = GetParameterString("opf");
     std::ofstream out_profile_file;
