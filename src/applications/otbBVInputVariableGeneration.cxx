@@ -244,9 +244,9 @@ private:
   double m_LAI_Conv = 10.0;                     
                                                                                             
   double m_MLAI_min = 0.0;                      
-  double m_MLAI_max = 8.0;                      
-  double m_MLAI_mod = 2.0;                      
-  double m_MLAI_std = 2.0;                      
+  double m_MLAI_max = 5.0;                      
+  double m_MLAI_mod = 0.5;                      
+  double m_MLAI_std = 1.0;                      
   unsigned short  m_MLAI_nbcl = 6;                       
                                                                                             
   double m_ALA_min = 5.0;                      

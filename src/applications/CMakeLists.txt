@@ -13,24 +13,27 @@
 # =========================================================================
 
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
-                       SOURCES        otbBVInputVariableGeneration.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil)
+  SOURCES        otbBVInputVariableGeneration.cxx
+  LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil)
 
 OTB_CREATE_APPLICATION(NAME           ProSailSimulator
-                       SOURCES        otbProSailSimulator.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBSimulation;OTBBVUtil)                     
+  SOURCES        otbProSailSimulator.cxx
+  LINK_LIBRARIES OTBIO;OTBCommon;OTBSimulation;OTBBVUtil)                     
 
 OTB_CREATE_APPLICATION(NAME           InverseModelLearning
-                       SOURCES        otbInverseModelLearning.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+  SOURCES        otbInverseModelLearning.cxx
+  LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
 
 OTB_CREATE_APPLICATION(NAME           BVInversion
-                       SOURCES        otbBVInversion.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+  SOURCES        otbBVInversion.cxx
+  LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
 
-                     OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
-                       SOURCES        otbProfileReprocessing.cxx
-                       LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
+OTB_CREATE_APPLICATION(NAME           BVImageInversion
+  SOURCES        otbBVImageInversion.cxx
+  LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
+  SOURCES        otbProfileReprocessing.cxx
+  LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
                      
-                     add_executable(testSimus testSimus.cxx)
-                     target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil gsl gslcblas)
+add_executable(testSimus testSimus.cxx)
+target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil gsl gslcblas)
