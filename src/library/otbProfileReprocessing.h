@@ -71,7 +71,9 @@ fit_csdm(VectorType dts, VectorType ts, VectorType ets)
 std::pair<VectorType, VectorType> 
 smooth_time_series_local_window_with_error(VectorType dts,
                                            VectorType ts, 
-                                           VectorType ets)
+                                           VectorType ets,
+                                           size_t bwd_radius = 1,
+                                           size_t fwd_radius = 1)
 {
   assert(ts.size()==ets.size() && ts.size()==dts.size());
   auto result = ts;
