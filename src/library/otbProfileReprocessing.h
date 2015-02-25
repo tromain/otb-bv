@@ -116,6 +116,49 @@ smooth_time_series_n_minus_1_with_error(VectorType dts,
   return std::make_pair(result,result_flag);
 }
 
+VectorType smooth_time_series(VectorType ts, PrecisionType alpha, 
+                              bool online=true)
+{
+  auto result = ts;
+  auto it = ts.begin();
+  auto ot = result.begin();
+  auto last = ts.end();
+  auto prev = *it;
+  while(it!=last)
+    {
+    *ot = (*it)*(1-alpha)+alpha*prev;
+    if(online)
+      prev = *ot;
+    else
+      prev = *it;
+    ++it;
+    ++ot;
+    }
+  return result;
+}
+
+//assumes regular time sampling
+VectorType smooth_time_series_n_minus_1(VectorType ts, PrecisionType alpha)
+{
+  auto result = ts;
+  auto ot = result.begin();
+  auto last = ts.end();
+  auto prev = ts.begin();
+  auto next = ts.begin();
+  //advance iterators
+  ++ot;
+  ++next;
+  while(next!=last)
+    {
+    auto lin_interp = ((*prev)+(*next))/2.0;
+    *ot = (lin_interp)*(1-alpha)+alpha*(*ot);
+    ++prev;
+    ++next;
+    ++ot;
+    }
+  return result;
+}
+
 }
 
 #endif
