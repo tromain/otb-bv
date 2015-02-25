@@ -125,7 +125,7 @@ private:
       algo = GetParameterString("algo");    
     if (algo == "n1")
       std::tie(out_bv_vec, out_flag_vec) = 
-        smooth_time_series_n_minus_1_with_error(date_vec, bv_vec, err_vec);
+        smooth_time_series_local_window_with_error(date_vec, bv_vec, err_vec);
     else if (algo == "fit")
       std::tie(out_bv_vec, out_flag_vec) = 
         fit_csdm(date_vec, bv_vec, err_vec);
