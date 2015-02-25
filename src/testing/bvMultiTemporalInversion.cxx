@@ -19,6 +19,7 @@
 #include "otbProSailSimulatorFunctor.h"
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbProfileReprocessing.h"
 
 #include <vector>
 #include <random>
@@ -147,40 +148,6 @@ VectorType smooth_time_series_n_minus_1(VectorType ts, PrecisionType alpha)
   return result;
 }
 
-//assumes regular time sampling
-VectorType smooth_time_series_n_minus_1_with_error(VectorType ts, 
-                                                   VectorType ets)
-{
-  assert(ts.size()==ets.size());
-  auto result = ts;
-  auto ot = result.begin();
-  auto eit = ets.begin();
-  auto last = ts.end();
-  auto prev = ts.begin();
-  auto next = ts.begin();
-  auto e_prev = ets.begin();
-  auto e_next = ets.begin();
-  //advance iterators
-  ++ot;
-  ++eit;
-  std::advance(next, 2);
-  std::advance(e_next, 2);
-  while(next!=last)
-    {
-    auto w_prev = 1.0/fabs(*e_prev);
-    auto w_curr = 1.0/fabs(*eit);
-    auto w_next = 1.0/fabs(*e_next);
-    *ot = ((*prev)*w_prev+(*ot)*w_curr+(*next)*w_next)/(w_prev+w_curr+w_next);
-    ++prev;
-    ++next;
-    ++e_prev;
-    ++e_next;
-    ++ot;
-    ++eit;
-    }
-  return result;
-}
-
 int bvMultiTemporalInversion(int argc, char * argv[])
 {
 
@@ -211,6 +178,7 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   auto error_regressor = NeuralNetworkType::New();
   error_regressor->Load(error_model_file);
 
+  VectorType date_vec;
   VectorType estim_lai;
   VectorType estim_error;
   for(auto i=0; i<simu_lai.size(); ++i)
@@ -218,9 +186,16 @@ int bvMultiTemporalInversion(int argc, char * argv[])
     InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
     estim_lai.push_back(nn_regressor->Predict(pix)[0]);
     estim_error.push_back(error_regressor->Predict(pix)[0]);
+    date_vec.push_back(i);
     }
-  auto smooth_lai = smooth_time_series_n_minus_1_with_error(estim_lai, 
-                                                            estim_error);
+
+  VectorType smooth_lai{};
+  VectorType out_flag_vec{};
+
+  std::tie(smooth_lai, out_flag_vec) = 
+    otb::smooth_time_series_n_minus_1_with_error(date_vec,
+                                                 estim_lai, 
+                                                 estim_error);
 
   std::ofstream res_file;
   res_file.open(argv[7]);
