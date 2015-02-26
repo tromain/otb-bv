@@ -91,13 +91,13 @@ smooth_time_series_local_window_with_error(VectorType dts,
   auto d_next = dts.begin();
   *otf = not_processed_value;
   //advance iterators
-  ++ot;
-  ++otf;
-  ++eit;
-  ++dti;
-  std::advance(next, 2);
-  std::advance(e_next, 2);
-  std::advance(d_next, 2);
+  std::advance(ot, bwd_radius);
+  std::advance(otf, bwd_radius);
+  std::advance(eit, bwd_radius);
+  std::advance(dti, bwd_radius);
+  std::advance(next, bwd_radius+fwd_radius);
+  std::advance(e_next, bwd_radius+fwd_radius);
+  std::advance(d_next, bwd_radius+fwd_radius);
   while(next!=last)
     {
     auto w_prev = compute_weight((*dti-*d_prev),fabs(*e_prev));
