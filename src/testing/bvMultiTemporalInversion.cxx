@@ -152,8 +152,8 @@ int bvMultiTemporalInversion(int argc, char * argv[])
 
   std::tie(smooth_lai, out_flag_vec) = 
     otb::smooth_time_series_local_window_with_error(date_vec,
-                                                                                           estim_lai, 
-                                                                                           estim_error);
+                                                    estim_lai, 
+                                                    estim_error);
 
   std::ofstream res_file;
   res_file.open(argv[7]);
