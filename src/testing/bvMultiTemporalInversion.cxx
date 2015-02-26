@@ -178,22 +178,17 @@ int bvMultiTemporalInversionFromFile(int argc, char * argv[])
   std::ifstream dataFile(fname);
   if(!dataFile)
     itkGenericExceptionMacro(<< "Could not open file " << fname << "\n");
-
   VectorType doys{};
   VectorType estim_lai{};
   VectorType estim_error{};
   VectorType smooth_lai_ref{};
-
   std::string line;
   //read the header line
   std::getline(dataFile, line);
-
   while(dataFile.good())
     {
     std::getline(dataFile, line);
     auto tokens = pheno::string_split(line, " ");
-    std::cout << "Line: " << line << std::endl;
-    std::cout << "Tokens: " << tokens.size() << std::endl;
     if(tokens.size() > 5)
       {
       doys.push_back(std::stod(tokens[0]));
@@ -202,15 +197,12 @@ int bvMultiTemporalInversionFromFile(int argc, char * argv[])
       smooth_lai_ref.push_back(std::stod(tokens[4]));
       }
     }
-
   VectorType smooth_lai{};
   VectorType out_flag_vec{};
-
   std::tie(smooth_lai, out_flag_vec) = 
     otb::smooth_time_series_local_window_with_error(doys,
                                                     estim_lai, 
                                                     estim_error);
-
   double err{0.0};
   for(auto i=0; i<smooth_lai.size(); ++i)
     {
