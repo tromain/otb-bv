@@ -168,13 +168,15 @@ int bvMultiTemporalInversion(int argc, char * argv[])
 
 int bvMultiTemporalInversionFromFile(int argc, char * argv[])
 {
-  if(argc!=3)
+  if(argc!=5)
     {
-    std::cout << "Usage: " << argv[0] << " data_file tolerance" << std::endl;
+    std::cout << "Usage: " << argv[0] << " data_file bwradius fwradius tolerance" << std::endl;
     return EXIT_FAILURE;
     }
   std::string fname{argv[1]};
-  double tolerance = std::stod(argv[2]);
+  size_t bwr = std::stoi(argv[2]);
+  size_t fwr = std::stoi(argv[3]);
+  double tolerance = std::stod(argv[4]);
   std::ifstream dataFile(fname);
   if(!dataFile)
     itkGenericExceptionMacro(<< "Could not open file " << fname << "\n");
@@ -202,7 +204,8 @@ int bvMultiTemporalInversionFromFile(int argc, char * argv[])
   std::tie(smooth_lai, out_flag_vec) = 
     otb::smooth_time_series_local_window_with_error(doys,
                                                     estim_lai, 
-                                                    estim_error);
+                                                    estim_error, 
+                                                    bwr, fwr);
   double err{0.0};
   for(auto i=0; i<smooth_lai.size(); ++i)
     {

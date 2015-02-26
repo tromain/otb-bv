@@ -64,6 +64,8 @@ add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
 
 add_test(bvMultiTemporalInversionFile ${OTBBV_TESTS}
   bvMultiTemporalInversionFromFile ${otb-bv_SOURCE_DIR}/../data/bvMulTeInvRes.txt
+  1
+  1
   10e-5)
 
 add_test(bvLaiLogNdvi ${OTBBV_TESTS}
