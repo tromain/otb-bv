@@ -15,6 +15,7 @@
 #include "itkMacro.h"
 
 #include "phenoFunctions.h"
+#include "miscUtils.h"
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
 #include "otbMachineLearningModelFactory.h"
@@ -23,6 +24,7 @@
 
 #include <vector>
 #include <random>
+#include <cassert>
 
 using PrecisionType=double;
 using VectorType=std::vector<PrecisionType>;
@@ -157,9 +159,68 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   res_file.open(argv[7]);
   for(auto i=0; i<simu_lai.size(); ++i)
     res_file << doys[i] << " " << noisy_lai[i] << " " << estim_lai[i] << " " 
+             << estim_error[i] << " "
              << smooth_lai[i]  << " " 
              << ndvi[i] << std::endl;
   res_file.close();
   return EXIT_SUCCESS;
 }
 
+int bvMultiTemporalInversionFromFile(int argc, char * argv[])
+{
+  if(argc!=3)
+    {
+    std::cout << "Usage: " << argv[0] << " data_file tolerance" << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::string fname{argv[1]};
+  double tolerance = std::stod(argv[2]);
+  std::ifstream dataFile(fname);
+  if(!dataFile)
+    itkGenericExceptionMacro(<< "Could not open file " << fname << "\n");
+
+  VectorType doys{};
+  VectorType estim_lai{};
+  VectorType estim_error{};
+  VectorType smooth_lai_ref{};
+
+  std::string line;
+  //read the header line
+  std::getline(dataFile, line);
+
+  while(dataFile.good())
+    {
+    std::getline(dataFile, line);
+    auto tokens = pheno::string_split(line, " ");
+    std::cout << "Line: " << line << std::endl;
+    std::cout << "Tokens: " << tokens.size() << std::endl;
+    if(tokens.size() > 5)
+      {
+      doys.push_back(std::stod(tokens[0]));
+      estim_lai.push_back(std::stod(tokens[2]));
+      estim_error.push_back(std::stod(tokens[3]));
+      smooth_lai_ref.push_back(std::stod(tokens[4]));
+      }
+    }
+
+  VectorType smooth_lai{};
+  VectorType out_flag_vec{};
+
+  std::tie(smooth_lai, out_flag_vec) = 
+    otb::smooth_time_series_local_window_with_error(doys,
+                                                    estim_lai, 
+                                                    estim_error);
+
+  double err{0.0};
+  for(auto i=0; i<smooth_lai.size(); ++i)
+    {
+    err += fabs(smooth_lai[i]-smooth_lai_ref[i]);
+    }
+  err /= smooth_lai.size();
+  if(err > tolerance)
+    {
+    std::cout << "error = " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+  return EXIT_SUCCESS;
+}
