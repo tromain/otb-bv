@@ -61,10 +61,22 @@ private:
     SetParameterDescription( "opf", "Filename where the reprocessed profile saved. This is an ASCII file where each line contains the date (YYYMMDD) the new BV estimation and a boolean information which is 0 if the value has not been reprocessed." );
     MandatoryOn("opf");
 
-    AddParameter(ParameterType_String, "algo", 
-                 "Reprocessing algorithm: n1, fit.");
+    AddParameter(ParameterType_Choice, "algo", 
+                 "Reprocessing algorithm: local, fit.");
     SetParameterDescription("algo", 
-                            "Reprocessing algorithm: n1 is reprocessing the n-1 date, fit is a double logisting fitting of the complete profile.");
+                            "Reprocessing algorithm: local uses a window around the current date, fit is a double logisting fitting of the complete profile.");
+
+    AddChoice("algo.local", "Uses a window around the current date.");
+    SetParameterDescription("algo.local", "This group of parameters allows to set local window parameters. ");
+
+    AddParameter(ParameterType_Int, "algo.local.bwr", "Local window backward radius");
+    SetParameterInt("algo.local.bwr", 1);
+    SetParameterDescription("algo.local.bwr", "Backward radius of the local window. ");
+
+    AddParameter(ParameterType_Int, "algo.local.fwr", "Local window forward radius");
+    SetParameterInt("algo.local.fwr", 1);
+    SetParameterDescription("algo.local.fwr", "Forward radius of the local window. ");
+
     MandatoryOff("algo");
   }
 
@@ -120,18 +132,27 @@ private:
     VectorType out_bv_vec{};
     VectorType out_flag_vec{};
 
-    std::string algo{"n1"};
+    std::string algo{"local"};
     if (IsParameterEnabled("algo"))
       algo = GetParameterString("algo");    
-    if (algo == "n1")
+    if (algo == "local")
+      {
+      size_t bwr{1};
+      size_t fwr{1};
+      if (IsParameterEnabled("algo.local.bwr"))
+        bwr = GetParameterInt("algo.local.bwr");
+      if (IsParameterEnabled("algo.local.fwr"))
+        bwr = GetParameterInt("algo.local.fwr");
       std::tie(out_bv_vec, out_flag_vec) = 
-        smooth_time_series_local_window_with_error(date_vec, bv_vec, err_vec);
+        smooth_time_series_local_window_with_error(date_vec, bv_vec, err_vec, 
+                                                   bwr, fwr);
+      }
     else if (algo == "fit")
       std::tie(out_bv_vec, out_flag_vec) = 
         fit_csdm(date_vec, bv_vec, err_vec);
     else
       itkGenericExceptionMacro(<< "Unknown algorithm " << algo 
-                               << ". Available algorithms are: n1, fit.\n");
+                               << ". Available algorithms are: local, fit.\n");
 
     auto opfn = GetParameterString("opf");
     std::ofstream out_profile_file;
