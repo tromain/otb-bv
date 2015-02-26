@@ -106,10 +106,23 @@ smooth_time_series_local_window_with_error(VectorType dts,
   std::advance(d_win_last, bwd_radius+fwd_radius);
   while(win_last!=last)
     {
-    auto w_win_first = compute_weight((*dti-*d_win_first),fabs(*e_win_first));
-    auto w_curr = compute_weight(PrecisionType{0},fabs(*eit));
-    auto w_win_last = compute_weight((*d_win_last-*dti),fabs(*e_win_last));
-    *ot = ((*win_first)*w_win_first+(*ot)*w_curr+(*win_last)*w_win_last)/(w_win_first+w_curr+w_win_last);
+    auto current_d = d_win_first;
+    auto current_e = e_win_first;
+    auto current_v = win_first;
+    auto past_it = d_win_last; ++past_it;
+
+    PrecisionType sum_weights{0.0};
+    PrecisionType weighted_value{0.0};
+    while(current_d != past_it)
+      {
+      auto cw = compute_weight(fabs(*current_d-*dti),fabs(*current_e));
+      sum_weights += cw;
+      weighted_value += (*current_v)*cw;
+      ++current_d;
+      ++current_e;
+      ++current_v;
+      }
+    *ot = weighted_value/sum_weights;
     *otf = processed_value;
     ++win_first;
     ++win_last;
