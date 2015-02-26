@@ -136,7 +136,6 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   auto error_regressor = NeuralNetworkType::New();
   error_regressor->Load(error_model_file);
 
-  VectorType date_vec;
   VectorType estim_lai;
   VectorType estim_error;
   for(auto i=0; i<simu_lai.size(); ++i)
@@ -144,14 +143,13 @@ int bvMultiTemporalInversion(int argc, char * argv[])
     InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
     estim_lai.push_back(nn_regressor->Predict(pix)[0]);
     estim_error.push_back(error_regressor->Predict(pix)[0]);
-    date_vec.push_back(i);
     }
 
   VectorType smooth_lai{};
   VectorType out_flag_vec{};
 
   std::tie(smooth_lai, out_flag_vec) = 
-    otb::smooth_time_series_local_window_with_error(date_vec,
+    otb::smooth_time_series_local_window_with_error(doys,
                                                     estim_lai, 
                                                     estim_error);
 
