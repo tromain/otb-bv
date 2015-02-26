@@ -75,6 +75,12 @@ smooth_time_series_local_window_with_error(VectorType dts,
                                            size_t bwd_radius = 1,
                                            size_t fwd_radius = 1)
 {
+
+  /**
+        ------------------------------------
+        |                    |             |
+       win_first            current       win_last
+  */
   assert(ts.size()==ets.size() && ts.size()==dts.size());
   auto result = ts;
   auto result_flag = ts;
@@ -82,35 +88,35 @@ smooth_time_series_local_window_with_error(VectorType dts,
   auto otf = result_flag.begin();
   auto eit = ets.begin();
   auto last = ts.end();
-  auto prev = ts.begin();
-  auto next = ts.begin();
-  auto e_prev = ets.begin();
-  auto e_next = ets.begin();
+  auto win_first = ts.begin();
+  auto win_last = ts.begin();
+  auto e_win_first = ets.begin();
+  auto e_win_last = ets.begin();
   auto dti = dts.begin();
-  auto d_prev = dts.begin();
-  auto d_next = dts.begin();
+  auto d_win_first = dts.begin();
+  auto d_win_last = dts.begin();
   *otf = not_processed_value;
   //advance iterators
   std::advance(ot, bwd_radius);
   std::advance(otf, bwd_radius);
   std::advance(eit, bwd_radius);
   std::advance(dti, bwd_radius);
-  std::advance(next, bwd_radius+fwd_radius);
-  std::advance(e_next, bwd_radius+fwd_radius);
-  std::advance(d_next, bwd_radius+fwd_radius);
-  while(next!=last)
+  std::advance(win_last, bwd_radius+fwd_radius);
+  std::advance(e_win_last, bwd_radius+fwd_radius);
+  std::advance(d_win_last, bwd_radius+fwd_radius);
+  while(win_last!=last)
     {
-    auto w_prev = compute_weight((*dti-*d_prev),fabs(*e_prev));
+    auto w_win_first = compute_weight((*dti-*d_win_first),fabs(*e_win_first));
     auto w_curr = compute_weight(PrecisionType{0},fabs(*eit));
-    auto w_next = compute_weight((*d_next-*dti),fabs(*e_next));
-    *ot = ((*prev)*w_prev+(*ot)*w_curr+(*next)*w_next)/(w_prev+w_curr+w_next);
+    auto w_win_last = compute_weight((*d_win_last-*dti),fabs(*e_win_last));
+    *ot = ((*win_first)*w_win_first+(*ot)*w_curr+(*win_last)*w_win_last)/(w_win_first+w_curr+w_win_last);
     *otf = processed_value;
-    ++prev;
-    ++next;
-    ++e_prev;
-    ++e_next;
-    ++d_prev;
-    ++d_next;
+    ++win_first;
+    ++win_last;
+    ++e_win_first;
+    ++e_win_last;
+    ++d_win_first;
+    ++d_win_last;
     ++ot;
     ++otf;
     ++eit;
