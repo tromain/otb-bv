@@ -150,10 +150,20 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   VectorType smooth_lai{};
   VectorType out_flag_vec{};
 
+  size_t bwr = 1;
+  size_t fwr = 1;
+  if(argc==10)
+    {
+    size_t bwr = std::stoi(argv[8]);
+    size_t fwr = std::stoi(argv[9]);
+    std::cout << "Radiuses: " << bwr << " " << fwr << std::endl;
+    }
   std::tie(smooth_lai, out_flag_vec) = 
     otb::smooth_time_series_local_window_with_error(doys,
                                                     estim_lai, 
-                                                    estim_error);
+                                                    estim_error,
+                                                    bwr,
+                                                    fwr);
 
   std::ofstream res_file;
   res_file.open(argv[7]);

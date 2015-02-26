@@ -62,6 +62,17 @@ add_test(bvMultiTemporalInversion ${OTBBV_TESTS}
   ${otb-bv_SOURCE_DIR}/../data/appInvModErrEst.txt
   ${TEMP}/bvMulTeInvRes.txt)
 
+add_test(bvMultiTemporalInversionRadius ${OTBBV_TESTS}
+  bvMultiTemporalInversion ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr
+  33.469
+  20.071
+  169.0
+  ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt
+  ${otb-bv_SOURCE_DIR}/../data/appInvModErrEst.txt
+  ${TEMP}/bvMulTeInvResRadius.txt
+  5
+  0)
+
 add_test(bvMultiTemporalInversionFile ${OTBBV_TESTS}
   bvMultiTemporalInversionFromFile ${otb-bv_SOURCE_DIR}/../data/bvMulTeInvRes.txt
   1
