@@ -66,6 +66,9 @@ private:
     SetParameterDescription("algo", 
                             "Reprocessing algorithm: local uses a window around the current date, fit is a double logisting fitting of the complete profile.");
 
+    AddChoice("algo.fit", "Double logistic fitting of the complete profile.");
+    SetParameterDescription("algo.fit", "This group of parameters allows to set fit window parameters. ");
+
     AddChoice("algo.local", "Uses a window around the current date.");
     SetParameterDescription("algo.local", "This group of parameters allows to set local window parameters. ");
 
