@@ -155,6 +155,11 @@ public:
   itkNewMacro(Self);
   itkTypeMacro(BVImageInversion, otb::Application);
 
+  using FunctorType = BVEstimationFunctor<FloatVectorImageType::PixelType, 
+                                          FloatVectorImageType::PixelType>;
+  using FilterType = UnaryFunctorImageFilterWithNBands<FloatVectorImageType,
+                                                       FloatVectorImageType,
+                                                       FunctorType>;
   
 private:
   void DoInit()
@@ -247,27 +252,18 @@ private:
       }
     regressor->Load(model_file);    
 
-    //instantiate a functor with the regressor and pass it to the unary functor image filter
-    //pass also the normalization values
-    using FunctorType = BVEstimationFunctor<FloatVectorImageType::PixelType, 
-                                            FloatVectorImageType::PixelType>;
-
-    auto bv_filter = UnaryFunctorImageFilterWithNBands<FloatVectorImageType,
-                                                       FloatVectorImageType,
-                                                       FunctorType>::New();
-
+    //instantiate a functor with the regressor and pass it to the
+    //unary functor image filter pass also the normalization values
+    bv_filter = FilterType::New();
     bv_filter->SetFunctor(FunctorType(regressor,var_minmax));
     bv_filter->SetInput(input_image);
     bv_filter->SetNumberOfOutputBands(1);
-    bv_filter->GetOutput()->Update();
     SetParameterOutputImage("out", bv_filter->GetOutput());
-                       
-
   }
+  FilterType::Pointer bv_filter;
+};
 
-  };
-
-  }
-  }
+}
+}
 
 OTB_APPLICATION_EXPORT(otb::Wrapper::BVImageInversion)
