@@ -41,7 +41,7 @@ include(${CMAKE_ROOT}/Modules/Dart.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-include(${OTB_SOURCE_DIR}/CMake/OTBWrapperMacros.cmake)
+include(${OTB_DIR}/OTBApplicationMacros.cmake)
 
 set(TEMP ${otb-bv_BINARY_DIR}/Testing/Temporary)
 add_subdirectory(library)
