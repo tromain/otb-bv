@@ -2404,19 +2404,23 @@ awk '{print $2,$1}' /tmp/val > $validationfile
 # cat /tmp/MLAI/formosat2_*validation_gt > /tmp/MLAI/f2validation_gt
 # cat /tmp/MLAI/landsat8_*validation > /tmp/MLAI/l8validation
 # cat /tmp/MLAI/landsat8_*validation_gt > /tmp/MLAI/l8validation_gt
-cat /tmp/MLAI/spot4_*validation_nn > /tmp/MLAI/s4validation_nn
-cat /tmp/MLAI/spot4_*validation_gt_nn > /tmp/MLAI/s4validation_gt_nn
-cat /tmp/MLAI/spot4_*validation_mlr > /tmp/MLAI/s4validation_mlr
-cat /tmp/MLAI/spot4_*validation_gt_mlr > /tmp/MLAI/s4validation_gt_mlr
-cat /tmp/MLAI/spot4_*validation_svr > /tmp/MLAI/s4validation_svr
-cat /tmp/MLAI/spot4_*validation_gt_svr > /tmp/MLAI/s4validation_gt_svr
-cat /tmp/MLAI/spot4_*validation_rfr > /tmp/MLAI/s4validation_rfr
-cat /tmp/MLAI/spot4_*validation_gt_rfr > /tmp/MLAI/s4validation_gt_rfr
+#cat /tmp/MLAI/spot4_*validation_nn > /tmp/MLAI/s4validation_nn
+#cat /tmp/MLAI/spot4_*validation_gt_nn > /tmp/MLAI/s4validation_gt_nn
+#cat /tmp/MLAI/spot4_*validation_mlr > /tmp/MLAI/s4validation_mlr
+#cat /tmp/MLAI/spot4_*validation_gt_mlr > /tmp/MLAI/s4validation_gt_mlr
+cat ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/spot4_*validation_svr > ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/s4validation_svr
+cat ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/spot4_*validation_gt_svr > ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/s4validation_gt_svr
+cat ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/landsat8_*validation_svr > ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/l8validation_svr
+cat ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/landsat8_*validation_gt_svr > ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/l8validation_gt_svr
+cat ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/landsat8_*validation_svr > ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/f2validation_svr
+cat ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/landsat8_*validation_gt_svr > ~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/f2validation_gt_svr
+#cat /tmp/MLAI/spot4_*validation_rfr > /tmp/MLAI/s4validation_rfr
+#cat /tmp/MLAI/spot4_*validation_gt_rfr > /tmp/MLAI/s4validation_gt_rfr
 #+end_src
 
 #+RESULTS:
 
-#+begin_src python :var data="/tmp/MLAI/s4validation_svr"
+#+begin_src python :var data="/tmp/MLAI/s4validation_mlr"
 import math
 import string
 rmseotb = 0.0
@@ -2435,9 +2439,9 @@ return math.sqrt(rmseotb), relerr
 #+end_src
 
 #+RESULTS:
-| 0.6791911039766801 | 1.1799646687864866 |
+| 0.847357090983843 | 0.6446734891333471 |
 
-#+begin_src python :var data="/tmp/MLAI/s4validation_gt_svr"
+#+begin_src python :var data="/tmp/MLAI/s4validation_gt_mlr"
 import math
 import string
 rmsebvn = 0.0
@@ -2462,23 +2466,33 @@ return (math.sqrt(rmsebvn), relerrbvn, math.sqrt(rmseotb), relerrotb)
 #+end_src
 
 #+RESULTS:
-| 0.5655395260344102 | 0.9798962606525804 | 0.5112346297030971 | 0.6999200399505124 |
+| 0.5655395260344102 | 0.9798962606525804 | 0.9235945863893202 | 3.8653608555597905 |
 
-#+begin_src gnuplot :file formosat.png 
+#+begin_src gnuplot :file otb-vs-bvnet.png 
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 1024, 768 
-set title "Formosat-2"
+set title "OTB vs BVNET"
 set xlabel "Field LAI"
 set ylabel "Estimated LAI"
 set grid on
 set key left box
-set xrange [0:8]
-set yrange [0:8]
-plot "/tmp/MLAI/f2validation" using 1:2 t "simus", "/tmp/MLAI/f2validation_gt" using 1:3 lw 3 t "OTB", \
-     "/tmp/MLAI/f2validation_gt" using 1:2 lw 3 t "bvnet", x
+set xrange [0:4]
+set yrange [0:5] 
+plot "~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/l8validation_gt_svr" using 1:3 lt 1 lw 3 t "OTB", "~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/l8validation_gt_svr" using 1:2 lt 2 lw 3 t "bvnet","~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/s4validation_gt_svr" using 1:3 lt 1 lw 3 t "", "~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/s4validation_gt_svr" using 1:2 lt 2 lw 3 t "", "~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/f2validation_gt_svr" using 1:3 lt 1 lw 3 t "", "~/Projects/Sentinel2Agriculture/BenchmarkResults/Vegetation_Status_Benchmark/otb-vs-bvnet/f2validation_gt_svr" using 1:2 lt 2 lw 3 t "", x
 #+end_src
 
+
+
 #+RESULTS:
-[[file:formosat.png]]
+[[file:otb-vs-bvnet.png]]
+
+
+
+
+
+
+
+
+
 
 #+begin_src gnuplot :file landsat.png 
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 1024, 768 
@@ -2487,9 +2501,12 @@ set xlabel "Field LAI"
 set ylabel "Estimated LAI"
 set grid on
 set key left box
-plot "/tmp/MLAI/l8validation" using 1:2 t "simus", "/tmp/MLAI/l8validation_gt" using 1:3 lw 3 t "OTB", \
-     "/tmp/MLAI/l8validation_gt" using 1:2 lw 3 t "bvnet", x
+plot "/home/inglada/stok/DATA/BVNET_otb/DATA/MLAI_var0.01/l8validation_gt_nn" using 1:2 lw 3 t "bvnet", x,"/home/inglada/stok/DATA/BVNET_otb/DATA/MLAI_var0.01/l8validation_gt_nn" using 1:3 lw 3 t "NN"
 #+end_src
+
+#+RESULTS:
+[[file:landsat.png]]
+
 
 #+begin_src gnuplot :file spot.png 
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 0.9 size 512, 512
@@ -2500,12 +2517,13 @@ set grid on
 set xrange [0:5]
 set yrange [0:5]
 set key left box
-plot "/tmp/MLAI/s4validation_gt_svr" using 1:2 lw 3 t "bvnet", x, \
-     "/tmp/MLAI/s4validation_gt_rfr" using 1:3 lw 3 t "SVR"#, \
-     "/tmp/MLAI/s4validation_gt_nn" using 1:3 lw 3 t "NN", \
-     "/tmp/MLAI/s4validation_svr" using 1:2 t "simus SVR", \
-     "/tmp/MLAI/s4validation_nn" using 1:2 t "simus NN"
+plot "/home/inglada/stok/DATA/BVNET_otb/DATA/mlai_200k_0.01/spot4_validation_gt" using 1:2 lw 3 t "bvnet", x,"/home/inglada/stok/DATA/BVNET_otb/DATA/mlai_200k_0.01/spot4_validation_gt" using 1:3 lw 3 t "NN"
 #+end_src
+
+#+RESULTS:
+[[file:spot.png]]
+
+
 
 
 
