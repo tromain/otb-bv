@@ -14,26 +14,26 @@
 
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
   SOURCES        otbBVInputVariableGeneration.cxx
-  LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil)
 
 OTB_CREATE_APPLICATION(NAME           ProSailSimulator
   SOURCES        otbProSailSimulator.cxx
-  LINK_LIBRARIES OTBIO;OTBCommon;OTBSimulation;OTBBVUtil)                     
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil)                     
 
 OTB_CREATE_APPLICATION(NAME           InverseModelLearning
   SOURCES        otbInverseModelLearning.cxx
-  LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
 
 OTB_CREATE_APPLICATION(NAME           BVInversion
   SOURCES        otbBVInversion.cxx
-  LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
 
 OTB_CREATE_APPLICATION(NAME           BVImageInversion
   SOURCES        otbBVImageInversion.cxx
-  LINK_LIBRARIES OTBIO;OTBCommon;OTBLearning;OTBBVUtil;gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
 OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
   SOURCES        otbProfileReprocessing.cxx
-  LINK_LIBRARIES OTBIO;OTBCommon;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
                      
 add_executable(testSimus testSimus.cxx)
-target_link_libraries(testSimus OTBIO OTBCommon OTBSimulation OTBBVUtil gsl gslcblas)
+target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil gsl gslcblas)
