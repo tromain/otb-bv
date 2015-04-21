@@ -90,7 +90,7 @@ set(BVTests_SRCS
   bvLaiLogNdviTest.cxx)
 
 add_executable(otbBVTests ${BVTests_SRCS})
-target_link_libraries(otbBVTests OTBCommon OTBIO OTBTesting OTBSimulation OTBBVUtil ${PHENOTB_LIBRARY} gsl gslcblas)
+target_link_libraries(otbBVTests ${OTB_LIBRARIES} OTBBVUtil ${PHENOTB_LIBRARY} gsl gslcblas)
 
 
 
