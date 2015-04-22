@@ -13,12 +13,12 @@
 # =========================================================================
 
 ### Test the applications
-add_test(appBvGenInputVars ${OTB_DIR}/bin/otbApplicationLauncherCommandLine 
+add_test(appBvGenInputVars otbApplicationLauncherCommandLine 
   BVInputVariableGeneration ${otb-bv_BINARY_DIR}/applications/ 
   -samples 2000 
   -out ${TEMP}/appBvGenInputVarssamples.txt)
 
-add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
+add_test(appBvProSailSim otbApplicationLauncherCommandLine
   ProSailSimulator ${otb-bv_BINARY_DIR}/applications/ 
   -bvfile ${otb-bv_SOURCE_DIR}/../data/appBvGenInputVarssamples.txt
   -soilfile dummy
@@ -28,14 +28,14 @@ add_test(appBvProSailSim ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
   -sensorzenith 20.071
   -azimuth 169.0)
 
-add_test(appBvInvModLear ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
+add_test(appBvInvModLear otbApplicationLauncherCommandLine
   InverseModelLearning ${otb-bv_BINARY_DIR}/applications/
   -training ${otb-bv_SOURCE_DIR}/../data/train-refls-lai.txt
   -regression nn
   -out ${TEMP}/appInvMod.txt
   -errest ${TEMP}/appInvModErrEst.txt)
 
-add_test(appBvInversion ${OTB_DIR}/bin/otbApplicationLauncherCommandLine
+add_test(appBvInversion otbApplicationLauncherCommandLine
   BVInversion ${otb-bv_BINARY_DIR}/applications/
   -reflectances ${otb-bv_SOURCE_DIR}/../data/relfs_sim.txt
   -model ${otb-bv_SOURCE_DIR}/../data/appInvMod.txt
