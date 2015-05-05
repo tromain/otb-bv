@@ -361,9 +361,9 @@ private:
   }
 
   template <typename RegressionType>
-  double EstimateErrorModel(ListInputSampleType::Pointer ils, 
-                            ListOutputSampleType::Pointer ols,
-                            std::size_t nbVars)
+  void EstimateErrorModel(ListInputSampleType::Pointer ils, 
+                          ListOutputSampleType::Pointer ols,
+                          std::size_t nbVars)
   {
     // Generate the values of the error
     auto bv_regression = RegressionType::New();
