@@ -154,8 +154,8 @@ int bvMultiTemporalInversion(int argc, char * argv[])
   size_t fwr = 1;
   if(argc==10)
     {
-    size_t bwr = std::stoi(argv[8]);
-    size_t fwr = std::stoi(argv[9]);
+    bwr = std::stoi(argv[8]);
+    fwr = std::stoi(argv[9]);
     std::cout << "Radiuses: " << bwr << " " << fwr << std::endl;
     }
   std::tie(smooth_lai, out_flag_vec) = 

@@ -62,16 +62,16 @@ public:
     for(size_t i=0;i<m_SatRSR->GetNbBands();i++)
       pix.push_back(0.0);
 
-    auto m_LP = LeafParametersType::New();
-    m_LP->SetCab(m_BV[IVNames::Cab]);
-    m_LP->SetCar(m_BV[IVNames::Car]);
-    m_LP->SetCBrown(m_BV[IVNames::Cbp]);
+    auto leaf_pars = LeafParametersType::New();
+    leaf_pars->SetCab(m_BV[IVNames::Cab]);
+    leaf_pars->SetCar(m_BV[IVNames::Car]);
+    leaf_pars->SetCBrown(m_BV[IVNames::Cbp]);
     double Cw = m_BV[IVNames::Cdm]/(1.-m_BV[IVNames::CwRel]);
     //TODO : this check should not be needed if the simulations were OK
     if(Cw<0) Cw = 0.0;
-    m_LP->SetCw(Cw);
-    m_LP->SetCm(m_BV[IVNames::Cdm]);
-    m_LP->SetN(m_BV[IVNames::N]);
+    leaf_pars->SetCw(Cw);
+    leaf_pars->SetCm(m_BV[IVNames::Cdm]);
+    leaf_pars->SetN(m_BV[IVNames::N]);
     m_LAI = m_BV[IVNames::MLAI];
     m_Angl = m_BV[IVNames::ALA];
     m_PSoil = m_BV[IVNames::Bs];
@@ -79,7 +79,7 @@ public:
     m_HSpot = m_BV[IVNames::HsD];
 
     auto prospect = ProspectType::New();
-    prospect->SetInput(m_LP);
+    prospect->SetInput(leaf_pars);
 
     prospect->GenerateData();
     auto refl = prospect->GetReflectance()->GetResponse();
@@ -198,7 +198,6 @@ protected:
   }
   /** Satellite Relative spectral response*/
   SatRSRPointerType m_SatRSR;
-  LeafParametersPointerType m_LP;
   double m_LAI; //leaf area index
   double m_Angl; //average leaf angle
   double m_PSoil; //soil coefficient
