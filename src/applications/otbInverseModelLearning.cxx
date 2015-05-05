@@ -157,7 +157,7 @@ private:
         ss >> outputValue[0];
         InputSampleType inputValue;
         inputValue.Reserve(nbInputVariables);
-        for(auto var = 0; var < nbInputVariables; ++var)
+        for(size_t var = 0; var < nbInputVariables; ++var)
           ss >> inputValue[var];
         if (IsParameterEnabled("errest") && (nbSamples%2 == 0))
           {
@@ -184,7 +184,7 @@ private:
       var_minmax = estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
       write_normalization_file(var_minmax, GetParameterString("normalization"));
       normalize_variables(inputListSample, outputListSample, var_minmax);
-      for(auto var = 0; var < nbInputVariables; ++var)
+      for(size_t var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
@@ -249,7 +249,7 @@ private:
     auto total_n_samples = ils->Size();
     otbAppLogINFO("Selecting best of " << nbModels << " models." 
                   << " Total nb samples is " << total_n_samples << std::endl);
-    for(auto iteration=0; iteration<nbModels; ++iteration)
+    for(size_t iteration=0; iteration<nbModels; ++iteration)
       {
       auto ils_slice = ListInputSampleType::New();
       auto ols_slice = ListOutputSampleType::New();
@@ -257,7 +257,7 @@ private:
       ils_slice->SetMeasurementVectorSize(ils->GetMeasurementVectorSize());
       ols_slice->SetMeasurementVectorSize(1);
 
-      for(auto nsamples=0; nsamples<total_n_samples/nbModels; ++nsamples)
+      for(size_t nsamples=0; nsamples<total_n_samples/nbModels; ++nsamples)
         {
         ils_slice->PushBack(sIt.GetMeasurementVector());
         ols_slice->PushBack(rIt.GetMeasurementVector());

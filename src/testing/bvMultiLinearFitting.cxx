@@ -70,7 +70,7 @@ int bvMultiLinearFitting(int argc, char * argv[])
     }
   other_model->Load("/tmp/mrr.txt");
   double diff{0};
-  for(auto i=0; i<model->GetModel().size(); i++)
+  for(size_t i=0; i<model->GetModel().size(); i++)
     diff += fabs(model->GetModel()[i]-other_model->GetModel()[i]);
   if(diff>1e-6)
     {
@@ -119,7 +119,7 @@ int bvMultiLinearFittingConversions(int argc, char * argv[])
   inputListSample->SetMeasurementVectorSize(nbInputVariables);
   outputListSample->SetMeasurementVectorSize(1);
 
-  for(auto i=0; i<x_vec.size(); ++i)
+  for(size_t i=0; i<x_vec.size(); ++i)
     {
     MRM::TargetSampleType outputValue;
     outputValue[0] = y_vec[i];

@@ -128,7 +128,7 @@ int bvMultiTemporalInversion(int argc, char * argv[])
                                           sensorzenith, azimuth);
 
   auto ndvi = noisy_lai;
-  for(auto i=0; i<simu_lai.size(); ++i)
+  for(size_t i=0; i<simu_lai.size(); ++i)
     ndvi[i] = (simu_refls[i][3]-simu_refls[i][2])/
       (simu_refls[i][3]+simu_refls[i][2]+0.01);
 
@@ -140,7 +140,7 @@ int bvMultiTemporalInversion(int argc, char * argv[])
 
   VectorType estim_lai;
   VectorType estim_error;
-  for(auto i=0; i<simu_lai.size(); ++i)
+  for(size_t i=0; i<simu_lai.size(); ++i)
     {
     InputSampleType pix(simu_refls[i].data(), simu_refls[i].size()-2);
     estim_lai.push_back(nn_regressor->Predict(pix)[0]);
@@ -167,7 +167,7 @@ int bvMultiTemporalInversion(int argc, char * argv[])
 
   std::ofstream res_file;
   res_file.open(argv[7]);
-  for(auto i=0; i<simu_lai.size(); ++i)
+  for(size_t i=0; i<simu_lai.size(); ++i)
     res_file << doys[i] << " " << noisy_lai[i] << " " << estim_lai[i] << " " 
              << estim_error[i] << " "
              << smooth_lai[i]  << " " 
@@ -217,7 +217,7 @@ int bvMultiTemporalInversionFromFile(int argc, char * argv[])
                                                     estim_error, 
                                                     bwr, fwr);
   double err{0.0};
-  for(auto i=0; i<smooth_lai.size(); ++i)
+  for(size_t i=0; i<smooth_lai.size(); ++i)
     {
     err += fabs(smooth_lai[i]-smooth_lai_ref[i]);
     }

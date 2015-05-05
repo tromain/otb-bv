@@ -122,7 +122,7 @@ private:
       itkGenericExceptionMacro(<< "Could not open file " << outFileName);
       }
 
-    auto nbInputVariables = countColumns(reflectancesFileName);
+    size_t nbInputVariables = countColumns(reflectancesFileName);
     otbAppLogINFO("Found " << nbInputVariables << " input variables in "
                   << reflectancesFileName << std::endl);
 
@@ -136,7 +136,7 @@ private:
                                  << " - 1) is not coherent with the number of "
                                  << "input variables ("<< nbInputVariables 
                                  <<").");
-      for(auto var = 0; var < nbInputVariables; ++var)
+      for(size_t var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
@@ -184,7 +184,7 @@ private:
           std::istringstream ss(line);
           InputSampleType inputValue;
           inputValue.Reserve(nbInputVariables);
-          for(auto var = 0; var < nbInputVariables; ++var)
+          for(size_t var = 0; var < nbInputVariables; ++var)
             {
             ss >> inputValue[var];
             if( HasValue( "normalization" )==true )

@@ -21,7 +21,7 @@
 
 namespace otb
 {
-unsigned short int countColumns(std::string fileName);
+size_t countColumns(std::string fileName);
 
 template<typename II, typename OI>
 inline
@@ -38,7 +38,7 @@ NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& 
             var_minmax[nbInputVariables].first = ov;
         if(ov>var_minmax[nbInputVariables].second)
           var_minmax[nbInputVariables].second = ov;
-        for(auto var = 0; var < nbInputVariables; ++var)
+        for(size_t var = 0; var < nbInputVariables; ++var)
           {
           auto iv = ivIt.GetMeasurementVector()[var];
           if(iv<var_minmax[var].first)
@@ -126,7 +126,7 @@ void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax)
     auto ovInstId = ovIt.GetInstanceIdentifier();
     osl->SetMeasurement(ovInstId, 0, normalize(ovIt.GetMeasurementVector()[0],var_minmax[nbInputVariables]));
     auto ivInstId = ivIt.GetInstanceIdentifier();
-    for(auto var = 0; var < nbInputVariables; ++var)
+    for(size_t var = 0; var < nbInputVariables; ++var)
       {
       isl->SetMeasurement(ivInstId, var, normalize(ivIt.GetMeasurementVector()[var],var_minmax[var]));
       }

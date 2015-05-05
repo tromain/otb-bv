@@ -17,29 +17,29 @@
 
 namespace otb
 {
-  unsigned short int countColumns(std::string fileName)
-  {
-    std::ifstream ifile(fileName.c_str());
-    std::string line;
-    auto nbSpaces = 0;
-    if (ifile.is_open())
+size_t countColumns(std::string fileName)
+{
+  std::ifstream ifile(fileName.c_str());
+  std::string line;
+  size_t nbSpaces = 0;
+  if (ifile.is_open())
+    {
+    getline(ifile,line);
+    ifile.close();
+    boost::trim(line);
+    auto found = line.find(' ');
+    while(found!=std::string::npos)
       {
-      getline(ifile,line);
-      ifile.close();
-      boost::trim(line);
-      auto found = line.find(' ');
-      while(found!=std::string::npos)
-        {
-        ++nbSpaces;
-        found = line.find(' ', found+1);
-        }
-      return nbSpaces+1;
+      ++nbSpaces;
+      found = line.find(' ', found+1);
       }
-    else
-      {
-      itkGenericExceptionMacro(<< "Could not open file " << fileName);
-      }
+    return nbSpaces+1;
+    }
+  else
+    {
+    itkGenericExceptionMacro(<< "Could not open file " << fileName);
+    }
 
-  }
+}
 }
 

@@ -42,7 +42,7 @@ int main()
   const std::string rsrFileName{"/home/inglada/Dev/otb-bv/data/formosat2.rsr"};
   const unsigned int satNbBands{5};
   OutputType pix;
-  for(auto i=0;i<satNbBands;i++)
+  for(size_t i=0;i<satNbBands;i++)
     pix.push_back(0.0);
   auto m_LP = LeafParametersType::New();
   m_LP->SetCab(vCab);
@@ -70,7 +70,7 @@ int main()
   sail->Update();
   auto sailSim = sail->GetViewingReflectance()->GetResponse();
   VectorPairType hxSpectrum;
-  for(auto i=0;i<simNbBands;i++)
+  for(size_t i=0;i<simNbBands;i++)
     {
     PairType resp;
     resp.first = static_cast<PrecisionType>((400.0+i)/1000);
@@ -88,12 +88,12 @@ int main()
   reduceResponse->SetInputSpectralResponse(aResponse);
   reduceResponse->SetReflectanceMode(true);
   reduceResponse->CalculateResponse();
-  for(auto i=0;i<satNbBands;i++)
+  for(size_t i=0;i<satNbBands;i++)
     std::cout << (*reduceResponse)(i) << std::endl;
   std::ofstream dataFile(dataFileName, std::ios_base::out);
   dataFile.setf( std::ios::fixed, std:: ios::floatfield );
   dataFile.precision(4);
-  for(auto i=0; i<simNbBands; i++)
+  for(size_t i=0; i<simNbBands; i++)
     {
     dataFile << hxSpectrum[i].first << " ";
     dataFile << refl[i].second << " ";

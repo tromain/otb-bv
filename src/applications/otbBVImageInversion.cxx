@@ -108,7 +108,7 @@ public:
     auto nbInputVariables = in_pix.GetSize();
     InputSampleType inputValue;
     inputValue.Reserve(nbInputVariables);
-    for(auto var = 0; var < nbInputVariables; ++var)
+    for(size_t var = 0; var < nbInputVariables; ++var)
       {
       inputValue[var] = in_pix[var];
       if( normalization )
@@ -212,7 +212,7 @@ private:
                                  << " - 1) is not coherent with the number of "
                                  << "input variables ("<< nbInputVariables 
                                  <<").");
-      for(auto var = 0; var < nbInputVariables; ++var)
+      for(size_t var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
       otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<

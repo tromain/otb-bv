@@ -45,7 +45,7 @@ int bvLaiLogNdvi(int argc, char * argv[])
   auto rng = std::mt19937(std::random_device{}());
   rng.seed(5);
   std::normal_distribution<> d(0.0,0.01);
-  for(auto i=0; i<nb_measures; ++i)
+  for(size_t i=0; i<nb_measures; ++i)
     {
     ndvi_vec[i] = static_cast<double>(i)/nb_measures*0.8;
     lai_vec[i] = -1.0/x_test[0]*log((ndvi_vec[i]-x_test[1])/

@@ -26,10 +26,10 @@ void  MultiLinearRegressionModel<PrecisionType>::multi_linear_fit()
   auto w = gsl_vector_alloc (n);
   auto c = gsl_vector_alloc (m);
   auto cov = gsl_matrix_alloc (m, m);
-  for (auto i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     {
     gsl_matrix_set (X, i, 0, 1.0);
-    for(auto j=0; j<m-1; j++)
+    for(size_t j=0; j<m-1; j++)
       gsl_matrix_set(X, i, j+1, m_x[i][j]);
     gsl_vector_set (y, i, m_y[i]);
     if(m_weights)
@@ -48,7 +48,7 @@ void  MultiLinearRegressionModel<PrecisionType>::multi_linear_fit()
   gsl_multifit_linear_free(work);
 
   m_model = VectorType{};
-  for(auto j=0; j<m; j++)
+  for(size_t j=0; j<m; j++)
     m_model.push_back(gsl_vector_get(c,j));
 }
 

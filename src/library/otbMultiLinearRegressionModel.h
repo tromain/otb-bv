@@ -77,7 +77,7 @@ struct  MultiLinearRegressionModel :
         }
 
     PrecisionType result = m_model[0];
-    for(auto i=0; i<x.size(); i++)
+    for(size_t i=0; i<x.size(); i++)
       result += m_model[i+1]*x[i];
     
     return result;
@@ -154,7 +154,7 @@ protected:
   VectorType SampleToVector(MVType mv) const
   {
     VectorType tmp_vec(mv.Size());
-    for(auto i=0; i<mv.Size(); ++i)
+    for(size_t i=0; i<mv.Size(); ++i)
       tmp_vec[i] = mv[i];
     return tmp_vec;
   }

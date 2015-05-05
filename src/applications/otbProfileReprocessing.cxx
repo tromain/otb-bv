@@ -167,7 +167,7 @@ private:
       {
       itkGenericExceptionMacro(<< "Could not open file " << opfn);
       }
-    for(auto i=0; i<date_vec.size(); ++i)
+    for(size_t i=0; i<date_vec.size(); ++i)
       {
       std::stringstream ss;
       ss << date_str_vec[i] << "\t" << out_bv_vec[i] << "\t" 

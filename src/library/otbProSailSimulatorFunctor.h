@@ -59,7 +59,7 @@ public:
   OutputType operator ()()
   {
     OutputType pix;
-    for(auto i=0;i<m_SatRSR->GetNbBands();i++)
+    for(size_t i=0;i<m_SatRSR->GetNbBands();i++)
       pix.push_back(0.0);
 
     auto m_LP = LeafParametersType::New();
@@ -121,7 +121,7 @@ public:
     auto fAPAR = this->ComputeFAPAR(sail_fapar->GetViewingAbsorptance());
     
     VectorPairType hxSpectrum;
-    for(auto i=0;i<SimNbBands;i++)
+    for(size_t i=0;i<SimNbBands;i++)
       {
       PairType resp;
       resp.first = static_cast<PrecisionType>((400.0+i)/1000);
@@ -136,7 +136,7 @@ public:
     reduceResponse->SetInputSpectralResponse( aResponse );
     reduceResponse->SetReflectanceMode(true);
     reduceResponse->CalculateResponse();
-    for(auto i=0;i<m_SatRSR->GetNbBands();i++)
+    for(size_t i=0;i<m_SatRSR->GetNbBands();i++)
       pix[i] = (*reduceResponse)(i);
 
     pix.push_back(fCover);

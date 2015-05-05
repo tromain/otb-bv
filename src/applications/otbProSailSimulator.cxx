@@ -135,7 +135,7 @@ private:
 
   void WriteSimulation(SimulationType simu)
   {
-    for(auto i=0; i<simu.size(); ++i)
+    for(size_t i=0; i<simu.size(); ++i)
       m_SimulationsFile << simu[i] << " " ;
     m_SimulationsFile << std::endl;
   }
@@ -150,7 +150,9 @@ private:
     m_SensorZenith = GetParameterFloat("sensorzenith");
     std::string rsrFileName = GetParameterString("rsrfile");
     //The first 2 columns of the rsr file correspond to the wavelenght and the solar radiation
-    short int nbBands = countColumns(rsrFileName)-2;
+    auto cols = countColumns(rsrFileName);
+    assert(cols > 2);
+    size_t nbBands{cols-2};
     otbAppLogINFO("Simulating " << nbBands << " spectral bands."<<std::endl);
     auto satRSR = SatRSRType::New();
     satRSR->SetNbBands(nbBands);
@@ -160,7 +162,7 @@ private:
     
     std::stringstream ss;
     ss << "Bands for sensor" << std::endl;
-    for(auto i = 0; i< nbBands; ++i)
+    for(size_t i = 0; i< nbBands; ++i)
       ss << i << " " << (satRSR->GetRSR())[i]->GetInterval().first
          << " " << (satRSR->GetRSR())[i]->GetInterval().second
          << std::endl;
@@ -185,7 +187,7 @@ private:
                                  << ") does not match number of spectral bands in "
                                  << rsrFileName << ": " << nbBands);
         }
-      for(auto i=0; i<var_str.size(); i++)
+      for(size_t i=0; i<var_str.size(); i++)
         {
         noise_generators.push_back(
           std::normal_distribution<>(0,
@@ -242,7 +244,7 @@ private:
         *simu_first = prosail();
         if(add_noise)
           {
-          for(auto i=0; i<nbBands; i++)
+          for(size_t i=0; i<nbBands; i++)
             {
             (*simu_first)[i] += noise_generators[i](RNG);
             }
@@ -261,7 +263,7 @@ private:
     auto input_start = std::begin(bv_vec);
     auto output_start = std::begin(simus);
 
-    for(auto t=0; t<num_threads; ++t)
+    for(size_t t=0; t<num_threads; ++t)
       {
       auto input_end = input_start;
       std::advance(input_end, block_size);

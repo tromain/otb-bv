@@ -42,7 +42,7 @@ fit_csdm(VectorType dts, VectorType ts, VectorType ets)
   pheno::VectorType profile_vec(ts.size());
   pheno::VectorType date_vec(dts.size());
 
-  for(auto i=0; i<ts.size(); i++)
+  for(size_t i=0; i<ts.size(); i++)
     {
     profile_vec[i] = ts[i];
     date_vec[i] = dts[i];
@@ -58,7 +58,7 @@ fit_csdm(VectorType dts, VectorType ts, VectorType ets)
   auto B_hat = min_max.first;
   auto p = pheno::normalized_sigmoid::F(date_vec, x_hat);
   //fill the result vectors
-  for(auto i=0; i<ts.size(); i++)
+  for(size_t i=0; i<ts.size(); i++)
     {
     result[i] = p[i]*A_hat+B_hat;
     result_flag[i] = processed_value;
