@@ -124,12 +124,13 @@ public:
 
   bool operator !=(const BVEstimationFunctor& other) const
   {
-    return true;
+    return (this->m_Model!=other.m_Model ||
+            this->m_Normalization!=other.m_Normalization);
   }
 
   bool operator ==(const BVEstimationFunctor& other) const
   {
-    return false;
+    return !(*this!=other);
   }
 
 protected:

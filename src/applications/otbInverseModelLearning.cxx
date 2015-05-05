@@ -203,16 +203,16 @@ private:
       regressor_type = GetParameterString("regression");    
     if (regressor_type == "svr")
       rmse = EstimateSVRRegresionModel(inputListSample, outputListSample, 
-                                       nbInputVariables, nbModels);
+                                       nbModels);
     if (regressor_type == "rfr")
       rmse = EstimateRFRRegresionModel(inputListSample, outputListSample, 
-                                       nbInputVariables, nbModels);
+                                       nbModels);
     else if (regressor_type == "nn")
       rmse = EstimateNNRegresionModel(inputListSample, outputListSample, 
-                                      nbInputVariables, nbModels);
+                                      nbModels, nbInputVariables);
     else if (regressor_type == "mlr")
       rmse = EstimateMLRRegresionModel(inputListSample, outputListSample, 
-                                       nbInputVariables, nbModels);
+                                       nbModels);
     otbAppLogINFO("RMSE = " << rmse << std::endl);
     if (IsParameterEnabled("errest"))
       {
@@ -298,7 +298,7 @@ private:
 
   double EstimateNNRegresionModel(ListInputSampleType::Pointer ils, 
                                   ListOutputSampleType::Pointer ols, 
-                                  std::size_t nbVars, unsigned int nbModels)
+                                  unsigned int nbModels, std::size_t nbVars)
   {
     otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
@@ -321,7 +321,7 @@ private:
 
   double EstimateSVRRegresionModel(ListInputSampleType::Pointer ils, 
                                    ListOutputSampleType::Pointer ols, 
-                                   std::size_t nbVars, unsigned int nbModels)
+                                   unsigned int nbModels)
   {
     otbAppLogINFO("Support vectors");
     auto regression = SVRType::New();
@@ -337,7 +337,7 @@ private:
 
   double EstimateRFRRegresionModel(ListInputSampleType::Pointer ils, 
                                    ListOutputSampleType::Pointer ols, 
-                                   std::size_t nbVars, unsigned int nbModels)
+                                   unsigned int nbModels)
   {
     otbAppLogINFO("Support vectors");
     auto regression = RFRType::New();
@@ -353,7 +353,7 @@ private:
 
   double EstimateMLRRegresionModel(ListInputSampleType::Pointer ils, 
                                    ListOutputSampleType::Pointer ols, 
-                                   std::size_t nbVars, unsigned int nbModels)
+                                   unsigned int nbModels)
   {
     otbAppLogINFO("Multilinear regression");
     auto regression = MLRType::New();

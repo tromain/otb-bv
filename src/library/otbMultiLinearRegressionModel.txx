@@ -56,6 +56,7 @@ template <typename PrecisionType>
 void  MultiLinearRegressionModel<PrecisionType>::Save(const std::string & 
                                                       filename, 
                                                       const std::string & name){
+  if(name==""){};//ugly silenting of unused variable
   std::ofstream model_file;
   try
     {
@@ -75,6 +76,7 @@ template <typename PrecisionType>
 void  MultiLinearRegressionModel<PrecisionType>::Load(const std::string & 
                                                       filename, 
                                                       const std::string & name){
+  if(name==""){};//ugly silenting of unused variable  
   std::ifstream model_file;
   try
     {
