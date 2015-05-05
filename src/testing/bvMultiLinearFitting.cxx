@@ -41,6 +41,12 @@ MRM::VectorType best_fit = {1.09573, 0.424647, 1.15956};
 
 int bvMultiLinearFitting(int argc, char * argv[])
 {
+  if(argc>1)
+    {
+    for(auto i=0; i<argc; ++i)
+      std::cout << i << " --> " << argv[i] << std::endl;
+    return EXIT_FAILURE;
+    }
 
 
   auto model = MRM::New();
@@ -112,6 +118,13 @@ int bvMultiLinearFitting(int argc, char * argv[])
 
 int bvMultiLinearFittingConversions(int argc, char * argv[])
 {
+  if(argc>1)
+    {
+    for(auto i=0; i<argc; ++i)
+      std::cout << i << " --> " << argv[i] << std::endl;
+    return EXIT_FAILURE;
+    }
+
   auto inputListSample = MRM::InputListSampleType::New();
   auto outputListSample = MRM::TargetListSampleType::New();
 

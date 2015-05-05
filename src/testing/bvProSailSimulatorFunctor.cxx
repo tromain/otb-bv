@@ -17,6 +17,12 @@
 
 int bvProSailSimulatorFunctor(int argc, char * argv[])
 {
+  if(argc<2)
+    {
+    std::cout << " At least one parameter is needed" << std::endl;
+    return EXIT_FAILURE;
+    }
+
   typedef double PrecisionType;
   typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
   typedef otb::Functor::ProSailSimulator<SatRSRType> ProSailType;
