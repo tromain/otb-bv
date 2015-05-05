@@ -20,8 +20,6 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   typedef double PrecisionType;
   typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
   typedef otb::Functor::ProSailSimulator<SatRSRType> ProSailType;
-  typedef typename ProSailType::OutputType SimulationType;
-
   auto satRSR = SatRSRType::New();
   satRSR->SetNbBands(4);
   satRSR->SetSortBands(false);

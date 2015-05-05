@@ -8,10 +8,8 @@ int main()
 {  
   typedef double PrecisionType;
   typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
-  typedef typename SatRSRType::Pointer SatRSRPointerType;
   typedef typename otb::ProspectModel ProspectType;
   typedef typename otb::LeafParameters LeafParametersType;
-  typedef typename LeafParametersType::Pointer LeafParametersPointerType;
   typedef typename otb::SailModel SailType;
   typedef typename SatRSRType::PrecisionType PrecisionType;
   typedef std::pair<PrecisionType,PrecisionType> PairType;
@@ -22,7 +20,6 @@ int main()
   const unsigned int simNbBands{2000};
   const PrecisionType vLAI = 3.728;
   const PrecisionType vALA = 59.755;
-  const PrecisionType vCC = 0.958;
   const PrecisionType vHsD = 0.186;
   const PrecisionType vN = 1.494;
   const PrecisionType vCab = 64.632;
