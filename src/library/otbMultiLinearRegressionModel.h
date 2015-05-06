@@ -91,7 +91,7 @@ struct  MultiLinearRegressionModel :
     return target;
   }
 
-  void SetInputListSample(typename InputListSampleType::Pointer ils)
+  void SetInputListSample(InputListSampleType * ils)
   {
     MatrixType tmp_m;
     auto slIt = ils->Begin();
@@ -103,7 +103,7 @@ struct  MultiLinearRegressionModel :
       }
     this->SetPredictorMatrix(tmp_m);
   }
-  void SetTargetListSample(typename TargetListSampleType::Pointer tls)
+  void SetTargetListSample(TargetListSampleType * tls)
   {
     VectorType tmp_v;
     auto slIt = tls->Begin();
