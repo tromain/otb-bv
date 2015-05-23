@@ -83,7 +83,7 @@ smooth_time_series_local_window_with_error(VectorType dts,
   */
   assert(ts.size()==ets.size() && ts.size()==dts.size());
   auto result = ts;
-  auto result_flag = ts;
+  auto result_flag = VectorType(ts.size(),not_processed_value);
   auto ot = result.begin();
   auto otf = result_flag.begin();
   auto eit = ets.begin();
@@ -95,48 +95,46 @@ smooth_time_series_local_window_with_error(VectorType dts,
   auto dti = dts.begin();
   auto d_win_first = dts.begin();
   auto d_win_last = dts.begin();
-  *otf = not_processed_value;
-  //advance iterators
-  std::advance(ot, bwd_radius);
-  std::advance(otf, bwd_radius);
-  std::advance(eit, bwd_radius);
-  std::advance(dti, bwd_radius);
-  std::advance(win_last, bwd_radius+fwd_radius);
-  std::advance(e_win_last, bwd_radius+fwd_radius);
-  std::advance(d_win_last, bwd_radius+fwd_radius);
-  while(win_last!=last)
-    {
-    auto current_d = d_win_first;
-    auto current_e = e_win_first;
-    auto current_v = win_first;
-    auto past_it = d_win_last; ++past_it;
+//advance iterators
+std::advance(ot, bwd_radius);
+std::advance(otf, bwd_radius);
+std::advance(eit, bwd_radius);
+std::advance(dti, bwd_radius);
+std::advance(win_last, bwd_radius+fwd_radius);
+std::advance(e_win_last, bwd_radius+fwd_radius);
+std::advance(d_win_last, bwd_radius+fwd_radius);
+while(win_last!=last)
+  {
+  auto current_d = d_win_first;
+  auto current_e = e_win_first;
+  auto current_v = win_first;
+  auto past_it = d_win_last; ++past_it;
 
-    PrecisionType sum_weights{0.0};
-    PrecisionType weighted_value{0.0};
-    while(current_d != past_it)
-      {
-      auto cw = compute_weight(fabs(*current_d-*dti),fabs(*current_e));
-      sum_weights += cw;
-      weighted_value += (*current_v)*cw;
-      ++current_d;
-      ++current_e;
-      ++current_v;
-      }
-    *ot = weighted_value/sum_weights;
-    *otf = processed_value;
-    ++win_first;
-    ++win_last;
-    ++e_win_first;
-    ++e_win_last;
-    ++d_win_first;
-    ++d_win_last;
-    ++ot;
-    ++otf;
-    ++eit;
-    ++dti;
+  PrecisionType sum_weights{0.0};
+  PrecisionType weighted_value{0.0};
+  while(current_d != past_it)
+    {
+    auto cw = compute_weight(fabs(*current_d-*dti),fabs(*current_e));
+    sum_weights += cw;
+    weighted_value += (*current_v)*cw;
+    ++current_d;
+    ++current_e;
+    ++current_v;
     }
-  *otf = not_processed_value;
-  return std::make_pair(result,result_flag);
+  *ot = weighted_value/sum_weights;
+  *otf = processed_value;
+  ++win_first;
+  ++win_last;
+  ++e_win_first;
+  ++e_win_last;
+  ++d_win_first;
+  ++d_win_last;
+  ++ot;
+  ++otf;
+  ++eit;
+  ++dti;
+  }
+return std::make_pair(result,result_flag);
 }
 
 VectorType smooth_time_series(VectorType ts, PrecisionType alpha, 
