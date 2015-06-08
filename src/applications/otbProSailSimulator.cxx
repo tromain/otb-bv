@@ -274,7 +274,8 @@ private:
       num_threads = num_requested_threads;
 
 
-    otbAppLogINFO("Using " << num_threads << " threads for the simulations."<< std::endl);
+    otbAppLogINFO("Using " << num_threads << " threads for the simulations."
+                  << std::endl);
 
     auto block_size = sampleCount/num_threads;
     if(num_threads>=sampleCount) block_size = sampleCount;
