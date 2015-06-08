@@ -21,7 +21,6 @@ add_test(appBvGenInputVars otbApplicationLauncherCommandLine
 add_test(appBvProSailSim otbApplicationLauncherCommandLine
   ProSailSimulator ${otb-bv_BINARY_DIR}/applications/ 
   -bvfile ${otb-bv_SOURCE_DIR}/../data/appBvGenInputVarssamples.txt
-  -soilfile dummy
   -rsrfile ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr
   -out ${TEMP}/appProSailSimus.txt
   -solarzenith 33.469

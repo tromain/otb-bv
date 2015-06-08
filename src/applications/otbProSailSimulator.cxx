@@ -87,10 +87,6 @@ private:
     SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
     MandatoryOn("bvfile");
 
-    AddParameter(ParameterType_InputFilename, "soilfile", "Input file containing the soil spectra.");
-    SetParameterDescription( "soilfile", "Input file containing ." );
-    MandatoryOn("soilfile");
-
     AddParameter(ParameterType_InputFilename, "rsrfile", 
                  "Input file containing the relative spectral responses.");
     SetParameterDescription( "rsrfile", "Input file containing ." );
@@ -233,8 +229,7 @@ private:
     prosailPars[TTO] = m_SensorZenith;
     prosailPars[PSI] = m_Azimuth;
     
-    //TODO : the soil file is not used --> implement a version of Sail using an external soil model instead of DataSpecP5B, then multipmy by Bs
-    
+
     otbAppLogINFO("Processing simulations ..." << std::endl);
     auto bv_vec = parse_bv_sample_file(m_SampleFile);
     auto sampleCount = bv_vec.size();
