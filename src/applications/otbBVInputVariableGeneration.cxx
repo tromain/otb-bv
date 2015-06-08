@@ -56,6 +56,39 @@ private:
     AddParameter(ParameterType_OutputFilename, "out", "Output file");
     SetParameterDescription( "out", "Filename where the variable sets are saved." );
     MandatoryOn("out");
+
+    AddParameter(ParameterType_Float, "minlai", "Minimum value for LAI");
+    SetDefaultParameterFloat("minlai", 0.0);
+    SetParameterDescription("minlai", "Minimum value for LAI");
+
+    AddParameter(ParameterType_Float, "maxlai", "Maximum value for LAI");
+    SetDefaultParameterFloat("maxlai", 5.0);
+    SetParameterDescription("maxlai", "Maximum value for LAI");
+
+    AddParameter(ParameterType_Float, "modlai", "Mode value for LAI");
+    SetDefaultParameterFloat("modlai", 0.5);
+    SetParameterDescription("modlai", "Mode value for LAI");
+
+    AddParameter(ParameterType_Float, "stdlai", "Standard deviation value for LAI");
+    SetDefaultParameterFloat("stdlai", 1.0);
+    SetParameterDescription("stdlai", "Standard deviation value for LAI");
+
+    AddParameter(ParameterType_Float, "minala", "Minimum value for ALA");
+    SetDefaultParameterFloat("minala", 5.0);
+    SetParameterDescription("minala", "Minimum value for ALA");
+
+    AddParameter(ParameterType_Float, "maxala", "Maximum value for ALA");
+    SetDefaultParameterFloat("maxala", 80.0);
+    SetParameterDescription("maxala", "Maximum value for ALA");
+
+    AddParameter(ParameterType_Float, "modala", "Mode value for ALA");
+    SetDefaultParameterFloat("modala", 40.0);
+    SetParameterDescription("modala", "Mode value for ALA");
+
+    AddParameter(ParameterType_Float, "stdala", "Standard deviation value for ALA");
+    SetDefaultParameterFloat("stdala", 20.0);
+    SetParameterDescription("stdala", "Standard deviation value for ALA");
+
   }
 
   virtual ~BVInputVariableGeneration()
@@ -201,6 +234,16 @@ private:
      min at 0 and the max at 25
      
   */
+
+    m_MLAI_min = GetParameterFloat("minlai");
+    m_MLAI_max = GetParameterFloat("maxlai");
+    m_MLAI_mod = GetParameterFloat("modlai");
+    m_MLAI_std = GetParameterFloat("stdlai");
+
+    m_ALA_min = GetParameterFloat("minala");
+    m_ALA_max = GetParameterFloat("maxala");
+    m_ALA_mod = GetParameterFloat("modala");
+    m_ALA_std = GetParameterFloat("stdala");
 
     try
       {
