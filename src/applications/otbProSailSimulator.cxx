@@ -91,12 +91,14 @@ private:
     SetParameterDescription( "soilfile", "Input file containing ." );
     MandatoryOn("soilfile");
 
-    AddParameter(ParameterType_InputFilename, "rsrfile", "Input file containing the relative spectral responses.");
+    AddParameter(ParameterType_InputFilename, "rsrfile", 
+                 "Input file containing the relative spectral responses.");
     SetParameterDescription( "rsrfile", "Input file containing ." );
     MandatoryOn("rsrfile");
     
     AddParameter(ParameterType_OutputFilename, "out", "Output file");
-    SetParameterDescription( "out", "Filename where the simulations are saved. The last 2 bands are fcover and fapar." );
+    SetParameterDescription( "out", 
+                             "Filename where the simulations are saved. The last 2 bands are fcover and fapar." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_Float, "solarzenith", "");
@@ -104,7 +106,8 @@ private:
     MandatoryOn("solarzenith");
 
     AddParameter(ParameterType_Float, "solarzenithf", "");
-    SetParameterDescription( "solarzenithf", "Solar zenith for the fAPAR simulation" );
+    SetParameterDescription( "solarzenithf", 
+                             "Solar zenith for the fAPAR simulation" );
     MandatoryOff("solarzenithf");
     
     AddParameter(ParameterType_Float, "sensorzenith", "");
@@ -115,10 +118,17 @@ private:
     SetParameterDescription( "azimuth", "." );
     MandatoryOn("azimuth");
 
-    AddParameter(ParameterType_StringList, "noisevar", "Variance of the noise to be added per band");
+    AddParameter(ParameterType_StringList, "noisevar", 
+                 "Variance of the noise to be added per band");
     SetParameterDescription("noisevar",
                             "Variance of the noise to be added per band.");
     MandatoryOff("noisevar");
+
+    AddParameter(ParameterType_Int, "threads", 
+                 "Number of parallel threads for the simulation");
+    SetParameterDescription("threads", 
+                            "Number of parallel threads for the simulation");
+    MandatoryOff("threads");
 
 
   }
@@ -255,7 +265,16 @@ private:
     };    
 
     auto num_threads = std::thread::hardware_concurrency();
-    otbAppLogINFO("" << num_threads << " CPUs available."<< std::endl);
+    decltype(num_threads) num_requested_threads = 
+      num_threads;
+    if(IsParameterEnabled("threads"))
+      num_requested_threads = GetParameterInt("threads");
+
+    if(num_requested_threads < num_threads)
+      num_threads = num_requested_threads;
+
+
+    otbAppLogINFO("Using " << num_threads << " threads for the simulations."<< std::endl);
 
     auto block_size = sampleCount/num_threads;
     if(num_threads>=sampleCount) block_size = sampleCount;
