@@ -278,6 +278,7 @@ private:
                   << std::endl);
 
     auto block_size = sampleCount/num_threads;
+    auto remainder =  sampleCount%num_threads;
     if(num_threads>=sampleCount) block_size = sampleCount;
     std::vector<std::thread> threads(num_threads);
     auto input_start = std::begin(bv_vec);
@@ -287,6 +288,8 @@ private:
       {
       auto input_end = input_start;
       std::advance(input_end, block_size);
+      if(t==(num_threads-1)) 
+        std::advance(input_end, remainder-1);
       threads[t] = std::thread(simulator,
                                input_start,
                                input_end,
