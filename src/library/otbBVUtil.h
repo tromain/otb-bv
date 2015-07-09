@@ -100,14 +100,18 @@ template<typename T, typename U>
 inline
 T normalize(T x, U p)
 {
-  return 2*((x-p.first)/(p.second-p.first+std::numeric_limits<T>::epsilon())-0.5);
+  return 2*(
+    (x-p.first)/
+    (p.second-p.first+std::numeric_limits<T>::epsilon())
+    -0.5);
 }
 
 template<typename T, typename U>
 inline
 T denormalize(T x, U p)
 {
-  return (x*0.5+0.5)*(p.second-p.first)+p.first;
+  return (x*0.5+0.5)*(p.second-p.first+std::numeric_limits<T>::epsilon())
+    +p.first;
 }
 
 template<typename IS, typename OS, typename NVT>
