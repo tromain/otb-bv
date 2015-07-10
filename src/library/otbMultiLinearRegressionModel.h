@@ -21,9 +21,10 @@
 
 namespace otb{
 template <typename PrecisionType=double>
-struct  MultiLinearRegressionModel : 
+class  MultiLinearRegressionModel : 
     public MachineLearningModel<PrecisionType, PrecisionType>
 {
+public:
   using VectorType = std::vector<PrecisionType>;
   using MatrixType = std::vector<VectorType>;
   using TargetSampleType = typename 
@@ -65,6 +66,14 @@ struct  MultiLinearRegressionModel :
     this->multi_linear_fit();
   }
 
+  void TrainClassification()
+  {
+  }
+
+  void TrainRegression()
+  {
+  }
+
   PrecisionType Predict(const VectorType x) const
   {
     if(m_model.size()==0)
@@ -84,6 +93,22 @@ struct  MultiLinearRegressionModel :
   }
 
   TargetSampleType Predict(const InputSampleType & input) const
+  {
+    VectorType tmp_vec(this->SampleToVector(input));
+    TargetSampleType target;
+    target[0] = this->Predict(tmp_vec);
+    return target;
+  }
+
+  TargetSampleType PredictClassification(const InputSampleType & input) const
+  {
+    VectorType tmp_vec(this->SampleToVector(input));
+    TargetSampleType target;
+    target[0] = this->Predict(tmp_vec);
+    return target;
+  }
+
+  TargetSampleType PredictRegression(const InputSampleType & input) const
   {
     VectorType tmp_vec(this->SampleToVector(input));
     TargetSampleType target;
