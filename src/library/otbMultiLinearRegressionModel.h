@@ -44,6 +44,7 @@ public:
   typedef MachineLearningModel<PrecisionType, PrecisionType> Superclass;
   typedef itk::SmartPointer<Self>                         Pointer;
   typedef itk::SmartPointer<const Self>                   ConstPointer;
+  typedef typename Superclass::ConfidenceValueType     ConfidenceValueType;
 
   itkNewMacro(Self);
   itkTypeMacro(MultiLinearRegressionModel, itk::MachineLearningModel);
@@ -93,14 +94,6 @@ public:
   }
 
   TargetSampleType Predict(const InputSampleType & input) const
-  {
-    VectorType tmp_vec(this->SampleToVector(input));
-    TargetSampleType target;
-    target[0] = this->Predict(tmp_vec);
-    return target;
-  }
-
-  TargetSampleType PredictClassification(const InputSampleType & input) const
   {
     VectorType tmp_vec(this->SampleToVector(input));
     TargetSampleType target;
@@ -168,6 +161,15 @@ public:
   }
 
 protected:
+  TargetSampleType PredictClassification(const InputSampleType & input,
+                                         ConfidenceValueType *quality = NULL) const
+  {
+    VectorType tmp_vec(this->SampleToVector(input));
+    TargetSampleType target;
+    target[0] = this->Predict(tmp_vec);
+    return target;
+  }
+
   void multi_linear_fit();
 
   std::string GetNameOfClass()
