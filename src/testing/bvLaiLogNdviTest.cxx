@@ -31,15 +31,8 @@ VectorType lai_log_ndvi(const VectorType& ndvi, const VectorType& pars)
 }
 
 
-int bvLaiLogNdvi(int argc, char * argv[])
+int bvLaiLogNdvi(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
-  if(argc>1)
-    {
-    for(auto i=0; i<argc; ++i)
-      std::cout << i << " --> " << argv[i] << std::endl;
-    return EXIT_FAILURE;
-    }
-
   unsigned int params{3};
   unsigned int nb_measures{100};
   VectorType lai_vec(nb_measures);

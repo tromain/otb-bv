@@ -39,16 +39,8 @@ MRM::VectorType y_vec = {1.01339,1.09543, 1.42592,1.44889, 1.64064, 1.4381,
                          2.61466, 3.09834, 3.73597,4.39221};
 MRM::VectorType best_fit = {1.09573, 0.424647, 1.15956};
 
-int bvMultiLinearFitting(int argc, char * argv[])
+int bvMultiLinearFitting(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
-  if(argc>1)
-    {
-    for(auto i=0; i<argc; ++i)
-      std::cout << i << " --> " << argv[i] << std::endl;
-    return EXIT_FAILURE;
-    }
-
-
   auto model = MRM::New();
   model->SetPredictorMatrix(x_vec);
   model->SetTargetVector(y_vec);
@@ -116,15 +108,9 @@ int bvMultiLinearFitting(int argc, char * argv[])
   return EXIT_SUCCESS;
 }
 
-int bvMultiLinearFittingConversions(int argc, char * argv[])
+int bvMultiLinearFittingConversions(int itkNotUsed(argc), 
+                                    char * itkNotUsed(argv)[])
 {
-  if(argc>1)
-    {
-    for(auto i=0; i<argc; ++i)
-      std::cout << i << " --> " << argv[i] << std::endl;
-    return EXIT_FAILURE;
-    }
-
   auto inputListSample = MRM::InputListSampleType::New();
   auto outputListSample = MRM::TargetListSampleType::New();
 
