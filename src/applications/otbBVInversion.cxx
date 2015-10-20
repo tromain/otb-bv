@@ -151,6 +151,8 @@ private:
     auto mlr_regressor = MLRType::New();
     if(nn_regressor->CanReadFile(model_file))
       {
+      nn_regressor->Load(model_file);    
+      otbAppLogINFO("Loading model ..." << std::endl);
       regressor = dynamic_cast<ModelType*>(nn_regressor.GetPointer());
       otbAppLogINFO("Applying NN regression ..." << std::endl);
       }
@@ -174,7 +176,8 @@ private:
       itkGenericExceptionMacro(<< "Model in file " << model_file 
                                << " is not valid.\n");
       }
-    regressor->Load(model_file);    
+    //    regressor->Load(model_file);    
+
 
     auto sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )

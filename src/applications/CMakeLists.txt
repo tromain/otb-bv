@@ -33,7 +33,7 @@ OTB_CREATE_APPLICATION(NAME           BVImageInversion
   LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
 OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
   SOURCES        otbProfileReprocessing.cxx
-  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBGapFilling;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
                      
 add_executable(testSimus testSimus.cxx)
 target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil gsl gslcblas)

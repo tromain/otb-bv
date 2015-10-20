@@ -93,7 +93,8 @@ public:
     return result;
   }
 
-  TargetSampleType Predict(const InputSampleType & input) const
+  TargetSampleType Predict(const InputSampleType & input, 
+                           ConfidenceValueType *quality = NULL) const
   {
     VectorType tmp_vec(this->SampleToVector(input));
     TargetSampleType target;

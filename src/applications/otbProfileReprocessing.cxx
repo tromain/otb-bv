@@ -17,7 +17,6 @@
 
 #include <vector>
 
-#include "dateUtils.h"
 #include "phenoFunctions.h"
 #include "otbProfileReprocessing.h"
 
@@ -25,7 +24,7 @@ namespace otb
 {
 int date_to_doy(std::string& date_str)
 {
-  return pheno::doy(pheno::make_date(date_str));
+  return GapFilling::doy(GapFilling::make_date(date_str));
 }
 
 
