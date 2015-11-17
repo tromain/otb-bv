@@ -23,7 +23,7 @@
 #include "otbBVUtil.h"
 
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
 #include "otbRandomForestsMachineLearningModel.h"
 #include "otbMultiLinearRegressionModel.h"
@@ -53,8 +53,8 @@ public:
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
   typedef MachineLearningModel<PrecisionType, PrecisionType> ModelType;
-  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
-                                                           PrecisionType> 
+  typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
+                                                          PrecisionType> 
   NeuralNetworkType;
   typedef otb::RandomForestsMachineLearningModel<PrecisionType, 
                                                  PrecisionType> RFRType;
@@ -151,7 +151,6 @@ private:
     auto mlr_regressor = MLRType::New();
     if(nn_regressor->CanReadFile(model_file))
       {
-      nn_regressor->Load(model_file);    
       otbAppLogINFO("Loading model ..." << std::endl);
       regressor = dynamic_cast<ModelType*>(nn_regressor.GetPointer());
       otbAppLogINFO("Applying NN regression ..." << std::endl);
@@ -176,30 +175,31 @@ private:
       itkGenericExceptionMacro(<< "Model in file " << model_file 
                                << " is not valid.\n");
       }
-    //    regressor->Load(model_file);    
+    regressor->Load(model_file);    
+    regressor->SetRegressionMode(true);
 
 
     auto sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )
       {
-        if(line.size() > 1)
+      if(line.size() > 1)
+        {
+        std::istringstream ss(line);
+        InputSampleType inputValue;
+        inputValue.Reserve(nbInputVariables);
+        for(size_t var = 0; var < nbInputVariables; ++var)
           {
-          std::istringstream ss(line);
-          InputSampleType inputValue;
-          inputValue.Reserve(nbInputVariables);
-          for(size_t var = 0; var < nbInputVariables; ++var)
-            {
-            ss >> inputValue[var];
-            if( HasValue( "normalization" )==true )
-              inputValue[var] = normalize(inputValue[var], var_minmax[var]);
-            }
-          OutputSampleType outputValue = regressor->Predict(inputValue);
+          ss >> inputValue[var];
           if( HasValue( "normalization" )==true )
-            outputValue[0] = denormalize(outputValue[0],
-                                         var_minmax[nbInputVariables]);
-          outFile << outputValue[0] << std::endl;
-          ++sampleCount;
+            inputValue[var] = normalize(inputValue[var], var_minmax[var]);
           }
+        OutputSampleType outputValue = regressor->Predict(inputValue);
+        if( HasValue( "normalization" )==true )
+          outputValue[0] = denormalize(outputValue[0],
+                                       var_minmax[nbInputVariables]);
+        outFile << outputValue[0] << std::endl;
+        ++sampleCount;
+        }
       }
     reflectancesFile.close();
     outFile.close();
