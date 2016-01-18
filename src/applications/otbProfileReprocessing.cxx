@@ -144,7 +144,7 @@ private:
       if (IsParameterEnabled("algo.local.bwr"))
         bwr = GetParameterInt("algo.local.bwr");
       if (IsParameterEnabled("algo.local.fwr"))
-        bwr = GetParameterInt("algo.local.fwr");
+        fwr = GetParameterInt("algo.local.fwr");
       std::tie(out_bv_vec, out_flag_vec) = 
         smooth_time_series_local_window_with_error(date_vec, bv_vec, err_vec, 
                                                    bwr, fwr);
