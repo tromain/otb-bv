@@ -19,7 +19,7 @@
 
 namespace otb{
 
-static const
+static constexpr
 std::array<std::pair<PrecisionType, PrecisionType>,121> solar_irradiance_fapar = {
   std::make_pair(0.4000, 1614.0900),
   std::make_pair(0.4025, 1631.0900),
