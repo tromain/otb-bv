@@ -321,7 +321,8 @@ private:
         unsigned int nbNeurons = boost::lexical_cast<unsigned int>(sizes[i]);
         layerSizes.push_back(nbNeurons);
         }
-      layerSizes.push_back(static_cast<unsigned int>(nbVars));
+      layerSizes.push_back(1);
+      regression->SetLayerSizes(layerSizes);
       }
     else
       {
@@ -412,9 +413,25 @@ private:
 
     auto err_regression = NeuralNetworkType::New();
     err_regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
-    // Two hidden layer with 5 neurons and one output variable
-    err_regression->SetLayerSizes(std::vector<unsigned int>(
-      {static_cast<unsigned int>(nbVars), 5, 5, 1}));
+    if (IsParameterEnabled("nnlayers"))
+      {
+      std::vector<unsigned int> layerSizes;
+      std::vector<std::string> sizes = GetParameterStringList("nnlayers");
+      layerSizes.push_back(static_cast<unsigned int>(nbVars));
+      for (unsigned int i = 0; i < sizes.size(); i++)
+        {
+        unsigned int nbNeurons = boost::lexical_cast<unsigned int>(sizes[i]);
+        layerSizes.push_back(nbNeurons);
+        }
+      layerSizes.push_back(1);
+      err_regression->SetLayerSizes(layerSizes);
+      }
+    else
+      {
+      // Two hidden layer with 5 neurons and one output variable
+      err_regression->SetLayerSizes(std::vector<unsigned int>(
+        {static_cast<unsigned int>(nbVars), 5, 5, 1}));
+      }
     err_regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     err_regression->SetAlpha(1.0);
     err_regression->SetBeta(0.01);
