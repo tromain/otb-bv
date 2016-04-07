@@ -19,6 +19,7 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <boost/lexical_cast.hpp>
 
 #include "otbBVUtil.h"
 #include "otbBVTypes.h"
@@ -97,6 +98,12 @@ private:
     SetParameterDescription("regression", 
                             "Choice of the regression to use for the training: svr, rfr, nn, mlr.");
     MandatoryOff("regression");
+
+    AddParameter(ParameterType_StringList, "nnlayers", "Number of neurons in each intermediate layer");
+    SetParameterDescription("nnlayers",
+                            "The number of neurons in each intermediate layer (excluding input and output layers).");
+    MandatoryOff("nnlayers");
+
 
     AddParameter(ParameterType_Int, "bestof", "Select the best of N models.");
     SetParameterDescription("bestof", "");
@@ -303,9 +310,25 @@ private:
     otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
-    // Two hidden layer with 5 neurons and one output variable
-    regression->SetLayerSizes(std::vector<unsigned int>(
-      {static_cast<unsigned int>(nbVars), 5, 5, 1}));
+
+    if (IsParameterEnabled("nnlayers"))
+      {
+      std::vector<unsigned int> layerSizes;
+      std::vector<std::string> sizes = GetParameterStringList("nnlayers");
+      layerSizes.push_back(static_cast<unsigned int>(nbVars));
+      for (unsigned int i = 0; i < sizes.size(); i++)
+        {
+        unsigned int nbNeurons = boost::lexical_cast<unsigned int>(sizes[i]);
+        layerSizes.push_back(nbNeurons);
+        }
+      layerSizes.push_back(static_cast<unsigned int>(nbVars));
+      }
+    else
+      {
+      // Two hidden layer with 5 neurons and one output variable
+      regression->SetLayerSizes(std::vector<unsigned int>(
+        {static_cast<unsigned int>(nbVars), 5, 5, 1}));
+      }
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     regression->SetAlpha(1.0);
     regression->SetBeta(0.01);
