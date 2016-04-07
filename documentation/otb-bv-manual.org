@@ -10887,6 +10887,62 @@ awk '{print $2,$3,$4,$5}' /tmp/laitrain > /tmp/refls
 ./otbcli_SVRBVInversion -reflectances /tmp/refls -model /tmp/svrmodel -out /tmp/svrestim -normalization /tmp/norm
 #+end_src
 *** [2014-06-06 Fri 09:11] j'ai mis skyl à 0  [[file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN)%3B][file:~/Dev/otb-bv/src/applications/testSimus.cxx::m_LP->SetN(vN);]]
+** Fichier spectres de sol
+
+#+BEGIN_SRC bash
+ls -l /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/*.mat
+#+END_SRC
+
+#+RESULTS:
+| -rw------- | 1 | inglada | inglada | 114505 | May | 23 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Default_Soils.mat       |
+| -rw------- | 1 | inglada | inglada | 113620 | Aug |  4 | 2011 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/R_Soil_ISRIC_7soils.mat |
+| -rw------- | 1 | inglada | inglada |  28091 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Soil_Maize.mat          |
+| -rw------- | 1 | inglada | inglada |   4152 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/soil.mat                |
+| -rw------- | 1 | inglada | inglada |   1014 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/soil_meris_0.mat        |
+| -rw------- | 1 | inglada | inglada |    762 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Soil_Meris_4.mat        |
+| -rw------- | 1 | inglada | inglada |    762 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Soil_MERIS.mat          |
+| -rw------- | 1 | inglada | inglada | 114505 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Soil_Sentinel2.mat      |
+| -rw------- | 1 | inglada | inglada |    377 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Soil_temporal.mat       |
+| -rw------- | 1 | inglada | inglada |  83967 | Jan | 13 | 2012 | /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/Soil_VGT.mat            |
+
+
+#+begin_src octave 
+load /home/inglada/stok/DATA/BVNET_otb/DATA/Soil/soil.mat
+
+                           #whos permet de voir le nom de ce qu'ona lu
+nb_points = size(R_Soil.Lambda,1);
+nb_soils = size(R_Soil.Refl,2);
+fid = fopen ("/tmp/soil.txt", "w");
+for i = 1:nb_points
+  fprintf(fid, "%.3f \t", R_Soil.Lambda(i));
+  for j = 1:nb_soils
+    fprintf(fid, "%.3f \t", R_Soil.Refl(i,j));
+  endfor
+  fprintf(fid, "\n");
+endfor
+fclose(fid);
+
+fid = fopen ("/tmp/soil.h", "w");
+for j = 1:nb_soils
+fprintf(fid,"static constexpr\n std::array<std::pair<PrecisionType, PrecisionType>,%d> soil_%d = {\n", nb_points,j);
+for i = 1:nb_points
+  fprintf(fid, "std::make_pair(%.3f, %.3f),\n", R_Soil.Lambda(i), R_Soil.Refl(i,j));
+  endfor
+  fprintf(fid, "};\n");
+endfor
+fclose(fid);
+#+end_src
+
+#+RESULTS:
+: 0
+
+#+BEGIN_SRC gnuplot
+plot "/tmp/soil.txt" u 1:2 with lines, "/tmp/soil.txt" u 1:3 with lines, "/tmp/soil.txt" u 1:4 with lines, "/tmp/soil.txt" u 1:5 with lines, "/tmp/soil.txt" u 1:6 with lines, "/tmp/soil.txt" u 1:7 with lines, "/tmp/soil.txt" u 1:8 with lines, "/tmp/soil.txt" u 1:9 with lines, "/tmp/soil.txt" u 1:10 with lines
+#+END_SRC
+
+#+RESULTS:
+
+
 ** TODO [2013-10-24 Thu 14:36] Comments  [[file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void%20SetLayerSizes%20(const%20std::vector<unsigned%20int>%20layers)][file:~/Dev/otb-bv/src/library/otbNeuralNetworkRegressionMachineLearningModel.h::void SetLayerSizes (const std::vector<unsigned int> layers)]]
 - SetLayerSizes should be virtual
 - attributers shoudl be protected and not private
