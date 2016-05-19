@@ -82,7 +82,7 @@ for sat in simus_list:
         simuPars['sensorZenithAngle'] = acqu['to']
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
-        simuPars['noisevar'] = noise_var
+        simuPars['noisestd'] = noise_var
         if simulate :
             print "\tSimulation training"
             bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index)

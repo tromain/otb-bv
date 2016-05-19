@@ -114,11 +114,11 @@ private:
     SetParameterDescription( "azimuth", "." );
     MandatoryOn("azimuth");
 
-    AddParameter(ParameterType_StringList, "noisevar", 
-                 "Variance of the noise to be added per band");
-    SetParameterDescription("noisevar",
-                            "Variance of the noise to be added per band.");
-    MandatoryOff("noisevar");
+    AddParameter(ParameterType_StringList, "noisestd", 
+                 "Standard deviation of the noise to be added per band");
+    SetParameterDescription("noisestd",
+                            "Standard deviation of the noise to be added per band.");
+    MandatoryOff("noisestd");
 
     AddParameter(ParameterType_Int, "threads", 
                  "Number of parallel threads for the simulation");
@@ -175,30 +175,30 @@ private:
 
     otbAppLogINFO(""<<ss);
 
-    bool add_noise =IsParameterEnabled("noisevar");
+    bool add_noise =IsParameterEnabled("noisestd");
     std::vector<std::normal_distribution<>> noise_generators;
     std::mt19937 RNG;
     if(add_noise)
       {
       RNG = std::mt19937(std::random_device{}());
-      std::vector<std::string> var_str = GetParameterStringList("noisevar");
-      if(var_str.size()==1)
+      std::vector<std::string> std_str = GetParameterStringList("noisestd");
+      if(std_str.size()==1)
         {
-        var_str = std::vector<std::string>(nbBands, var_str[0]);
-        otbAppLogINFO("All noise variances initialized to " << var_str[0] << "\n");
+        std_str = std::vector<std::string>(nbBands, std_str[0]);
+        otbAppLogINFO("All noise stds initialized to " << std_str[0] << "\n");
         }
-      else if(var_str.size()!=nbBands)
+      else if(std_str.size()!=nbBands)
         {
-        itkGenericExceptionMacro(<< "Number of noise variances (" << var_str.size()
+        itkGenericExceptionMacro(<< "Number of noise stds (" << std_str.size()
                                  << ") does not match number of spectral bands in "
                                  << rsrFileName << ": " << nbBands);
         }
-      for(size_t i=0; i<var_str.size(); i++)
+      for(size_t i=0; i<std_str.size(); i++)
         {
-        noise_generators.push_back(
-          std::normal_distribution<>(0,
-                                     boost::lexical_cast<double>(var_str[i])));
-        otbAppLogINFO("Noise variance for band " << i << " equal to " << var_str[0] << "\n");
+        auto noise_std = boost::lexical_cast<PrecisionType>(std_str[i]);
+        noise_generators.push_back(std::normal_distribution<>(0,noise_std));
+        otbAppLogINFO("Noise std for band " << i << " equal to " << 
+                      noise_std << "\n");
         }
       }    
 

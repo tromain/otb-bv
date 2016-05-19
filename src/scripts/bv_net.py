@@ -79,7 +79,7 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
     app.SetParameterFloat("solarzenith", simuPars['solarZenithAngle'])
     app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
     app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
-    app.SetParameterFloat("noisevar", simuPars['noisevar'])
+    app.SetParameterFloat("noisestd", simuPars['noisestd'])
     app.ExecuteAndWriteOutput()
     #combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
     with open(trainingFile, 'w') as tf:
