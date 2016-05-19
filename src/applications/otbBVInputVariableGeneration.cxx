@@ -73,6 +73,11 @@ private:
     SetDefaultParameterFloat("stdlai", 1.0);
     SetParameterDescription("stdlai", "Standard deviation value for LAI");
 
+    AddParameter(ParameterType_String, 
+                 "distlai", "Probability distribution for LAI [normal|lognormal(default)]");
+    SetParameterDescription("distlai", "Probability distribution for LAI (normal,lognormal)");
+    MandatoryOff("distlai");
+
     AddParameter(ParameterType_Float, "minala", "Minimum value for ALA");
     SetDefaultParameterFloat("minala", 5.0);
     SetParameterDescription("minala", "Minimum value for ALA");
@@ -160,7 +165,7 @@ private:
   {
     SampleType s;
     s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, 
-                                 m_MLAI_std, DistType::LOGNORMAL);
+                                 m_MLAI_std, m_dist_lai);
     s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, 
                                                      m_ALA_mod, m_ALA_std, 
                                                      DistType::GAUSSIAN),
@@ -235,7 +240,23 @@ private:
     m_MLAI_mod = GetParameterFloat("modlai");
     m_MLAI_std = GetParameterFloat("stdlai");
 
-    m_ALA_min = GetParameterFloat("minala");
+    if(IsParameterEnabled("distlai"))
+      {
+      if( GetParameterString("distlai") == "normal" )
+        {
+        m_dist_lai = DistType::GAUSSIAN;
+        }
+      }
+    if( m_dist_lai == DistType::GAUSSIAN)
+      {
+      otbAppLogINFO("LAI distribution is normal\n");
+      }
+    else
+      {
+      otbAppLogINFO("LAI distribution is lognormal\n");
+      }
+
+      m_ALA_min = GetParameterFloat("minala");
     m_ALA_max = GetParameterFloat("maxala");
     m_ALA_mod = GetParameterFloat("modala");
     m_ALA_std = GetParameterFloat("stdala");
@@ -286,6 +307,7 @@ private:
   double m_MLAI_mod = 0.5;                      
   double m_MLAI_std = 1.0;                      
   unsigned short  m_MLAI_nbcl = 6;                       
+  DistType m_dist_lai = DistType::LOGNORMAL;
                                                                                             
   double m_ALA_min = 5.0;                      
   double m_ALA_max = 80.0;                      
