@@ -34,7 +34,7 @@ public:
   typedef BVInputVariableGeneration     Self;
   typedef Application                   Superclass;
 
-  enum DistType {GAUSSIAN, UNIFORM, LOGNORMAL};
+  enum class DistType {GAUSSIAN, UNIFORM, LOGNORMAL};
   
 /** Standard macro */
   itkNewMacro(Self);
@@ -106,7 +106,7 @@ private:
   {
     //TODO : why us stdev defined for uniform?
     double rn;
-    if(dist == GAUSSIAN)
+    if(dist == DistType::GAUSSIAN)
       {
       auto sampleInsideBounds = false;
       while(!sampleInsideBounds)
@@ -117,7 +117,7 @@ private:
           sampleInsideBounds = true;
         }
       }
-    if(dist == LOGNORMAL)
+    if(dist == DistType::LOGNORMAL)
       {
       auto sampleInsideBounds = false;
       while(!sampleInsideBounds)
@@ -159,31 +159,41 @@ private:
   SampleType DrawSample()
   {
     SampleType s;
-    s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, m_MLAI_std, LOGNORMAL);
-    s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, m_ALA_mod,
-                                            m_ALA_std, GAUSSIAN),
-                                  m_ALA_mod, s[IVNames::MLAI]);
-    s[IVNames::CrownCover] = this->CorrelateValue(this->Rng(m_CrownCover_min, m_CrownCover_max,
-                                                   m_CrownCover_mod, m_CrownCover_std, UNIFORM),
-                                         m_CrownCover_mod, s[IVNames::MLAI]);
-    s[IVNames::HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, GAUSSIAN);
-    s[IVNames::N] = this->CorrelateValue(this->Rng(m_N_min, m_N_max, m_N_mod, m_N_std, GAUSSIAN),
-                                m_N_mod, s[IVNames::MLAI]);
+    s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, 
+                                 m_MLAI_std, DistType::LOGNORMAL);
+    s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, 
+                                                     m_ALA_mod, m_ALA_std, 
+                                                     DistType::GAUSSIAN),
+                                           m_ALA_mod, s[IVNames::MLAI]);
+    s[IVNames::CrownCover] = this->CorrelateValue(this->Rng(m_CrownCover_min, 
+                                                            m_CrownCover_max,
+                                                            m_CrownCover_mod, 
+                                                            m_CrownCover_std, 
+                                                            DistType::UNIFORM),
+                                                  m_CrownCover_mod, 
+                                                  s[IVNames::MLAI]);
+    s[IVNames::HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, 
+                                DistType::GAUSSIAN);
+    s[IVNames::N] = this->CorrelateValue(this->Rng(m_N_min, m_N_max, m_N_mod, 
+                                                   m_N_std, DistType::GAUSSIAN),
+                                         m_N_mod, s[IVNames::MLAI]);
     s[IVNames::Cab] = this->CorrelateValue(this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod,
-                                            m_Cab_std, GAUSSIAN),
-                                  m_Cab_mod, s[IVNames::MLAI]);
+                                                     m_Cab_std, DistType::GAUSSIAN),
+                                           m_Cab_mod, s[IVNames::MLAI]);
     s[IVNames::Car] = s[IVNames::Cab]*0.25;
     s[IVNames::Cdm] = this->CorrelateValue(this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod,
-                                            m_Cdm_std, GAUSSIAN),
-                                  m_Cdm_mod, s[IVNames::MLAI]);
-    s[IVNames::CwRel] = this->CorrelateValue(this->Rng(m_CwRel_min, m_CwRel_max, m_CwRel_mod,
-                                              m_CwRel_std, UNIFORM),
-                                    m_CwRel_mod, s[IVNames::MLAI]);
+                                                     m_Cdm_std, DistType::GAUSSIAN),
+                                           m_Cdm_mod, s[IVNames::MLAI]);
+    s[IVNames::CwRel] = this->CorrelateValue(this->Rng(m_CwRel_min, m_CwRel_max, 
+                                                       m_CwRel_mod, m_CwRel_std, 
+                                                       DistType::UNIFORM),
+                                             m_CwRel_mod, s[IVNames::MLAI]);
     s[IVNames::Cbp] = this->CorrelateValue(this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod,
-                                            m_Cbp_std, GAUSSIAN),
-                                  m_Cbp_mod, s[IVNames::MLAI]);
-    s[IVNames::Bs] = this->CorrelateValue(this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, m_Bs_std, GAUSSIAN),
-                                 m_Bs_mod, s[IVNames::MLAI]);
+                                                     m_Cbp_std, DistType::GAUSSIAN),
+                                           m_Cbp_mod, s[IVNames::MLAI]);
+    s[IVNames::Bs] = this->CorrelateValue(this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, 
+                                                    m_Bs_std, DistType::GAUSSIAN),
+                                          m_Bs_mod, s[IVNames::MLAI]);
 
     return s;
   }
