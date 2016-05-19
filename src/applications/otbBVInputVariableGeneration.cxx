@@ -165,39 +165,39 @@ private:
   {
     SampleType s;
     s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, 
-                                 m_MLAI_std, m_dist_lai);
+                                 m_MLAI_std, m_MLAI_dist);
     s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, 
                                                      m_ALA_mod, m_ALA_std, 
-                                                     DistType::GAUSSIAN),
+                                                     m_ALA_dist),
                                            m_ALA_mod, s[IVNames::MLAI]);
     s[IVNames::CrownCover] = this->CorrelateValue(this->Rng(m_CrownCover_min, 
                                                             m_CrownCover_max,
                                                             m_CrownCover_mod, 
                                                             m_CrownCover_std, 
-                                                            DistType::UNIFORM),
+                                                            m_CrownCover_dist),
                                                   m_CrownCover_mod, 
                                                   s[IVNames::MLAI]);
     s[IVNames::HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, 
                                 DistType::GAUSSIAN);
     s[IVNames::N] = this->CorrelateValue(this->Rng(m_N_min, m_N_max, m_N_mod, 
-                                                   m_N_std, DistType::GAUSSIAN),
+                                                   m_N_std, m_N_dist),
                                          m_N_mod, s[IVNames::MLAI]);
     s[IVNames::Cab] = this->CorrelateValue(this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod,
-                                                     m_Cab_std, DistType::GAUSSIAN),
+                                                     m_Cab_std, m_Cab_dist),
                                            m_Cab_mod, s[IVNames::MLAI]);
     s[IVNames::Car] = s[IVNames::Cab]*0.25;
     s[IVNames::Cdm] = this->CorrelateValue(this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod,
-                                                     m_Cdm_std, DistType::GAUSSIAN),
+                                                     m_Cdm_std, m_Cdm_dist),
                                            m_Cdm_mod, s[IVNames::MLAI]);
     s[IVNames::CwRel] = this->CorrelateValue(this->Rng(m_CwRel_min, m_CwRel_max, 
                                                        m_CwRel_mod, m_CwRel_std, 
-                                                       DistType::UNIFORM),
+                                                       m_CwRel_dist),
                                              m_CwRel_mod, s[IVNames::MLAI]);
     s[IVNames::Cbp] = this->CorrelateValue(this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod,
-                                                     m_Cbp_std, DistType::GAUSSIAN),
+                                                     m_Cbp_std, m_Cbp_dist),
                                            m_Cbp_mod, s[IVNames::MLAI]);
     s[IVNames::Bs] = this->CorrelateValue(this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, 
-                                                    m_Bs_std, DistType::GAUSSIAN),
+                                                    m_Bs_std, m_Bs_dist),
                                           m_Bs_mod, s[IVNames::MLAI]);
 
     return s;
@@ -244,10 +244,10 @@ private:
       {
       if( GetParameterString("distlai") == "normal" )
         {
-        m_dist_lai = DistType::GAUSSIAN;
+        m_MLAI_dist = DistType::GAUSSIAN;
         }
       }
-    if( m_dist_lai == DistType::GAUSSIAN)
+    if( m_MLAI_dist == DistType::GAUSSIAN)
       {
       otbAppLogINFO("LAI distribution is normal\n");
       }
@@ -256,7 +256,7 @@ private:
       otbAppLogINFO("LAI distribution is lognormal\n");
       }
 
-      m_ALA_min = GetParameterFloat("minala");
+    m_ALA_min = GetParameterFloat("minala");
     m_ALA_max = GetParameterFloat("maxala");
     m_ALA_mod = GetParameterFloat("modala");
     m_ALA_std = GetParameterFloat("stdala");
@@ -307,66 +307,76 @@ private:
   double m_MLAI_mod = 0.5;                      
   double m_MLAI_std = 1.0;                      
   unsigned short  m_MLAI_nbcl = 6;                       
-  DistType m_dist_lai = DistType::LOGNORMAL;
+  DistType m_MLAI_dist = DistType::LOGNORMAL;
                                                                                             
   double m_ALA_min = 5.0;                      
   double m_ALA_max = 80.0;                      
   double m_ALA_mod = 40.0;                      
   double m_ALA_std = 20.0;                      
   unsigned short  m_ALA_nbcl = 3.0;                      
+  DistType m_ALA_dist = DistType::GAUSSIAN;
                                                                                             
   double m_CrownCover_min = 0.95;                
   double m_CrownCover_max = 1.0;                
   double m_CrownCover_mod = 0.8;                
   double m_CrownCover_std = 0.4;                
   unsigned short  m_CrownCover_nbcl = 1;                 
+  DistType m_CrownCover_dist = DistType::UNIFORM;
                                                                                             
   double m_HsD_min = 0.1;                       
   double m_HsD_max = 0.5;                       
   double m_HsD_mod = 0.2;                       
   double m_HsD_std = 0.5;                       
-  unsigned short  m_HsD_nbcl = 1;                        
+  unsigned short  m_HsD_nbcl = 1;                       
+  DistType m_HsD_dist = DistType::GAUSSIAN;
                                                                                             
   double m_N_min = 1.20;                        
   double m_N_max = 2.20;                        
   double m_N_mod = 1.50;                        
   double m_N_std = 0.30;                        
   unsigned short  m_N_nbcl = 3;                          
+  DistType m_N_dist = DistType::GAUSSIAN;
                                                                                             
   double m_Cab_min = 20.0;                      
   double m_Cab_max = 90.0;                      
   double m_Cab_mod = 45.0;                      
   double m_Cab_std = 30.0;                      
   unsigned short  m_Cab_nbcl = 4;                        
+  DistType m_Cab_dist = DistType::GAUSSIAN;
                                                                                             
   double m_Car_min = 0.0;                       
   double m_Car_max = 25.0;                      
   double m_Car_mod = 8.58;                      
   double m_Car_std = 3.95;                      
+  DistType m_Car_dist = DistType::GAUSSIAN;
                                                                                             
   double m_Cdm_min = 0.0030;                    
   double m_Cdm_max = 0.0110;                    
   double m_Cdm_mod = 0.0050;                    
   double m_Cdm_std = 0.0050;                    
   unsigned short  m_Cdm_nbcl = 4;                        
+  DistType m_Cdm_dist = DistType::GAUSSIAN;
                                                                                             
   double m_CwRel_min = 0.60;                    
   double m_CwRel_max = 0.85;                    
   double m_CwRel_mod = 0.75;                    
   double m_CwRel_std = 0.075;                    
   unsigned short  m_CwRel_nbcl = 4;                      
+  DistType m_CwRel_dist = DistType::UNIFORM;
                                                                                             
   double m_Cbp_min = 0.00;                      
   double m_Cbp_max = 2.00;                      
   double m_Cbp_mod = 0.00;                      
   double m_Cbp_std = 0.30;                      
   unsigned short  m_Cbp_nbcl = 3;                        
+  DistType m_Cbp_dist = DistType::GAUSSIAN;
                                                                                             
   double m_Bs_min = 0.0;                       
   double m_Bs_max = 1.00;                       
   double m_Bs_mod = 0.5;                       
   double m_Bs_std = 2.00;                       
   unsigned short  m_Bs_nbcl = 4;                         
+  DistType m_Bs_dist = DistType::GAUSSIAN;
 
   // the random number generator
   std::mt19937 m_RNG;
