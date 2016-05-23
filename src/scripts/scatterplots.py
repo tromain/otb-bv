@@ -42,7 +42,7 @@ def parseDataFile(sampleFileName):
     return (variables, samples, bounds)
 
 
-def plotOrSaveFile(variables, samples, bounds, fileName=None, nXTicks=2, nYTicks=3):
+def plotOrSaveFile(variables, samples, bounds, fileName=None, nXTicks=1, nYTicks=3):
     nbVariables = len(variables)
     for row in range(nbVariables):
         for col in range(nbVariables):
@@ -50,9 +50,9 @@ def plotOrSaveFile(variables, samples, bounds, fileName=None, nXTicks=2, nYTicks
             x = samples[variables[col]]
             ax.set_xlim(bounds[variables[col]]['min'], bounds[variables[col]]['max'])
             if col == 0:
-                ax.set_ylabel(variables[row])
+                ax.set_ylabel(variables[row], fontsize=5)
             if row == 0:
-                ax.set_title(variables[col])
+                ax.set_title(variables[col], fontsize=5)
             ax.set_xticklabels([])
             ax.set_yticklabels([])
             ax.yaxis.set_ticks_position('right')
@@ -60,7 +60,7 @@ def plotOrSaveFile(variables, samples, bounds, fileName=None, nXTicks=2, nYTicks
             if row == (nbVariables-1) :
                 ticks = [t/float(nXTicks)*(bounds[variables[col]]['max']-bounds[variables[col]]['min'])+bounds[variables[col]]['min'] for t in range(nXTicks+1)]
                 ax.set_xticks(ticks)
-                ax.set_xticklabels([("%.2f"%t) for t in ticks])
+                ax.set_xticklabels([("%.2f"%t) for t in ticks], fontsize=5)
             if row != col :
                 y = samples[variables[row]]
                 ax.set_ylim(bounds[variables[row]]['min'], bounds[variables[row]]['max'])
@@ -68,7 +68,7 @@ def plotOrSaveFile(variables, samples, bounds, fileName=None, nXTicks=2, nYTicks
                 if col == (nbVariables-1):
                     ticks = [t/float(nYTicks)*(bounds[variables[row]]['max']-bounds[variables[row]]['min'])+bounds[variables[row]]['min'] for t in range(nYTicks+1)]
                     ax.set_yticks(ticks)
-                    ax.set_yticklabels([("%.2f"%t) for t in ticks])
+                    ax.set_yticklabels([("%.2f"%t) for t in ticks], fontsize=5)
             else :
                 ax.hist(x, bins=20)
     plt.subplots_adjust(wspace=0.5)
