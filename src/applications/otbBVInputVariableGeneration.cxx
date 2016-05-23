@@ -35,81 +35,99 @@ public:
   typedef Application                   Superclass;
 
   enum class DistType {GAUSSIAN, UNIFORM, LOGNORMAL};
+
+  struct VarParams {
+    double m_min;
+    double m_max;
+    double m_mod;
+    double m_std;
+    double m_Min_LAI_Max;
+    double m_Max_LAI_Max;
+    bool m_CoDistrib;
+    unsigned short  m_nbcl;
+    DistType m_dist;
+  };
   
-/** Standard macro */
-  itkNewMacro(Self);
+  /** Standard macro */
+    itkNewMacro(Self);
 
-  itkTypeMacro(BVInputVariableGeneration, otb::Application);
+    itkTypeMacro(BVInputVariableGeneration, otb::Application);
 
-  typedef std::map< IVNames, double > SampleType;
-private:
-  void DoInit()
-  {
-    SetName("BVInputVariableGeneration");
-    SetDescription("Generate random input variable distribution for ... .");
+    typedef std::map< IVNames, double > SampleType;
+  private:
+    void DoInit()
+    {
+      SetName("BVInputVariableGeneration");
+      SetDescription("Generate random input variable distribution for ... .");
 
-    AddDocTag(Tags::BV);
-    AddParameter(ParameterType_Int, "samples", "Sample size");
-    SetDefaultParameterInt("samples", 1000);
-    SetParameterDescription("samples", "Number of samples to be generated");
+      AddDocTag(Tags::BV);
+      AddParameter(ParameterType_Int, "samples", "Sample size");
+      SetDefaultParameterInt("samples", 1000);
+      SetParameterDescription("samples", "Number of samples to be generated");
     
-    AddParameter(ParameterType_OutputFilename, "out", "Output file");
-    SetParameterDescription( "out", "Filename where the variable sets are saved." );
-    MandatoryOn("out");
+      AddParameter(ParameterType_OutputFilename, "out", "Output file");
+      SetParameterDescription( "out", "Filename where the variable sets are saved." );
+      MandatoryOn("out");
 
-    AddParameter(ParameterType_Float, "minlai", "Minimum value for LAI");
-    SetDefaultParameterFloat("minlai", 0.0);
-    SetParameterDescription("minlai", "Minimum value for LAI");
+      AddParameter(ParameterType_Float, "minlai", "Minimum value for LAI");
+      SetDefaultParameterFloat("minlai", 0.0);
+      SetParameterDescription("minlai", "Minimum value for LAI");
 
-    AddParameter(ParameterType_Float, "maxlai", "Maximum value for LAI");
-    SetDefaultParameterFloat("maxlai", 5.0);
-    SetParameterDescription("maxlai", "Maximum value for LAI");
+      AddParameter(ParameterType_Float, "maxlai", "Maximum value for LAI");
+      SetDefaultParameterFloat("maxlai", 5.0);
+      SetParameterDescription("maxlai", "Maximum value for LAI");
 
-    AddParameter(ParameterType_Float, "modlai", "Mode value for LAI");
-    SetDefaultParameterFloat("modlai", 0.5);
-    SetParameterDescription("modlai", "Mode value for LAI");
+      AddParameter(ParameterType_Float, "modlai", "Mode value for LAI");
+      SetDefaultParameterFloat("modlai", 0.5);
+      SetParameterDescription("modlai", "Mode value for LAI");
 
-    AddParameter(ParameterType_Float, "stdlai", "Standard deviation value for LAI");
-    SetDefaultParameterFloat("stdlai", 1.0);
-    SetParameterDescription("stdlai", "Standard deviation value for LAI");
+      AddParameter(ParameterType_Float, "stdlai", "Standard deviation value for LAI");
+      SetDefaultParameterFloat("stdlai", 1.0);
+      SetParameterDescription("stdlai", "Standard deviation value for LAI");
 
-    AddParameter(ParameterType_String, 
-                 "distlai", "Probability distribution for LAI [normal|lognormal(default)]");
-    SetParameterDescription("distlai", "Probability distribution for LAI (normal,lognormal)");
-    MandatoryOff("distlai");
+      AddParameter(ParameterType_String, 
+                   "distlai", "Probability distribution for LAI [normal|lognormal(default)]");
+      SetParameterDescription("distlai", "Probability distribution for LAI (normal,lognormal)");
+      MandatoryOff("distlai");
 
-    AddParameter(ParameterType_Float, "minala", "Minimum value for ALA");
-    SetDefaultParameterFloat("minala", 5.0);
-    SetParameterDescription("minala", "Minimum value for ALA");
+      AddParameter(ParameterType_Float, "minala", "Minimum value for ALA");
+      SetDefaultParameterFloat("minala", 5.0);
+      SetParameterDescription("minala", "Minimum value for ALA");
 
-    AddParameter(ParameterType_Float, "maxala", "Maximum value for ALA");
-    SetDefaultParameterFloat("maxala", 80.0);
-    SetParameterDescription("maxala", "Maximum value for ALA");
+      AddParameter(ParameterType_Float, "maxala", "Maximum value for ALA");
+      SetDefaultParameterFloat("maxala", 80.0);
+      SetParameterDescription("maxala", "Maximum value for ALA");
 
-    AddParameter(ParameterType_Float, "modala", "Mode value for ALA");
-    SetDefaultParameterFloat("modala", 40.0);
-    SetParameterDescription("modala", "Mode value for ALA");
+      AddParameter(ParameterType_Float, "modala", "Mode value for ALA");
+      SetDefaultParameterFloat("modala", 40.0);
+      SetParameterDescription("modala", "Mode value for ALA");
 
-    AddParameter(ParameterType_Float, "stdala", "Standard deviation value for ALA");
-    SetDefaultParameterFloat("stdala", 20.0);
-    SetParameterDescription("stdala", "Standard deviation value for ALA");
+      AddParameter(ParameterType_Float, "stdala", "Standard deviation value for ALA");
+      SetDefaultParameterFloat("stdala", 20.0);
+      SetParameterDescription("stdala", "Standard deviation value for ALA");
 
-  }
+    }
 
-  virtual ~BVInputVariableGeneration()
-  {
-  }
+    virtual ~BVInputVariableGeneration()
+    {
+    }
 
 
-  void DoUpdateParameters()
-  {
-    // Nothing to do here : all parameters are independent
-  }
+    void DoUpdateParameters()
+    {
+      // Nothing to do here : all parameters are independent
+    }
 
-  //Generates a random number of the appropriate distribution and respecting the bounds
-  double Rng(double min, double max, double mod, double stdev, DistType dist)
+    //Generates a random number of the appropriate distribution and respecting the bounds
+  double Rng(VarParams vpars)
   {
     //TODO : why us stdev defined for uniform?
+    double min = vpars.m_min;
+    double max = vpars.m_max;
+    double mod = vpars.m_mod;
+    double stdev = vpars.m_std;
+    DistType dist = vpars.m_dist;
+
     double rn;
     if(dist == DistType::GAUSSIAN)
       {
@@ -147,58 +165,53 @@ private:
 
 
   /**
-     The LAI_Conv parameter is used to link (cross-correlation) each
-     variable to the LAI for a given sample using:
 
-                 V* = V_mod + (V -V_mod)*(LAI_Conv - MLAI)/LAI_Conv
+        V* = (V-Vmin(0))*(Vmax(LAI)-Vmin(LAI))/(Vmax(0)-Vmin(0))+Vmin(LAI)
+        p 32 of ATBD_BioVar_Venµs_V1.0.pdf
 
-     where V* is the value of variable V after the correlation.
   */
-  double CorrelateValue(double v, double v_mod, double lai)
+  double CorrelateValue(double v, double lai, VarParams vpars)
   {
-    double res = v_mod + (v - v_mod)*(m_LAI_Conv - lai)/m_LAI_Conv;
-    return res<0?0:res;
+    double Vmin0 = vpars.m_min;
+    double Vmax0 = vpars.m_max;
+    double VminLAImax = vpars.m_Min_LAI_Max;
+    double VmaxLAImax = vpars.m_Max_LAI_Max;
+    bool codist = vpars.m_CoDistrib;
+    if(codist)
+      {
+      double VminLAI = Vmin0+lai*(VminLAImax-Vmin0);
+      double VmaxLAI = Vmax0+lai*(VmaxLAImax-Vmax0);
+      double res = (v-Vmin0)*(VmaxLAI-VminLAI)/(Vmax0-Vmin0)+VminLAI;
+      return res<0?0:res;
+      }
+    else
+      return v;
   }
   
   ///Builds the map with the values of the sample
   SampleType DrawSample()
   {
     SampleType s;
-    s[IVNames::MLAI] = this->Rng(m_MLAI_min, m_MLAI_max, m_MLAI_mod, 
-                                 m_MLAI_std, m_MLAI_dist);
-    s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA_min, m_ALA_max, 
-                                                     m_ALA_mod, m_ALA_std, 
-                                                     m_ALA_dist),
-                                           m_ALA_mod, s[IVNames::MLAI]);
-    s[IVNames::CrownCover] = this->CorrelateValue(this->Rng(m_CrownCover_min, 
-                                                            m_CrownCover_max,
-                                                            m_CrownCover_mod, 
-                                                            m_CrownCover_std, 
-                                                            m_CrownCover_dist),
-                                                  m_CrownCover_mod, 
-                                                  s[IVNames::MLAI]);
-    s[IVNames::HsD] = this->Rng(m_HsD_min, m_HsD_max, m_HsD_mod, m_HsD_std, 
-                                DistType::GAUSSIAN);
-    s[IVNames::N] = this->CorrelateValue(this->Rng(m_N_min, m_N_max, m_N_mod, 
-                                                   m_N_std, m_N_dist),
-                                         m_N_mod, s[IVNames::MLAI]);
-    s[IVNames::Cab] = this->CorrelateValue(this->Rng(m_Cab_min, m_Cab_max, m_Cab_mod,
-                                                     m_Cab_std, m_Cab_dist),
-                                           m_Cab_mod, s[IVNames::MLAI]);
+    s[IVNames::MLAI] = this->Rng(m_MLAI);
+    s[IVNames::ALA] = this->CorrelateValue(this->Rng(m_ALA), 
+                                           s[IVNames::MLAI], m_ALA);
+    s[IVNames::CrownCover] = this->CorrelateValue(this->Rng(m_CrownCover), 
+                                                  s[IVNames::MLAI], m_CrownCover);
+    s[IVNames::HsD] = this->CorrelateValue(this->Rng(m_HsD), 
+                                           s[IVNames::MLAI], m_HsD);
+    s[IVNames::N] = this->CorrelateValue(this->Rng(m_N), 
+                                         s[IVNames::MLAI], m_N);
+    s[IVNames::Cab] = this->CorrelateValue(this->Rng(m_Cab), 
+                                           s[IVNames::MLAI], m_Cab);
     s[IVNames::Car] = s[IVNames::Cab]*0.25;
-    s[IVNames::Cdm] = this->CorrelateValue(this->Rng(m_Cdm_min, m_Cdm_max, m_Cdm_mod,
-                                                     m_Cdm_std, m_Cdm_dist),
-                                           m_Cdm_mod, s[IVNames::MLAI]);
-    s[IVNames::CwRel] = this->CorrelateValue(this->Rng(m_CwRel_min, m_CwRel_max, 
-                                                       m_CwRel_mod, m_CwRel_std, 
-                                                       m_CwRel_dist),
-                                             m_CwRel_mod, s[IVNames::MLAI]);
-    s[IVNames::Cbp] = this->CorrelateValue(this->Rng(m_Cbp_min, m_Cbp_max, m_Cbp_mod,
-                                                     m_Cbp_std, m_Cbp_dist),
-                                           m_Cbp_mod, s[IVNames::MLAI]);
-    s[IVNames::Bs] = this->CorrelateValue(this->Rng(m_Bs_min, m_Bs_max, m_Bs_mod, 
-                                                    m_Bs_std, m_Bs_dist),
-                                          m_Bs_mod, s[IVNames::MLAI]);
+    s[IVNames::Cdm] = this->CorrelateValue(this->Rng(m_Cdm), 
+                                           s[IVNames::MLAI], m_Cdm);
+    s[IVNames::CwRel] = this->CorrelateValue(this->Rng(m_CwRel), 
+                                             s[IVNames::MLAI], m_CwRel);
+    s[IVNames::Cbp] = this->CorrelateValue(this->Rng(m_Cbp), 
+                                           s[IVNames::MLAI], m_Cbp);
+    s[IVNames::Bs] = this->CorrelateValue(this->Rng(m_Bs), 
+                                          s[IVNames::MLAI], m_Bs);
 
     return s;
   }
@@ -217,37 +230,25 @@ private:
   void DoExecute()
   {
     /*
-     The LAI_Conv parameter is used to link (cross-correlation) each
-     variable to the LAI for a given sample using:
-
-                 V* = V_mod + (V -V_mod)*(LAI_Conv - MLAI)/LAI_Conv
-
-     where V* is the value of variable V after the correlation.
-
-     High values of LAI_Conv mean no correlation. Since, except for
-     HsDn which is not correlated, all other values are equal to 10,
-     we will only define one variable to deal with that, instead of
-     defining a value for each bv.
-
      Car --> not used by bvnet; Féret's dissertation uses Cxc to denote Car
      and gives a mean of 8.58 and a stdev of 3.95 and fig 2.2, p.47 gives the
      min at 0 and the max at 25
      
   */
 
-    m_MLAI_min = GetParameterFloat("minlai");
-    m_MLAI_max = GetParameterFloat("maxlai");
-    m_MLAI_mod = GetParameterFloat("modlai");
-    m_MLAI_std = GetParameterFloat("stdlai");
+    m_MLAI.m_min = GetParameterFloat("minlai");
+    m_MLAI.m_max = GetParameterFloat("maxlai");
+    m_MLAI.m_mod = GetParameterFloat("modlai");
+    m_MLAI.m_std = GetParameterFloat("stdlai");
 
     if(IsParameterEnabled("distlai"))
       {
       if( GetParameterString("distlai") == "normal" )
         {
-        m_MLAI_dist = DistType::GAUSSIAN;
+        m_MLAI.m_dist = DistType::GAUSSIAN;
         }
       }
-    if( m_MLAI_dist == DistType::GAUSSIAN)
+    if( m_MLAI.m_dist == DistType::GAUSSIAN)
       {
       otbAppLogINFO("LAI distribution is normal\n");
       }
@@ -256,10 +257,10 @@ private:
       otbAppLogINFO("LAI distribution is lognormal\n");
       }
 
-    m_ALA_min = GetParameterFloat("minala");
-    m_ALA_max = GetParameterFloat("maxala");
-    m_ALA_mod = GetParameterFloat("modala");
-    m_ALA_std = GetParameterFloat("stdala");
+    m_ALA.m_min = GetParameterFloat("minala");
+    m_ALA.m_max = GetParameterFloat("maxala");
+    m_ALA.m_mod = GetParameterFloat("modala");
+    m_ALA.m_std = GetParameterFloat("stdala");
 
     try
       {
@@ -300,86 +301,100 @@ private:
                   << GetParameterString("out") << std::endl);
   }
 
-  double m_LAI_Conv = 10.0;                     
+
+  VarParams m_MLAI = { 0.0, 15.0, 2.0, 2.0, 0, 0, false, 6, DistType::LOGNORMAL};
                                                                                             
-  double m_MLAI_min = 0.0;                      
-  double m_MLAI_max = 5.0;                      
-  double m_MLAI_mod = 0.5;                      
-  double m_MLAI_std = 1.0;                      
-  unsigned short  m_MLAI_nbcl = 6;                       
-  DistType m_MLAI_dist = DistType::LOGNORMAL;
+  VarParams m_ALA ={  30.0,                      
+                      80.0,                      
+                      60.0,                      
+                      20.0,                      
+                      55,
+                      65,
+                      true,
+                      3,                      
+                      DistType::GAUSSIAN};
                                                                                             
-  double m_ALA_min = 5.0;                      
-  double m_ALA_max = 80.0;                      
-  double m_ALA_mod = 40.0;                      
-  double m_ALA_std = 20.0;                      
-  unsigned short  m_ALA_nbcl = 3.0;                      
-  DistType m_ALA_dist = DistType::GAUSSIAN;
+  VarParams m_CrownCover ={    0.95,                
+                               1.0,                
+                               0.8,                
+                               0.4,                
+                               0.95,
+                               1.0,
+                               false,
+                               1,                 
+                               DistType::UNIFORM};
                                                                                             
-  double m_CrownCover_min = 0.95;                
-  double m_CrownCover_max = 1.0;                
-  double m_CrownCover_mod = 0.8;                
-  double m_CrownCover_std = 0.4;                
-  unsigned short  m_CrownCover_nbcl = 1;                 
-  DistType m_CrownCover_dist = DistType::UNIFORM;
+  VarParams m_HsD ={     0.1,                       
+                         0.5,                       
+                         0.2,                       
+                         0.5,                       
+                         0.1,
+                         0.5,
+                         true,
+                         1,                       
+                         DistType::GAUSSIAN};
                                                                                             
-  double m_HsD_min = 0.1;                       
-  double m_HsD_max = 0.5;                       
-  double m_HsD_mod = 0.2;                       
-  double m_HsD_std = 0.5;                       
-  unsigned short  m_HsD_nbcl = 1;                       
-  DistType m_HsD_dist = DistType::GAUSSIAN;
+  VarParams m_N ={     1.20,                        
+                       2.20,                        
+                       1.50,                        
+                       0.30,        
+                       1.30,
+                       1.80,
+                       false,                
+                       3,                          
+                       DistType::GAUSSIAN};
                                                                                             
-  double m_N_min = 1.20;                        
-  double m_N_max = 2.20;                        
-  double m_N_mod = 1.50;                        
-  double m_N_std = 0.30;                        
-  unsigned short  m_N_nbcl = 3;                          
-  DistType m_N_dist = DistType::GAUSSIAN;
+  VarParams m_Cab ={     20.0,                      
+                         90.0,                      
+                         45.0,                      
+                         30.0,  
+                         45,
+                         90,
+                         true,                    
+                         4,                        
+                         DistType::GAUSSIAN};
                                                                                             
-  double m_Cab_min = 20.0;                      
-  double m_Cab_max = 90.0;                      
-  double m_Cab_mod = 45.0;                      
-  double m_Cab_std = 30.0;                      
-  unsigned short  m_Cab_nbcl = 4;                        
-  DistType m_Cab_dist = DistType::GAUSSIAN;
-                                                                                            
-  double m_Car_min = 0.0;                       
-  double m_Car_max = 25.0;                      
-  double m_Car_mod = 8.58;                      
-  double m_Car_std = 3.95;                      
-  DistType m_Car_dist = DistType::GAUSSIAN;
-                                                                                            
-  double m_Cdm_min = 0.0030;                    
-  double m_Cdm_max = 0.0110;                    
-  double m_Cdm_mod = 0.0050;                    
-  double m_Cdm_std = 0.0050;                    
-  unsigned short  m_Cdm_nbcl = 4;                        
-  DistType m_Cdm_dist = DistType::GAUSSIAN;
-                                                                                            
-  double m_CwRel_min = 0.60;                    
-  double m_CwRel_max = 0.85;                    
-  double m_CwRel_mod = 0.75;                    
-  double m_CwRel_std = 0.075;                    
-  unsigned short  m_CwRel_nbcl = 4;                      
-  DistType m_CwRel_dist = DistType::UNIFORM;
-                                                                                            
-  double m_Cbp_min = 0.00;                      
-  double m_Cbp_max = 2.00;                      
-  double m_Cbp_mod = 0.00;                      
-  double m_Cbp_std = 0.30;                      
-  unsigned short  m_Cbp_nbcl = 3;                        
-  DistType m_Cbp_dist = DistType::GAUSSIAN;
-                                                                                            
-  double m_Bs_min = 0.0;                       
-  double m_Bs_max = 1.00;                       
-  double m_Bs_mod = 0.5;                       
-  double m_Bs_std = 2.00;                       
-  unsigned short  m_Bs_nbcl = 4;                         
-  DistType m_Bs_dist = DistType::GAUSSIAN;
+  VarParams m_Car ={     0.0,                       
+                         25.0,                      
+                         8.58,                      
+                         3.95,                      
+                         0, 0, false, 1,
+                         DistType::GAUSSIAN};
+  VarParams m_Cdm ={      0.0030,                    
+                          0.0110,                    
+                          0.0050,                    
+                          0.0050,                    
+                          0.0050,
+                          0.0110,
+                          true,                    
+                          4,                        
+                          DistType::GAUSSIAN};
+
+  VarParams m_CwRel ={                                                                                                
+    0.60,                    
+    0.85,                    
+    0.75,                    
+    0.08,       
+    0.70,
+    0.80,
+    true,                                 
+    4,                      
+    DistType::UNIFORM};
+                                                                                          
+
+  VarParams m_Cbp ={         0.00,                      
+                             2.00,                      
+                             0.00,                      
+                             0.30,         
+                             0.00,
+                             0.20,
+                             true,                                 
+                             3,                        
+                             DistType::GAUSSIAN  };
+  VarParams m_Bs ={ 0.0, 1.00, 0.5, 2.00, 0.50, 1.20, false, 4, DistType::GAUSSIAN};
 
   // the random number generator
-  std::mt19937 m_RNG;
+    std::mt19937 m_RNG;
 
   // the output file
   std::ofstream m_SampleFile;
