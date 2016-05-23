@@ -37,96 +37,96 @@ public:
   enum class DistType {GAUSSIAN, UNIFORM, LOGNORMAL};
 
   struct VarParams {
-    double m_min;
-    double m_max;
-    double m_mod;
-    double m_std;
-    double m_Min_LAI_Max;
-    double m_Max_LAI_Max;
-    bool m_CoDistrib;
-    unsigned short  m_nbcl;
-    DistType m_dist;
+    double min;
+    double max;
+    double mod;
+    double std;
+    double Min_LAI_Max;
+    double Max_LAI_Max;
+    bool CoDistrib;
+    unsigned short  nbcl;
+    DistType dist;
   };
   
   /** Standard macro */
-    itkNewMacro(Self);
+  itkNewMacro(Self);
 
-    itkTypeMacro(BVInputVariableGeneration, otb::Application);
+  itkTypeMacro(BVInputVariableGeneration, otb::Application);
 
-    typedef std::map< IVNames, double > SampleType;
-  private:
-    void DoInit()
-    {
-      SetName("BVInputVariableGeneration");
-      SetDescription("Generate random input variable distribution for ... .");
+  typedef std::map< IVNames, double > SampleType;
+private:
+  void DoInit()
+  {
+    SetName("BVInputVariableGeneration");
+    SetDescription("Generate random input variable distribution for ... .");
 
-      AddDocTag(Tags::BV);
-      AddParameter(ParameterType_Int, "samples", "Sample size");
-      SetDefaultParameterInt("samples", 1000);
-      SetParameterDescription("samples", "Number of samples to be generated");
+    AddDocTag(Tags::BV);
+    AddParameter(ParameterType_Int, "samples", "Sample size");
+    SetDefaultParameterInt("samples", 1000);
+    SetParameterDescription("samples", "Number of samples to be generated");
     
-      AddParameter(ParameterType_OutputFilename, "out", "Output file");
-      SetParameterDescription( "out", "Filename where the variable sets are saved." );
-      MandatoryOn("out");
+    AddParameter(ParameterType_OutputFilename, "out", "Output file");
+    SetParameterDescription( "out", "Filename where the variable sets are saved." );
+    MandatoryOn("out");
 
-      AddParameter(ParameterType_Float, "minlai", "Minimum value for LAI");
-      SetDefaultParameterFloat("minlai", 0.0);
-      SetParameterDescription("minlai", "Minimum value for LAI");
+    AddParameter(ParameterType_Float, "minlai", "Minimum value for LAI");
+    SetDefaultParameterFloat("minlai", 0.0);
+    SetParameterDescription("minlai", "Minimum value for LAI");
 
-      AddParameter(ParameterType_Float, "maxlai", "Maximum value for LAI");
-      SetDefaultParameterFloat("maxlai", 5.0);
-      SetParameterDescription("maxlai", "Maximum value for LAI");
+    AddParameter(ParameterType_Float, "maxlai", "Maximum value for LAI");
+    SetDefaultParameterFloat("maxlai", 15.0);
+    SetParameterDescription("maxlai", "Maximum value for LAI");
 
-      AddParameter(ParameterType_Float, "modlai", "Mode value for LAI");
-      SetDefaultParameterFloat("modlai", 0.5);
-      SetParameterDescription("modlai", "Mode value for LAI");
+    AddParameter(ParameterType_Float, "modlai", "Mode value for LAI");
+    SetDefaultParameterFloat("modlai", 2.0);
+    SetParameterDescription("modlai", "Mode value for LAI");
 
-      AddParameter(ParameterType_Float, "stdlai", "Standard deviation value for LAI");
-      SetDefaultParameterFloat("stdlai", 1.0);
-      SetParameterDescription("stdlai", "Standard deviation value for LAI");
+    AddParameter(ParameterType_Float, "stdlai", "Standard deviation value for LAI");
+    SetDefaultParameterFloat("stdlai", 2.0);
+    SetParameterDescription("stdlai", "Standard deviation value for LAI");
 
-      AddParameter(ParameterType_String, 
-                   "distlai", "Probability distribution for LAI [normal|lognormal(default)]");
-      SetParameterDescription("distlai", "Probability distribution for LAI (normal,lognormal)");
-      MandatoryOff("distlai");
+    AddParameter(ParameterType_String, 
+                 "distlai", "Probability distribution for LAI [normal|lognormal(default)]");
+    SetParameterDescription("distlai", "Probability distribution for LAI (normal,lognormal)");
+    MandatoryOff("distlai");
 
-      AddParameter(ParameterType_Float, "minala", "Minimum value for ALA");
-      SetDefaultParameterFloat("minala", 5.0);
-      SetParameterDescription("minala", "Minimum value for ALA");
+    AddParameter(ParameterType_Float, "minala", "Minimum value for ALA");
+    SetDefaultParameterFloat("minala", 30.0);
+    SetParameterDescription("minala", "Minimum value for ALA");
 
-      AddParameter(ParameterType_Float, "maxala", "Maximum value for ALA");
-      SetDefaultParameterFloat("maxala", 80.0);
-      SetParameterDescription("maxala", "Maximum value for ALA");
+    AddParameter(ParameterType_Float, "maxala", "Maximum value for ALA");
+    SetDefaultParameterFloat("maxala", 80.0);
+    SetParameterDescription("maxala", "Maximum value for ALA");
 
-      AddParameter(ParameterType_Float, "modala", "Mode value for ALA");
-      SetDefaultParameterFloat("modala", 40.0);
-      SetParameterDescription("modala", "Mode value for ALA");
+    AddParameter(ParameterType_Float, "modala", "Mode value for ALA");
+    SetDefaultParameterFloat("modala", 60.0);
+    SetParameterDescription("modala", "Mode value for ALA");
 
-      AddParameter(ParameterType_Float, "stdala", "Standard deviation value for ALA");
-      SetDefaultParameterFloat("stdala", 20.0);
-      SetParameterDescription("stdala", "Standard deviation value for ALA");
+    AddParameter(ParameterType_Float, "stdala", "Standard deviation value for ALA");
+    SetDefaultParameterFloat("stdala", 20.0);
+    SetParameterDescription("stdala", "Standard deviation value for ALA");
 
-    }
+  }
 
-    virtual ~BVInputVariableGeneration()
-    {
-    }
+  virtual ~BVInputVariableGeneration()
+  {
+  }
 
 
-    void DoUpdateParameters()
-    {
-      // Nothing to do here : all parameters are independent
-    }
+  void DoUpdateParameters()
+  {
+    // Nothing to do here : all parameters are independent
+  }
 
-    //Generates a random number of the appropriate distribution and respecting the bounds
+  //Generates a random number of the appropriate distribution and respecting the bounds
   double Rng(VarParams vpars)
   {
     //TODO : why us stdev defined for uniform?
-    double min = vpars.m_min;
-    double max = vpars.m_max;
-    double mod = vpars.m_mod;
-    double stdev = vpars.m_std;
-    DistType dist = vpars.m_dist;
+    double min = vpars.min;
+    double max = vpars.max;
+    double mod = vpars.mod;
+    double stdev = vpars.std;
+    DistType dist = vpars.dist;
 
     double rn;
     if(dist == DistType::GAUSSIAN)
@@ -172,16 +172,16 @@ public:
   */
   double CorrelateValue(double v, double lai, VarParams vpars)
   {
-    double Vmin0 = vpars.m_min;
-    double Vmax0 = vpars.m_max;
-    double VminLAImax = vpars.m_Min_LAI_Max;
-    double VmaxLAImax = vpars.m_Max_LAI_Max;
-    bool codist = vpars.m_CoDistrib;
+    double Vmin0 = vpars.min;
+    double Vmax0 = vpars.max;
+    double VminLAImax = vpars.Min_LAI_Max;
+    double VmaxLAImax = vpars.Max_LAI_Max;
+    bool codist = vpars.CoDistrib;
     if(codist)
       {
       double VminLAI = Vmin0+lai*(VminLAImax-Vmin0);
       double VmaxLAI = Vmax0+lai*(VmaxLAImax-Vmax0);
-      double res = (v-Vmin0)*(VmaxLAI-VminLAI)/(Vmax0-Vmin0)+VminLAI;
+      double res = (v-Vmin0)/(Vmax0-Vmin0)*(VmaxLAI-VminLAI)+VminLAI;
       return res<0?0:res;
       }
     else
@@ -236,19 +236,19 @@ public:
      
   */
 
-    m_MLAI.m_min = GetParameterFloat("minlai");
-    m_MLAI.m_max = GetParameterFloat("maxlai");
-    m_MLAI.m_mod = GetParameterFloat("modlai");
-    m_MLAI.m_std = GetParameterFloat("stdlai");
+    m_MLAI.min = GetParameterFloat("minlai");
+    m_MLAI.max = GetParameterFloat("maxlai");
+    m_MLAI.mod = GetParameterFloat("modlai");
+    m_MLAI.std = GetParameterFloat("stdlai");
 
     if(IsParameterEnabled("distlai"))
       {
       if( GetParameterString("distlai") == "normal" )
         {
-        m_MLAI.m_dist = DistType::GAUSSIAN;
+        m_MLAI.dist = DistType::GAUSSIAN;
         }
       }
-    if( m_MLAI.m_dist == DistType::GAUSSIAN)
+    if( m_MLAI.dist == DistType::GAUSSIAN)
       {
       otbAppLogINFO("LAI distribution is normal\n");
       }
@@ -257,10 +257,10 @@ public:
       otbAppLogINFO("LAI distribution is lognormal\n");
       }
 
-    m_ALA.m_min = GetParameterFloat("minala");
-    m_ALA.m_max = GetParameterFloat("maxala");
-    m_ALA.m_mod = GetParameterFloat("modala");
-    m_ALA.m_std = GetParameterFloat("stdala");
+    m_ALA.min = GetParameterFloat("minala");
+    m_ALA.max = GetParameterFloat("maxala");
+    m_ALA.mod = GetParameterFloat("modala");
+    m_ALA.std = GetParameterFloat("stdala");
 
     try
       {
