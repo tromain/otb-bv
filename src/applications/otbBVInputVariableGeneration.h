@@ -44,17 +44,17 @@ private:
   void WriteSample(otb::BV::SampleType s);
   void DoExecute();
 
-  otb::BV::VarParams m_MLAI = {0.0, 15.0, 2.0, 2.0, 0, 0, false, 6, otb::BV::DistType::LOGNORMAL};
+  otb::BV::VarParams m_MLAI = {0.0, 15.0, 2.0, 2.0, 0, 0, true, 6, otb::BV::DistType::LOGNORMAL};
   otb::BV::VarParams m_ALA ={30.0, 80.0, 60.0, 20.0, 55, 65, true, 3, otb::BV::DistType::GAUSSIAN};
-  otb::BV::VarParams m_CrownCover ={0.95, 1.0, 0.8, 0.4, 0.95, 1.0, false, 1, otb::BV::DistType::UNIFORM};
+  otb::BV::VarParams m_CrownCover ={0.95, 1.0, 0.8, 0.4, 0.95, 1.0, true, 1, otb::BV::DistType::UNIFORM};
   otb::BV::VarParams m_HsD ={0.1, 0.5, 0.2, 0.5, 0.1, 0.5, true, 1, otb::BV::DistType::GAUSSIAN};
-  otb::BV::VarParams m_N ={1.20, 2.20, 1.50, 0.30, 1.30, 1.80, false, 3, otb::BV::DistType::GAUSSIAN};
+  otb::BV::VarParams m_N ={1.20, 2.20, 1.50, 0.30, 1.30, 1.80, true, 3, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_Cab ={20.0, 90.0, 45.0, 30.0, 45, 90, true, 4, otb::BV::DistType::GAUSSIAN};
-  otb::BV::VarParams m_Car ={0.0, 25.0, 8.58, 3.95, 0, 0, false, 1, otb::BV::DistType::GAUSSIAN};
+  otb::BV::VarParams m_Car ={0.0, 25.0, 8.58, 3.95, 0, 0, true, 1, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_Cdm ={0.0030, 0.0110, 0.0050, 0.0050, 0.0050, 0.0110, true, 4, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_CwRel ={0.60, 0.85, 0.75, 0.08, 0.70, 0.80, true, 4, otb::BV::DistType::UNIFORM};
   otb::BV::VarParams m_Cbp ={0.00, 2.00, 0.00, 0.30, 0.00, 0.20, true, 3, otb::BV::DistType::GAUSSIAN  };
-  otb::BV::VarParams m_Bs ={ 0.0, 1.00, 0.5, 2.00, 0.50, 1.20, false, 4, otb::BV::DistType::GAUSSIAN};
+  otb::BV::VarParams m_Bs ={ 0.0, 1.00, 0.5, 2.00, 0.50, 1.20, true, 4, otb::BV::DistType::GAUSSIAN};
 
   // the random number generator
   std::mt19937 m_RNG;
