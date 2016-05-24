@@ -83,17 +83,19 @@ namespace BV
         p 32 of ATBD_BioVar_Venµs_V1.0.pdf
 
   */
-double CorrelateValue(double v, double lai, VarParams vpars)
+double CorrelateValue(double v, double lai, VarParams vpars, VarParams laipars)
 {
   double Vmin0 = vpars.min;
   double Vmax0 = vpars.max;
   double VminLAImax = vpars.Min_LAI_Max;
   double VmaxLAImax = vpars.Max_LAI_Max;
+  double LAImax = laipars.max;
+  double LAImin = laipars.min;
   bool codist = vpars.CoDistrib;
   if(codist)
     {
-    double VminLAI = Vmin0+lai*(VminLAImax-Vmin0);
-    double VmaxLAI = Vmax0+lai*(VmaxLAImax-Vmax0);
+    double VminLAI = Vmin0+lai*(VminLAImax-Vmin0)/(LAImax-LAImin);
+    double VmaxLAI = Vmax0+lai*(VmaxLAImax-Vmax0)/(LAImax-LAImin);
     double res = (v-Vmin0)/(Vmax0-Vmin0)*(VmaxLAI-VminLAI)+VminLAI;
     return res<0?0:res;
     }

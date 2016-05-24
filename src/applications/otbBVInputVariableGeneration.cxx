@@ -83,24 +83,24 @@ otb::BV::SampleType BVInputVariableGeneration::DrawSample()
   SampleType s;
   s[IVNames::MLAI] = Rng(m_MLAI, m_RNG);
   s[IVNames::ALA] = CorrelateValue(Rng(m_ALA, m_RNG), 
-                                   s[IVNames::MLAI], m_ALA);
+                                   s[IVNames::MLAI], m_ALA, m_MLAI);
   s[IVNames::CrownCover] = CorrelateValue(Rng(m_CrownCover, m_RNG), 
-                                          s[IVNames::MLAI], m_CrownCover);
+                                          s[IVNames::MLAI], m_CrownCover, m_MLAI);
   s[IVNames::HsD] = CorrelateValue(Rng(m_HsD, m_RNG), 
-                                   s[IVNames::MLAI], m_HsD);
+                                   s[IVNames::MLAI], m_HsD, m_MLAI);
   s[IVNames::N] = CorrelateValue(Rng(m_N, m_RNG), 
-                                 s[IVNames::MLAI], m_N);
+                                 s[IVNames::MLAI], m_N, m_MLAI);
   s[IVNames::Cab] = CorrelateValue(Rng(m_Cab, m_RNG), 
-                                   s[IVNames::MLAI], m_Cab);
+                                   s[IVNames::MLAI], m_Cab, m_MLAI);
   s[IVNames::Car] = s[IVNames::Cab]*0.25;
   s[IVNames::Cdm] = CorrelateValue(Rng(m_Cdm, m_RNG), 
-                                   s[IVNames::MLAI], m_Cdm);
+                                   s[IVNames::MLAI], m_Cdm, m_MLAI);
   s[IVNames::CwRel] = CorrelateValue(Rng(m_CwRel, m_RNG), 
-                                     s[IVNames::MLAI], m_CwRel);
+                                     s[IVNames::MLAI], m_CwRel, m_MLAI);
   s[IVNames::Cbp] = CorrelateValue(Rng(m_Cbp, m_RNG), 
-                                   s[IVNames::MLAI], m_Cbp);
+                                   s[IVNames::MLAI], m_Cbp, m_MLAI);
   s[IVNames::Bs] = CorrelateValue(Rng(m_Bs,m_RNG), 
-                                        s[IVNames::MLAI], m_Bs);
+                                  s[IVNames::MLAI], m_Bs, m_MLAI);
 
   return s;
 }
