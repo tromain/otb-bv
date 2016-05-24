@@ -19,17 +19,8 @@
 
 namespace otb
 {
-
 namespace Wrapper
 {
-
-namespace BV
-{
-//Generates a random number of the appropriate distribution and respecting the bounds
-template<typename RNGType>
-double Rng(otb::BV::VarParams vpars, RNGType rngen);
-double CorrelateValue(double v, double lai, otb::BV::VarParams vpars);
-}//namespace BV
 
 class BVInputVariableGeneration : public Application
 {

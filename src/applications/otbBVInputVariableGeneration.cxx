@@ -13,85 +13,12 @@
 =========================================================================*/
 
 #include "otbBVInputVariableGeneration.h"
+#include "otbBVUtil.h"
 #include <random>
 #include <fstream>
 
-
 namespace otb
 {
-
-namespace BV
-{
-template<typename RNGType>
-double Rng(VarParams vpars, RNGType rngen)
-{
-  //TODO : why us stdev defined for uniform?
-  double min = vpars.min;
-  double max = vpars.max;
-  double mod = vpars.mod;
-  double stdev = vpars.std;
-  DistType dist = vpars.dist;
-
-  double rn;
-  if(dist == DistType::GAUSSIAN)
-    {
-    auto sampleInsideBounds = false;
-    while(!sampleInsideBounds)
-      {
-      std::normal_distribution<> d(mod,stdev);
-      rn = d(rngen);
-      if( rn >= min && rn <= max)
-        sampleInsideBounds = true;
-      }
-    }
-  if(dist == DistType::LOGNORMAL)
-    {
-    auto sampleInsideBounds = false;
-    while(!sampleInsideBounds)
-      {
-      std::lognormal_distribution<> d(mod, stdev);
-      rn = d(rngen);
-      if( rn >= min && rn <= max)
-        sampleInsideBounds = true;
-      }
-    }
-  else
-    {
-    std::uniform_real_distribution<> d(min, max);
-    rn = d(rngen);
-    }
-
-
-
-
-  return rn;
-}
-
-/**
-
-        V* = (V-Vmin(0))*(Vmax(LAI)-Vmin(LAI))/(Vmax(0)-Vmin(0))+Vmin(LAI)
-        p 32 of ATBD_BioVar_Venµs_V1.0.pdf
-
-  */
-double CorrelateValue(double v, double lai, VarParams vpars)
-{
-  double Vmin0 = vpars.min;
-  double Vmax0 = vpars.max;
-  double VminLAImax = vpars.Min_LAI_Max;
-  double VmaxLAImax = vpars.Max_LAI_Max;
-  bool codist = vpars.CoDistrib;
-  if(codist)
-    {
-    double VminLAI = Vmin0+lai*(VminLAImax-Vmin0);
-    double VmaxLAI = Vmax0+lai*(VmaxLAImax-Vmax0);
-    double res = (v-Vmin0)/(Vmax0-Vmin0)*(VmaxLAI-VminLAI)+VminLAI;
-    return res<0?0:res;
-    }
-  else
-    return v;
-}
-
-}//namespace BV 
 namespace Wrapper
 {
 

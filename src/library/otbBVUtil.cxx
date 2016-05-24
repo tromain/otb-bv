@@ -14,6 +14,7 @@
 #include <fstream>
 #include <boost/algorithm/string.hpp>
 #include "itkMacro.h"
+#include "otbBVUtil.h"
 
 namespace otb
 {
@@ -41,5 +42,65 @@ size_t countColumns(std::string fileName)
     }
 
 }
+
+otb::BV::NormalizationVectorType read_normalization_file(const std::string in_filename)
+{
+  using namespace otb::BV;
+  NormalizationVectorType var_minmax;
+
+  std::ifstream norm_file;
+  try
+    {
+    norm_file.open(in_filename);
+    }
+  catch(...)
+    {
+    itkGenericExceptionMacro(<< "Could not open file " << in_filename);
+    }
+
+  for(std::string line; std::getline(norm_file, line); )
+    {
+    if(line.size() < 2)
+      {
+      itkGenericExceptionMacro(<< "Wrong line format in " << in_filename << ": " << line << std::endl);
+      }
+    std::istringstream ss(line);
+    PrecisionType minval, maxval;
+    ss >> minval;
+    ss >> maxval;
+    var_minmax.push_back(std::make_pair(minval, maxval));
+    }
+  norm_file.close();
+  return var_minmax;
+}
+
+namespace BV
+{
+
+/**
+
+        V* = (V-Vmin(0))*(Vmax(LAI)-Vmin(LAI))/(Vmax(0)-Vmin(0))+Vmin(LAI)
+        p 32 of ATBD_BioVar_Venµs_V1.0.pdf
+
+  */
+double CorrelateValue(double v, double lai, VarParams vpars)
+{
+  double Vmin0 = vpars.min;
+  double Vmax0 = vpars.max;
+  double VminLAImax = vpars.Min_LAI_Max;
+  double VmaxLAImax = vpars.Max_LAI_Max;
+  bool codist = vpars.CoDistrib;
+  if(codist)
+    {
+    double VminLAI = Vmin0+lai*(VminLAImax-Vmin0);
+    double VmaxLAI = Vmax0+lai*(VmaxLAImax-Vmax0);
+    double res = (v-Vmin0)/(Vmax0-Vmin0)*(VmaxLAI-VminLAI)+VminLAI;
+    return res<0?0:res;
+    }
+  else
+    return v;
+}
+
+}//namespace BV 
 }
 

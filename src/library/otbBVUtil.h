@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <limits>
 #include "otbBVTypes.h"
 
 namespace otb
@@ -25,6 +26,12 @@ size_t countColumns(std::string fileName);
 
 namespace BV
 {
+
+//Generates a random number of the appropriate distribution and respecting the bounds
+template<typename RNGType>
+double Rng(otb::BV::VarParams vpars, RNGType rngen);
+double CorrelateValue(double v, double lai, otb::BV::VarParams vpars);
+
 template<typename II, typename OI>
 inline
 NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& ovLast)
@@ -68,35 +75,7 @@ void write_normalization_file(const NVT& var_minmax, const std::string out_filen
     }
 }
 
-NormalizationVectorType read_normalization_file(const std::string in_filename)
-{
-  NormalizationVectorType var_minmax;
-
-  std::ifstream norm_file;
-    try
-      {
-      norm_file.open(in_filename);
-      }
-    catch(...)
-      {
-      itkGenericExceptionMacro(<< "Could not open file " << in_filename);
-      }
-
-    for(std::string line; std::getline(norm_file, line); )
-      {
-        if(line.size() < 2)
-          {
-          itkGenericExceptionMacro(<< "Wrong line format in " << in_filename << ": " << line << std::endl);
-          }
-        std::istringstream ss(line);
-        PrecisionType minval, maxval;
-        ss >> minval;
-        ss >> maxval;
-        var_minmax.push_back(std::make_pair(minval, maxval));
-      }
-    norm_file.close();
-  return var_minmax;
-}
+NormalizationVectorType read_normalization_file(const std::string in_filename);
 
 template<typename T, typename U>
 inline
@@ -143,5 +122,6 @@ void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax)
 
 }//namespace BV
 }//namespace otb
-
+// include the definition of the template functions
+#include "otbBVUtil.txx"
 #endif

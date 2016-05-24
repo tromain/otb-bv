@@ -15,6 +15,7 @@
 #define __OTBBVTYPES_H
 
 #include <map>
+#include <vector>
 
 namespace otb
 {
