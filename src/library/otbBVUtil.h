@@ -29,8 +29,8 @@ namespace BV
 
 //Generates a random number of the appropriate distribution and respecting the bounds
 template<typename RNGType>
-double Rng(otb::BV::VarParams vpars, RNGType rngen);
-double CorrelateValue(double v, double lai, otb::BV::VarParams vpars);
+double Rng(otb::BV::VarParams vpars, RNGType& rngen);
+double CorrelateValue(double v, double lai, VarParams vpars, VarParams laipars);
 
 template<typename II, typename OI>
 inline

@@ -18,7 +18,7 @@ namespace otb
 namespace BV
 {
 template<typename RNGType>
-double Rng(VarParams vpars, RNGType rngen)
+double Rng(VarParams vpars, RNGType& rngen)
 {
   //TODO : why us stdev defined for uniform?
   double min = vpars.min;
