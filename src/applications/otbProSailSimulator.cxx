@@ -30,8 +30,9 @@ namespace otb
 {
 
 
-std::vector<BVType> parse_bv_sample_file(std::ifstream& sample_file)
+std::vector<otb::BV::BVType> parse_bv_sample_file(std::ifstream& sample_file)
 {    
+  using namespace otb::BV;
 //read variable names (first line)
   std::string line;
   std::getline(sample_file, line);
@@ -148,6 +149,7 @@ private:
   
   void DoExecute()
   {
+    using namespace otb::BV;
     m_Azimuth = GetParameterFloat("azimuth");
     m_SolarZenith = GetParameterFloat("solarzenith");
     m_SolarZenith_Fapar = m_SolarZenith;
@@ -224,10 +226,10 @@ private:
       }    
 
     AcquisitionParsType prosailPars;
-    prosailPars[TTS] = m_SolarZenith;
-    prosailPars[TTS_FAPAR] = m_SolarZenith_Fapar;
-    prosailPars[TTO] = m_SensorZenith;
-    prosailPars[PSI] = m_Azimuth;
+    prosailPars[AcquisitionParameters::TTS] = m_SolarZenith;
+    prosailPars[AcquisitionParameters::TTS_FAPAR] = m_SolarZenith_Fapar;
+    prosailPars[AcquisitionParameters::TTO] = m_SensorZenith;
+    prosailPars[AcquisitionParameters::PSI] = m_Azimuth;
     
 
     otbAppLogINFO("Processing simulations ..." << std::endl);

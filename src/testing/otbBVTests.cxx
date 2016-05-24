@@ -21,4 +21,5 @@ void RegisterTests()
   REGISTER_TEST(bvMultiTemporalInversion);
   REGISTER_TEST(bvMultiTemporalInversionFromFile);
   REGISTER_TEST(bvLaiLogNdvi);
+  REGISTER_TEST(bvCorrelateWithLAI);
 }

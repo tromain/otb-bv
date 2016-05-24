@@ -58,6 +58,7 @@ public:
   inline
   OutputType operator ()()
   {
+    using namespace otb::BV;
     OutputType pix;
     for(size_t i=0;i<m_SatRSR->GetNbBands();i++)
       pix.push_back(0.0);
@@ -167,18 +168,19 @@ public:
   }
 
   inline
-  void SetBVs(BVType bvmap)
+  void SetBVs(otb::BV::BVType bvmap)
   {
     m_BV = bvmap;
   }
 
   inline
-  void SetParameters(AcquisitionParsType apmap)
+  void SetParameters(otb::BV::AcquisitionParsType apmap)
   {
-    m_TTS = apmap[TTS]; //solar zenith angle
-    m_TTO = apmap[TTO]; //observer zenith angle
-    m_PSI = apmap[PSI]; //azimuth
-    m_TTS_FAPAR = apmap[TTS_FAPAR]; //solar zenith angle for fapar computation
+    using namespace otb::BV;
+    m_TTS = apmap[AcquisitionParameters::TTS]; //solar zenith angle
+    m_TTO = apmap[AcquisitionParameters::TTO]; //observer zenith angle
+    m_PSI = apmap[AcquisitionParameters::PSI]; //azimuth
+    m_TTS_FAPAR = apmap[AcquisitionParameters::TTS_FAPAR]; //solar zenith angle for fapar computation
 
   }
   
@@ -207,7 +209,7 @@ protected:
   double m_TTS_FAPAR; //solar zenith angle for fapar computation
   double m_TTO; //observer zenith angle
   double m_PSI; //azimuth
-  BVType m_BV;
+  otb::BV::BVType m_BV;
 };
 
 

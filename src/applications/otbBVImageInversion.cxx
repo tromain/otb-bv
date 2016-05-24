@@ -94,7 +94,7 @@ class BVEstimationFunctor
 public:
   BVEstimationFunctor() = default;
   BVEstimationFunctor(ModelType* model, 
-                      const NormalizationVectorType& normalization) : 
+                      const BV::NormalizationVectorType& normalization) : 
     m_Model{model}, m_Normalization{normalization} {}
 
   ~BVEstimationFunctor() {};
@@ -102,7 +102,7 @@ public:
   inline
   OutputPixelType operator ()(const InputPixelType& in_pix)
   {
-    bool normalization{m_Normalization!=NormalizationVectorType{}};
+    bool normalization{m_Normalization!=BV::NormalizationVectorType{}};
     OutputPixelType pix{};
     pix.SetSize(1);
     auto nbInputVariables = in_pix.GetSize();
@@ -112,13 +112,13 @@ public:
       {
       inputValue[var] = in_pix[var];
       if( normalization )
-        inputValue[var] = normalize(inputValue[var], m_Normalization[var]);
+        inputValue[var] = BV::normalize(inputValue[var], m_Normalization[var]);
       }
     OutputSampleType outputValue = m_Model->Predict(inputValue);
     pix[0] = outputValue[0];
     if( normalization )
-      pix[0] = denormalize(outputValue[0],
-                           m_Normalization[nbInputVariables]);
+      pix[0] = BV::denormalize(outputValue[0],
+                               m_Normalization[nbInputVariables]);
     return pix;
   }
 
@@ -135,7 +135,7 @@ public:
 
 protected:
   ModelPointerType m_Model;
-  NormalizationVectorType m_Normalization;
+  BV::NormalizationVectorType m_Normalization;
 
 };
 
@@ -203,11 +203,11 @@ private:
     otbAppLogINFO("Input image has " << nb_bands << " bands."<< std::endl);            
     auto nbInputVariables = nb_bands;
 
-    NormalizationVectorType var_minmax{};
+    BV::NormalizationVectorType var_minmax{};
     if( HasValue( "normalization" )==true )
       {
       otbAppLogINFO("Variable normalization."<< std::endl);            
-      var_minmax = read_normalization_file(GetParameterString("normalization"));
+      var_minmax = BV::read_normalization_file(GetParameterString("normalization"));
       if(var_minmax.size()!=nbInputVariables+1)
         itkGenericExceptionMacro(<< "Normalization file ("<< var_minmax.size() 
                                  << " - 1) is not coherent with the number of "

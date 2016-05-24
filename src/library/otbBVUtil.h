@@ -23,6 +23,8 @@ namespace otb
 {
 size_t countColumns(std::string fileName);
 
+namespace BV
+{
 template<typename II, typename OI>
 inline
 NormalizationVectorType estimate_var_minmax(II& ivIt, II& ivLast, OI& ovIt, OI& ovLast)
@@ -139,6 +141,7 @@ void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax)
     }
 }
 
-}
+}//namespace BV
+}//namespace otb
 
 #endif

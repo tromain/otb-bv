@@ -31,26 +31,27 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   satRSR->SetSortBands(false);
   satRSR->Load(argv[1]);
 
-  typename otb::AcquisitionParsType prosailPars;
-  prosailPars[otb::TTS] = 0.6476*(180.0/3.141592);
-  prosailPars[otb::TTO] = 0.30456*(180.0/3.141592);
-  prosailPars[otb::PSI] = -2.5952*(180.0/3.141592);
+  using namespace otb::BV;
+  AcquisitionParsType prosailPars;
+  prosailPars[AcquisitionParameters::TTS] = 0.6476*(180.0/3.141592);
+  prosailPars[AcquisitionParameters::TTO] = 0.30456*(180.0/3.141592);
+  prosailPars[AcquisitionParameters::PSI] = -2.5952*(180.0/3.141592);
 
   ProSailType prosail;
   prosail.SetRSR(satRSR);
-  typename otb::BVType prosailBV;
+  typename otb::BV::BVType prosailBV;
 
-  prosailBV[otb::IVNames::MLAI] = 3.7277;
-  prosailBV[otb::IVNames::ALA] = 59.755;
-  prosailBV[otb::IVNames::CrownCover] = 0.95768;
-  prosailBV[otb::IVNames::HsD] = 0.18564;
-  prosailBV[otb::IVNames::N] = 1.4942;
-  prosailBV[otb::IVNames::Cab] = 64.632;
-  prosailBV[otb::IVNames::Car] = 0;
-  prosailBV[otb::IVNames::Cdm] = 0.0079628;
-  prosailBV[otb::IVNames::CwRel] = 0.73298;
-  prosailBV[otb::IVNames::Cbp] = 0.075167;
-  prosailBV[otb::IVNames::Bs] = 0.72866;
+  prosailBV[IVNames::MLAI] = 3.7277;
+  prosailBV[IVNames::ALA] = 59.755;
+  prosailBV[IVNames::CrownCover] = 0.95768;
+  prosailBV[IVNames::HsD] = 0.18564;
+  prosailBV[IVNames::N] = 1.4942;
+  prosailBV[IVNames::Cab] = 64.632;
+  prosailBV[IVNames::Car] = 0;
+  prosailBV[IVNames::Cdm] = 0.0079628;
+  prosailBV[IVNames::CwRel] = 0.73298;
+  prosailBV[IVNames::Cbp] = 0.075167;
+  prosailBV[IVNames::Bs] = 0.72866;
 
   prosail.SetBVs(prosailBV);
   prosail.SetParameters(prosailPars);

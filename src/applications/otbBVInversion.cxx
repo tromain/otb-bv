@@ -126,11 +126,11 @@ private:
     otbAppLogINFO("Found " << nbInputVariables << " input variables in "
                   << reflectancesFileName << std::endl);
 
-    NormalizationVectorType var_minmax;
+    otb::BV::NormalizationVectorType var_minmax;
     if( HasValue( "normalization" )==true )
       {
       otbAppLogINFO("Variable normalization."<< std::endl);            
-      var_minmax = read_normalization_file(GetParameterString("normalization"));
+      var_minmax = otb::BV::read_normalization_file(GetParameterString("normalization"));
       if(var_minmax.size()!=nbInputVariables+1)
         itkGenericExceptionMacro(<< "Normalization file ("<< var_minmax.size() 
                                  << " - 1) is not coherent with the number of "
@@ -191,12 +191,12 @@ private:
           {
           ss >> inputValue[var];
           if( HasValue( "normalization" )==true )
-            inputValue[var] = normalize(inputValue[var], var_minmax[var]);
+            inputValue[var] = otb::BV::normalize(inputValue[var], var_minmax[var]);
           }
         OutputSampleType outputValue = regressor->Predict(inputValue);
         if( HasValue( "normalization" )==true )
-          outputValue[0] = denormalize(outputValue[0],
-                                       var_minmax[nbInputVariables]);
+          outputValue[0] = otb::BV::denormalize(outputValue[0],
+                                                var_minmax[nbInputVariables]);
         outFile << outputValue[0] << std::endl;
         ++sampleCount;
         }

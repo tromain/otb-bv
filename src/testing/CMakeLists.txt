@@ -46,6 +46,9 @@ set(OTBBV_TESTS ${otb-bv_BINARY_DIR}/testing/otbBVTests)
 add_test(bvProSailSimulatorFunctor ${OTBBV_TESTS}
   bvProSailSimulatorFunctor ${otb-bv_SOURCE_DIR}/../data/formosat2_4b.rsr)
 
+add_test(bvCorrelateWithLAI ${OTBBV_TESTS}
+  bvCorrelateWithLAI)
+
 add_test(bvMultiLinearFitting ${OTBBV_TESTS}
   bvMultiLinearFitting)       
 
@@ -86,7 +89,8 @@ set(BVTests_SRCS
   bvProSailSimulatorFunctor.cxx
   bvMultiLinearFitting.cxx
   bvMultiTemporalInversion.cxx
-  bvLaiLogNdviTest.cxx)
+  bvLaiLogNdviTest.cxx
+  bvVariableGenerationTests.cxx)
 
 add_executable(otbBVTests ${BVTests_SRCS})
 target_link_libraries(otbBVTests ${OTB_LIBRARIES} OTBBVUtil ${PHENOTB_LIBRARY} gsl gslcblas)

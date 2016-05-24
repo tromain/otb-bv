@@ -18,6 +18,8 @@
 #include "otbBVTypes.h"
 
 namespace otb{
+using PrecisionType = otb::BV::PrecisionType;
+
 static 
 std::vector<std::pair<PrecisionType, PrecisionType>> solar_irradiance_fapar = {
   {0.4000, 1614.0900},

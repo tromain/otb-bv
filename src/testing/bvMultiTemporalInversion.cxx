@@ -69,26 +69,27 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
   satRSR->SetSortBands(false);
   satRSR->Load(rsr_file.c_str());
 
-  typename otb::AcquisitionParsType prosailPars;
-  prosailPars[otb::TTS] = solarzenith;
-  prosailPars[otb::TTO] = sensorzenith;
-  prosailPars[otb::PSI] = azimuth;
+  using namespace otb::BV;
+  AcquisitionParsType prosailPars;
+  prosailPars[AcquisitionParameters::TTS] = solarzenith;
+  prosailPars[AcquisitionParameters::TTO] = sensorzenith;
+  prosailPars[AcquisitionParameters::PSI] = azimuth;
 
   ProSailType prosail;
   prosail.SetRSR(satRSR);
   prosail.SetParameters(prosailPars);
 
-  typename otb::BVType prosailBV;
-  prosailBV[otb::IVNames::ALA] = 59.755;
-  prosailBV[otb::IVNames::CrownCover] = 0.95768;
-  prosailBV[otb::IVNames::HsD] = 0.18564;
-  prosailBV[otb::IVNames::N] = 1.4942;
-  prosailBV[otb::IVNames::Cab] = 64.632;
-  prosailBV[otb::IVNames::Car] = 0;
-  prosailBV[otb::IVNames::Cdm] = 0.0079628;
-  prosailBV[otb::IVNames::CwRel] = 0.73298;
-  prosailBV[otb::IVNames::Cbp] = 0.075167;
-  prosailBV[otb::IVNames::Bs] = 0.72866;
+  BVType prosailBV;
+  prosailBV[IVNames::ALA] = 59.755;
+  prosailBV[IVNames::CrownCover] = 0.95768;
+  prosailBV[IVNames::HsD] = 0.18564;
+  prosailBV[IVNames::N] = 1.4942;
+  prosailBV[IVNames::Cab] = 64.632;
+  prosailBV[IVNames::Car] = 0;
+  prosailBV[IVNames::Cdm] = 0.0079628;
+  prosailBV[IVNames::CwRel] = 0.73298;
+  prosailBV[IVNames::Cbp] = 0.075167;
+  prosailBV[IVNames::Bs] = 0.72866;
 
   std::vector<PixelType> simus;
   auto rng = std::mt19937(std::random_device{}());
@@ -96,7 +97,7 @@ std::vector<PixelType> generate_reflectances(VectorType lai_vec,
   std::normal_distribution<> d(0.0,0.05);
   for(auto l : lai_vec)
     {
-    prosailBV[otb::IVNames::MLAI] = l;
+    prosailBV[IVNames::MLAI] = l;
     prosail.SetBVs(prosailBV);
     auto pix = prosail();
     //add noise to simulations

@@ -26,9 +26,11 @@ static const std::string BV="Biophysical Variables";
 }
 }
 
+namespace BV
+{
 enum class IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Car, Cdm, CwRel, Cbp, 
                     Bs, IVNamesEnd};
-enum AcquisitionParameters {TTS, TTO, PSI, TTS_FAPAR, AcquisitionParametersEnd};
+enum class AcquisitionParameters {TTS, TTO, PSI, TTS_FAPAR, AcquisitionParametersEnd};
 
 using AcquisitionParsType = std::map< AcquisitionParameters, double >;
 using PrecisionType = double;
@@ -36,5 +38,22 @@ using BVType = std::map< IVNames, PrecisionType >;
 
 using NormalizationVectorType = 
   std::vector<std::pair<PrecisionType, PrecisionType>>;
-}
+
+enum class DistType {GAUSSIAN, UNIFORM, LOGNORMAL};
+
+struct VarParams {
+  double min;
+  double max;
+  double mod;
+  double std;
+  double Min_LAI_Max;
+  double Max_LAI_Max;
+  bool CoDistrib;
+  unsigned short  nbcl;
+  DistType dist;
+};
+  
+typedef std::map< IVNames, double > SampleType;
+}//namespace BV
+}//namespace otb
 #endif

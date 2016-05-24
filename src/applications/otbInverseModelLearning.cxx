@@ -50,6 +50,7 @@ public:
 
   itkTypeMacro(InverseModelLearning, otb::Application);
 
+  using PrecisionType = otb::BV::PrecisionType;
   typedef itk::FixedArray<PrecisionType, 1> OutputSampleType;
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
@@ -181,9 +182,9 @@ private:
       typename ListOutputSampleType::Iterator olFirst = outputListSample->Begin();
       typename ListInputSampleType::Iterator ilLast = inputListSample->End();
       typename ListOutputSampleType::Iterator olLast = outputListSample->End();
-      var_minmax = estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
-      write_normalization_file(var_minmax, GetParameterString("normalization"));
-      normalize_variables(inputListSample, outputListSample, var_minmax);
+      var_minmax = otb::BV::estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
+      otb::BV::write_normalization_file(var_minmax, GetParameterString("normalization"));
+      otb::BV::normalize_variables(inputListSample, outputListSample, var_minmax);
       for(size_t var = 0; var < nbInputVariables; ++var)
         otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
                       " max=" << var_minmax[var].second <<std::endl);
@@ -379,7 +380,7 @@ private:
       OutputSampleType outputValue;
       if( HasValue( "normalization" )==true )
         // we use the same normalization as for the BV
-        outputValue[0] = normalize(est_err, var_minmax[nbVars]);
+        outputValue[0] = otb::BV::normalize(est_err, var_minmax[nbVars]);
       else
         outputValue[0] = est_err;
       err_ls->PushBack(outputValue);
@@ -409,7 +410,7 @@ private:
     err_regression->Save(GetParameterString("errest"));
   }
 protected:
-  NormalizationVectorType var_minmax;
+  otb::BV::NormalizationVectorType var_minmax;
 };
 
 }
