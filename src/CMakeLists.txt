@@ -23,6 +23,15 @@ else(OTB_FOUND)
           "OTB not found. Please set OTB_DIR")
 endif(OTB_FOUND)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
+find_package(GSL)
+if(GSL_FOUND)
+  message("-- Using GSL. Your OTB will be under the GNU GPL License.")
+else(GSL_FOUND)
+  message(FATAL_ERROR "GSL not.")
+endif(GSL_FOUND)
+
+include_directories(${GSL_INCLUDE_DIRS})
 
 if(NOT OTBBV_INSTALL_BIN_DIR)
   set(OTBBV_INSTALL_BIN_DIR "bin")
