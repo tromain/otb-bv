@@ -31,9 +31,9 @@ OTB_CREATE_APPLICATION(NAME           BVInversion
 OTB_CREATE_APPLICATION(NAME           BVImageInversion
   SOURCES        otbBVImageInversion.cxx
   LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
-OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
-  SOURCES        otbProfileReprocessing.cxx
-  LINK_LIBRARIES ${OTB_LIBRARIES};OTBTemporalGapFilling;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
+# OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
+#   SOURCES        otbProfileReprocessing.cxx
+#   LINK_LIBRARIES ${OTB_LIBRARIES};OTBTemporalGapFilling;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
                      
 add_executable(testSimus testSimus.cxx)
 target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil gsl gslcblas)
