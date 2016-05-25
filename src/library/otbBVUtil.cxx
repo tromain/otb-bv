@@ -43,6 +43,9 @@ size_t countColumns(std::string fileName)
 
 }
 
+namespace BV
+{
+
 otb::BV::NormalizationVectorType read_normalization_file(const std::string in_filename)
 {
   using namespace otb::BV;
@@ -74,8 +77,6 @@ otb::BV::NormalizationVectorType read_normalization_file(const std::string in_fi
   return var_minmax;
 }
 
-namespace BV
-{
 
 /**
 
