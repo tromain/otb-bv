@@ -98,9 +98,6 @@ typename NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>:
 
   cv::Mat response; //(1, 1, CV_32FC1);
 
-  std::cout << "24**********Layer count " << m_ANNModel->get_layer_count() << "\n" ;
-
-  std::cout << "24**********Layer sizes " << (m_ANNModel->get_layer_sizes())->data.i[1] << "\n" ;
   m_ANNModel->predict(sample, response);
 
   TargetSampleType target;
@@ -115,16 +112,13 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Sav
   const char* lname = "my_nn";
   if ( !name.empty() )
     lname = name.c_str();
-
   CvFileStorage* fs = 0;
   fs = cvOpenFileStorage(filename.c_str(), 0, CV_STORAGE_WRITE);
   if ( !fs )
     {
     itkExceptionMacro("Could not open the file " << filename << " for writing");
     }
-
   m_ANNModel->write(fs, lname);
-
   cvReleaseFileStorage(&fs);
 }
 
@@ -132,7 +126,6 @@ template<class TInputValue, class TOutputValue>
 void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Load(const std::string & filename,
                                                                         const std::string & name)
 {
-  std::cout << "1**********Layer count " << m_ANNModel->get_layer_count() << "\n" ;
   const char* lname = 0;
   if ( !name.empty() )
     lname = name.c_str();
@@ -144,7 +137,6 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Loa
     {
     itkExceptionMacro("Could not open the file " << filename << " for reading");
     }
-  std::cout << "2**********Layer count " << m_ANNModel->get_layer_count() << "\n" ;
   if( lname )
     model_node = cvGetFileNodeByName(fs, 0, lname);
   else
@@ -153,14 +145,9 @@ void NeuralNetworkRegressionMachineLearningModel<TInputValue, TOutputValue>::Loa
     if( root->data.seq->total > 0 )
       model_node = (CvFileNode*)cvGetSeqElem( root->data.seq, 0 );
     }
-  std::cout << "3**********Layer count " << m_ANNModel->get_layer_count() << "\n" ;
   m_ANNModel->read(fs, model_node);
-
-  std::cout << "4**********Layer count " << m_ANNModel->get_layer_count() << "\n" ;
-
-  std::cout << "4**********Layer sizes " << (m_ANNModel->get_layer_sizes())->data.i[1] << "\n" ;
   cvReleaseFileStorage(&fs);
-  std::cout << "4**********Layer sizes " << (m_ANNModel->get_layer_sizes())->data.i[1] << "\n" ;
+
 }
 
 template<class TInputValue, class TOutputValue>
