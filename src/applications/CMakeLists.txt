@@ -22,18 +22,18 @@ OTB_CREATE_APPLICATION(NAME           ProSailSimulator
 
 OTB_CREATE_APPLICATION(NAME           InverseModelLearning
   SOURCES        otbInverseModelLearning.cxx
-  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;${GSL_LIBRARY};${GSL_CBLAS_LIBRARY})
 
 OTB_CREATE_APPLICATION(NAME           BVInversion
   SOURCES        otbBVInversion.cxx
-  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;${GSL_LIBRARY};${GSL_CBLAS_LIBRARY})
 
 OTB_CREATE_APPLICATION(NAME           BVImageInversion
   SOURCES        otbBVImageInversion.cxx
-  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;gsl;gslcblas)
+  LINK_LIBRARIES ${OTB_LIBRARIES};OTBBVUtil;${GSL_LIBRARY};${GSL_CBLAS_LIBRARY})
 # OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
 #   SOURCES        otbProfileReprocessing.cxx
-#   LINK_LIBRARIES ${OTB_LIBRARIES};OTBTemporalGapFilling;OTBBVUtil;${PHENOTB_LIBRARY};gsl;gslcblas)
-                     
+#   LINK_LIBRARIES ${OTB_LIBRARIES};OTBTemporalGapFilling;OTBBVUtil;${PHENOTB_LIBRARY};${GSL_LIBRARY};${GSL_CBLAS_LIBRARY})
+
 add_executable(testSimus testSimus.cxx)
-target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil gsl gslcblas)
+target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})

@@ -93,7 +93,7 @@ set(BVTests_SRCS
   bvVariableGenerationTests.cxx)
 
 add_executable(otbBVTests ${BVTests_SRCS})
-target_link_libraries(otbBVTests ${OTB_LIBRARIES} OTBBVUtil gsl gslcblas)
+target_link_libraries(otbBVTests ${OTB_LIBRARIES} OTBBVUtil ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
 
 
 
