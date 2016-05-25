@@ -17,30 +17,33 @@
 import string
 import os
 import sys
+from config import Config
 import otbApplication as otb
 import bv_net as bv
 from formosat_data import *
 from spot4_data import *
 from landsat_data import *
 
-wdpath = "/tmp"
-if len(sys.argv)==2:
-    wdpath = sys.argv[1]
-varName = "MLAI"
+
+
+config_file = file(sys.argv[1])
+cfg = Config(config_file)
+
+wdpath = cfg.paths.wdpath
+varName = cfg.paths.varName
 working_dir = wdpath+"/"+varName+"/"
-rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
-input_var_file = working_dir+"input-vars"
-input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 1000
-nbSamples_test = 200
-noise_var = 0.000001
-bestof = 1
-simulate = True
-regressor = "nn" # nn svr rfr mlr
+rsr_dir = cfg.paths.rsr_dir
+input_var_file = working_dir+cfg.paths.input_var_file
+input_var_file_test = working_dir+cfg.paths.input_var_file_test
+nbSamples_train = int(cfg.simulation.nbSamples_train)
+nbSamples_test = int(cfg.simulation.nbSamples_test)
+noise_var = float(cfg.simulation.noise_var)
+simulate = bool(str(cfg.simulation.simulate)=="yes")
+useVI = bool(str(cfg.simulation.useVI)=="yes")
+bestof = int(cfg.inversion.bestof)
+regressor = cfg.inversion.regressor
 
 print "Working dir = ", working_dir
-
-exit
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
@@ -60,15 +63,17 @@ for sat in simus_list:
     rsr_file = sat[1]
     red_index = 0
     nir_index = 0
-    if sat_name == "formosat2":
+    if sat_name == "formosat2" and useVI:
         red_index = 3
         nir_index = 4
-    if sat_name == "spot4":
+    if sat_name == "spot4" and useVI:
         red_index = 2
         nir_index = 3
-    if sat_name == "landsat8":
+    if sat_name == "landsat8" and useVI:
         red_index = 2
         nir_index = 3
+
+    print useVI, red_index, nir_index
     for acqu in sat[2:]:
         print "-------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor
         reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
@@ -116,7 +121,8 @@ for sat in simus_list:
                 rfgtf.write("\n")
                 var_values_gt.append(gt_case[bv.bv_val_names[varName][0]])
                 var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
-        bv.addVI(reflectances_gt_file, red_index, nir_index)
+        if useVI:
+            bv.addVI(reflectances_gt_file, red_index, nir_index)
         print "\tInversion for validation data"
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
