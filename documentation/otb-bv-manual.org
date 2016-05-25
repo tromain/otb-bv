@@ -6,7 +6,6 @@
 #+LATEX_HEADER:  \usepackage{amsmath}
 
 * Introduction
-
 ** The estimated variables
 - LAI
 - fAPAR
@@ -2401,6 +2400,7 @@ awk '{print $2,$1}' /tmp/val > $validationfile
 
 
 * Validation
+** Old version
 #+begin_src sh
 # cat /tmp/MLAI/formosat2_*validation > /tmp/MLAI/f2validation
 # cat /tmp/MLAI/formosat2_*validation_gt > /tmp/MLAI/f2validation_gt
