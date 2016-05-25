@@ -23,17 +23,24 @@ from formosat_data import *
 from spot4_data import *
 from landsat_data import *
 
+wdpath = "/tmp"
+if len(sys.argv)==2:
+    wdpath = sys.argv[1]
 varName = "MLAI"
-working_dir = "/tmp/"+varName+"/"
+working_dir = wdpath+"/"+varName+"/"
 rsr_dir = os.environ['HOME']+"/Dev/otb-bv/data/"
 input_var_file = working_dir+"input-vars"
 input_var_file_test = working_dir+"input-vars-test"
-nbSamples_train = 5000
+nbSamples_train = 1000
 nbSamples_test = 200
 noise_var = 0.000001
-bestof = 3
-simulate = False
-regressor = "svr" # nn svr rfr mlr
+bestof = 1
+simulate = True
+regressor = "nn" # nn svr rfr mlr
+
+print "Working dir = ", working_dir
+
+exit
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
