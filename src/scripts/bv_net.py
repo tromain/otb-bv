@@ -29,7 +29,6 @@ def parseConfigFile(cfg):
     distFileName = cfg.bvDistribution.fileName
     nSamples = cfg.bvDistribution.samples
     simuPars = {}
-    simuPars['soilFile'] = cfg.simulation.soilFile
     simuPars['rsrFile'] = cfg.simulation.rsrFile
     simuPars['outputFile'] = cfg.simulation.outputFile
     simuPars['solarZenithAngle'] = cfg.simulation.solarZenithAngle
@@ -73,7 +72,6 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
     """
     app = otb.Registry.CreateApplication("ProSailSimulator")
     app.SetParameterString("bvfile", bvFile)
-    app.SetParameterString("soilfile", simuPars['soilFile'])
     app.SetParameterString("rsrfile", simuPars['rsrFile'])
     app.SetParameterString("out", simuPars['outputFile'])
     app.SetParameterFloat("solarzenith", simuPars['solarZenithAngle'])
