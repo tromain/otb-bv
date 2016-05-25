@@ -102,6 +102,7 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                     tf.write(outline)
     if red_index!=0 and nir_index!=0:
         # we need to add 1 to the indices since the file already contains the variable in the first column
+        print "Adding VIs for training data"
         addVI(trainingFile, red_index+1, nir_index+1)
                 
                 
@@ -127,6 +128,7 @@ def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFa
                 rf.write(outline)
 
     if red_index!=0 and nir_index!=0:
+        print "Adding VIs for inversion"
         addVI(reflectanceFile, red_index, nir_index)
 
                 
