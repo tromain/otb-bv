@@ -40,6 +40,7 @@ nbSamples_test = int(cfg.simulation.nbSamples_test)
 noise_var = float(cfg.simulation.noise_var)
 simulate = bool(str(cfg.simulation.simulate)=="yes")
 useVI = bool(str(cfg.simulation.useVI)=="yes")
+nthreads = int(cfg.simulation.nthreads)
 bestof = int(cfg.inversion.bestof)
 regressor = cfg.inversion.regressor
 
@@ -97,11 +98,11 @@ for sat in simus_list:
         simuPars['noisestd'] = noise_var
         if simulate :
             print "\tSimulation training"
-            bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index)
+            bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index, nthreads)
         simuPars['outputFile'] = reflectance_file_test
         if simulate :
             print "\tSimulation testing data"
-            bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index)
+            bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index, nthreads)
         print "\tLearning model"
         bv.learnBVModel(training_file, model_file, regressor, normalization_file, bestof)
         print "\tInversion for test data"
