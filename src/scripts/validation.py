@@ -88,7 +88,7 @@ for sat in simus_list:
         inversion_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_gt_"+regressor
         validation_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_gt_"+regressor
         simuPars = {}
-        simuPars['rsrFile'] = rsr_file
+        simuPars['rsrFile'] = rsr_dir+"/"+rsr_file
         simuPars['outputFile'] = reflectance_file
         simuPars['solarZenithAngle'] = acqu['ts']
         simuPars['sensorZenithAngle'] = acqu['to']
