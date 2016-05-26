@@ -37,6 +37,10 @@ input_var_file = working_dir+cfg.paths.input_var_file
 input_var_file_test = working_dir+cfg.paths.input_var_file_test
 nbSamples_train = int(cfg.simulation.nbSamples_train)
 nbSamples_test = int(cfg.simulation.nbSamples_test)
+minlai = float(cfg.simulation.minlai)
+maxlai = float(cfg.simulation.maxlai)
+modlai = float(cfg.simulation.modlai)
+stdlai = float(cfg.simulation.stdlai)
 noise_var = float(cfg.simulation.noise_var)
 simulate = bool(str(cfg.simulation.simulate)=="yes")
 useVI = bool(str(cfg.simulation.useVI)=="yes")
@@ -51,8 +55,13 @@ if not os.path.exists(d):
     os.makedirs(d)
 
 if simulate :
-    bv.generateInputBVDistribution(input_var_file, nbSamples_train)
-    bv.generateInputBVDistribution(input_var_file_test, nbSamples_test)
+    varPars = {}    
+    varPars['minlai'] = minlai
+    varPars['maxlai'] = maxlai
+    varPars['modlai'] = modlai
+    varPars['stdlai'] = stdlai
+    bv.generateInputBVDistribution(input_var_file, nbSamples_train, varPars)
+    bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 
 simus_list = []
 #simus_list.append(fsat_data)

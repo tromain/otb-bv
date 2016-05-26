@@ -56,9 +56,13 @@ def addVI(reflectances_file, red_index, nir_index):
                 rf.write(outline)
 
 
-def generateInputBVDistribution(bvFile, nSamples):
+def generateInputBVDistribution(bvFile, nSamples, simuPars):
     app = otb.Registry.CreateApplication("BVInputVariableGeneration")
     app.SetParameterInt("samples", nSamples)
+    app.SetParameterFloat("minlai", simuPars['minlai'])
+    app.SetParameterFloat("maxlai", simuPars['maxlai'])
+    app.SetParameterFloat("modlai", simuPars['modlai'])
+    app.SetParameterFloat("stdlai", simuPars['stdlai'])
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
