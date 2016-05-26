@@ -41,6 +41,7 @@ minlai = float(cfg.simulation.minlai)
 maxlai = float(cfg.simulation.maxlai)
 modlai = float(cfg.simulation.modlai)
 stdlai = float(cfg.simulation.stdlai)
+distlai = cfg.simulation.distlai
 noise_var = float(cfg.simulation.noise_var)
 simulate = bool(str(cfg.simulation.simulate)=="yes")
 useVI = bool(str(cfg.simulation.useVI)=="yes")
@@ -60,6 +61,7 @@ if simulate :
     varPars['maxlai'] = maxlai
     varPars['modlai'] = modlai
     varPars['stdlai'] = stdlai
+    varPars['distlai'] = distlai
     bv.generateInputBVDistribution(input_var_file, nbSamples_train, varPars)
     bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 

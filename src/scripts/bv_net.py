@@ -63,6 +63,7 @@ def generateInputBVDistribution(bvFile, nSamples, simuPars):
     app.SetParameterFloat("maxlai", simuPars['maxlai'])
     app.SetParameterFloat("modlai", simuPars['modlai'])
     app.SetParameterFloat("stdlai", simuPars['stdlai'])
+    app.SetParameterString("distlai", simuPars['distlai'])
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
