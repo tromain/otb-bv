@@ -22,7 +22,9 @@ import otbApplication as otb
 import bv_net as bv
 from formosat_data import *
 from spot4_data import *
+from spot5_data import *
 from landsat_data import *
+from landsat2015_data import *
 
 
 
@@ -67,8 +69,10 @@ if simulate :
 
 simus_list = []
 #simus_list.append(fsat_data)
-simus_list.append(spot4_data)
-simus_list.append(lsat_data)
+#simus_list.append(spot4_data)
+#simus_list.append(lsat_data)
+simus_list.append(spot5_data)
+simus_list.append(lsat2015_data)
 
 for sat in simus_list:
     sat_name = sat[0]
