@@ -44,7 +44,7 @@ maxlai = float(cfg.simulation.maxlai)
 modlai = float(cfg.simulation.modlai)
 stdlai = float(cfg.simulation.stdlai)
 distlai = cfg.simulation.distlai
-noise_var = float(cfg.simulation.noise_var)
+noise_std = float(cfg.simulation.noise_std)
 simulate = bool(str(cfg.simulation.simulate)=="yes")
 useVI = bool(str(cfg.simulation.useVI)=="yes")
 nthreads = int(cfg.simulation.nthreads)
@@ -110,7 +110,7 @@ for sat in simus_list:
         simuPars['sensorZenithAngle'] = acqu['to']
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
-        simuPars['noisestd'] = noise_var
+        simuPars['noisestd'] = noise_std
         if simulate :
             print "\tSimulation training"
             bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index, nthreads)
