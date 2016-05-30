@@ -41,7 +41,7 @@ gt = [
 
 lsat_rsr = "landsat8_4b.rsr"
 
-lsat2015_data = ["landsat8", lsat_rsr]
+lsat2015_data = ["landsat82015", lsat_rsr]
 
 
 landsat82015_190 = {'doy':190, 'to':0.0,'po':0.0,'ts':27.322494450000001,'ps':27.322494450000001, 'gt':[s for s in gt if s['doy']==190]}

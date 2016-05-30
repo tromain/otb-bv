@@ -68,9 +68,9 @@ if simulate :
     bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 
 simus_list = []
-#simus_list.append(fsat_data)
-#simus_list.append(spot4_data)
-#simus_list.append(lsat_data)
+simus_list.append(fsat_data)
+simus_list.append(spot4_data)
+simus_list.append(lsat_data)
 simus_list.append(spot5_data)
 simus_list.append(lsat2015_data)
 
