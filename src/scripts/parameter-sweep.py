@@ -1,3 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# =========================================================================
+#   Program:   otb-bv
+#   Language:  python
+#
+#   Copyright (c) CESBIO. All rights reserved.
+#
+#   See otb-bv-copyright.txt for details.
+#
+#   This software is distributed WITHOUT ANY WARRANTY; without even
+#   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#   PURPOSE.  See the above copyright notices for more information.
+#
+# =========================================================================
 
 rsr_dir = "/home/inglada/Dev/otb-bv/data/"
 nbSamples_train = 500
