@@ -23,9 +23,9 @@ config_path = "/tmp/"
 
 for useVI in ["yes","no"]:
     for distlai in ["normal", "lognormal"]:
-        for stdlai in range(10,1000,10):
-            for modlai in range(0,1000,25):
-                for maxlai in range(300,1500,100):
+        for stdlai in range(100,1000,100):
+            for modlai in range(0,1000,50):
+                for maxlai in range(500,1500,200):
                     cfgname = useVI+"_"+distlai+"_"+str(maxlai)+"_"+str(modlai)+"_"+str(stdlai)+".cfg"
                     with open(config_path+cfgname, 'w') as cfgf:
                         cfgf.write("""paths:
