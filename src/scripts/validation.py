@@ -82,7 +82,7 @@ for sat in simus_list:
     if sat_name == "formosat2" and useVI:
         red_index = 3
         nir_index = 4
-    if sat_name == "spot4" and useVI:
+    if (sat_name == "spot4" or sat_name == "spot5") and useVI:
         red_index = 2
         nir_index = 3
     if sat_name == "landsat8" and useVI:
