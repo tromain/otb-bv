@@ -14,7 +14,9 @@
 #
 # =========================================================================
 
-rsr_dir = "/home/inglada/Dev/otb-bv/data/"
+import os
+
+rsr_dir = os.environ['bv_src_dir']+"/data/"
 nbSamples_train = 500
 nbSamples_test = 20
 noise_std = 0.001
