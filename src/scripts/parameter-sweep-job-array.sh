@@ -1,8 +1,8 @@
 #!/bin/bash
 #PBS -N parSweepOTBBV
 #PBS -J 1-3600:1
-#PBS -l select=1:ncpus=8
-#PBS -l walltime=01:40:00
+#PBS -l select=1:ncpus=2:mem=500mb
+#PBS -l walltime=08:00:00
 
 module load cmake
 module load curl
