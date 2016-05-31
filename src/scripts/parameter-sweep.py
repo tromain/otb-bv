@@ -26,11 +26,12 @@ for useVI in ["yes","no"]:
         for stdlai in range(100,1000,100):
             for modlai in range(0,1000,50):
                 for maxlai in range(500,1500,200):
-                    cfgname = useVI+"_"+distlai+"_"+str(maxlai)+"_"+str(modlai)+"_"+str(stdlai)+".cfg"
+                    cfg_base = useVI+"_"+distlai+"_"+str(maxlai)+"_"+str(modlai)+"_"+str(stdlai)
+                    cfgname = cfg_base+".cfg"
                     with open(config_path+cfgname, 'w') as cfgf:
                         cfgf.write("""paths:
                         {
-                        wdpath : \"/tmp\"
+                        wdpath : \"/tmp/"""+cfg_base+"""\"
                         varName : \"MLAI\"
                         rsr_dir : \""""+rsr_dir+"""\"
                         input_var_file : \"input-vars\"
