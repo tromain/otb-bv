@@ -17,10 +17,10 @@
 import os
 
 rsr_dir = os.environ['bv_src_dir']+"/data/"
-nbSamples_train = 500
-nbSamples_test = 20
+nbSamples_train = 50000
+nbSamples_test = 500
 noise_std = 0.001
-nthreads = 32
+nthreads = 8
 config_path = "./"
 
 for useVI in ["yes","no"]:

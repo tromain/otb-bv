@@ -1,8 +1,8 @@
 #!/bin/bash
 #PBS -N parSweepOTBBV
 #PBS -J 1-3600:1
-#PBS -l select=1:ncpus=1
-#PBS -l walltime=00:15:00
+#PBS -l select=1:ncpus=8
+#PBS -l walltime=01:40:00
 
 module load cmake
 module load curl
@@ -26,7 +26,6 @@ bv_src_dir=$HOME/CESBIO/otb-bv
 
 
 export ITK_AUTOLOAD_PATH=$bv_install_dir/applications
-export OTB_HOME=$(grep --only-matching --perl-regex "(?<=OTB_HOME\:).*" %s | cut -d "\'" -f 2)
 export PATH=${OTB_HOME}/bin:$PATH
 export LD_LIBRARY_PATH=${OTB_HOME}/lib:${OTB_HOME}/lib/otb/python:${LD_LIBRARY_PATH}
 export PYTHONPATH=${OTB_HOME}/lib/otb/python:${PYTHONPATH}
@@ -36,9 +35,12 @@ export GEOTIFF_CSV=${OTB_HOME}/share/epsg_csv
 cd $PBS_O_WORKDIR
 
 #file containing one config file name per line 
-$input="par-sweep-cfgs.txt"
+input="par-sweep-cfgs.txt"
 #get the config filename for a job
 cfg=$(sed -n ${PBS_ARRAY_INDEX}p $input)
 
 #
 python $bv_src_dir/src/scripts/validation.py $cfg
+cp $cfg /tmp/$(basename $cfg .cfg)
+tar cvzf $(basename $cfg .cfg).tgz /tmp/$(basename $cfg .cfg)
+rm -rf /tmp/$(basename $cfg .cfg)
