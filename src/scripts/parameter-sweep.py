@@ -19,7 +19,7 @@ nbSamples_train = 500
 nbSamples_test = 20
 noise_std = 0.001
 nthreads = 32
-config_path = "/tmp/"
+config_path = "./"
 
 for useVI in ["yes","no"]:
     for distlai in ["normal", "lognormal"]:
