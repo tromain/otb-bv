@@ -95,5 +95,5 @@ set(BVTests_SRCS
 add_executable(otbBVTests ${BVTests_SRCS})
 target_link_libraries(otbBVTests ${OTB_LIBRARIES} OTBBVUtil ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
 
-
-
+add_executable(testSimus testSimus.cxx)
+target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})

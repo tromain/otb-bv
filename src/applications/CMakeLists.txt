@@ -36,5 +36,3 @@ OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
   SOURCES        otbProfileReprocessing.cxx
   LINK_LIBRARIES ${OTB_LIBRARIES};OTBTemporalGapFilling;OTBBVUtil;${PHENOTB_LIBRARY};${GSL_LIBRARY};${GSL_CBLAS_LIBRARY})
 
-add_executable(testSimus testSimus.cxx)
-target_link_libraries(testSimus ${OTB_LIBRARIES} OTBBVUtil ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
