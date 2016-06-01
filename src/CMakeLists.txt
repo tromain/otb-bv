@@ -13,16 +13,17 @@
 # =========================================================================
 project(otb-bv)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 find_package(OTB)
 if(OTB_FOUND)
   include(${OTB_USE_FILE})
 else(OTB_FOUND)
   message(FATAL_ERROR
-          "OTB not found. Please set OTB_DIR")
+    "OTB not found. Please set OTB_DIR")
 endif(OTB_FOUND)
 
+include(FindPackageHandleStandardArgs)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
 find_package(GSL)
 if(GSL_FOUND)
@@ -44,8 +45,6 @@ include(${CMAKE_ROOT}/Modules/Dart.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-## compiler flags
-include(OTBSetStandardCompilerFlags.cmake)
 
 include(${OTB_DIR}/OTBApplicationMacros.cmake)
 
