@@ -53,6 +53,20 @@ std::ostream& operator<<(std::ostream& os, const error_metrics em)
      << "\nR2:" << em.r2 << '\n';
   return os;
 }
+
+std::ostream& operator<<(std::ostream& os, 
+                         const std::pair<error_metrics, error_metrics> em)
+{
+
+  os << "---- " << em.first.name << " | " << em.second.name << " ----" 
+     << "\nrmse:" << em.first.rmse            << "\trmse:" << em.second.rmse          
+     << "\nrrmse:" << em.first.rrmse          << "\trrmse:" << em.second.rrmse        
+     << "\nmed:" << em.first.median_abs_err   << "\tmed:" << em.second.median_abs_err 
+     << "\nmae:" << em.first.max_abs_err      << "\tmae:" << em.second.max_abs_err    
+     << "\nR2:" << em.first.r2                << "\tR2:" << em.second.r2              
+     << '\n';
+  return os;
+}
 struct bv_validation_point
 {
   double fieldv;
@@ -168,12 +182,14 @@ error_metrics compute_errors(const bv_validation_vec& bvv,
   return result;
 }
 
-error_metrics retrieve_errors(const std::string filename)
+error_metrics retrieve_errors(const std::string filename, 
+                              MeasureType mes_type=MeasureType::Otb)
 {
-  auto err_name = get_file_basename(filename);
+  std::string suf_mes_type = (mes_type==MeasureType::Otb)?" OTB":" INRA";
+  auto err_name = get_file_basename(filename)+suf_mes_type;
   auto file_contents = get_file_contents(filename);
   auto validation = validation_string_to_vector(file_contents);
-  return compute_errors(validation, MeasureType::Field, MeasureType::Otb, 
+  return compute_errors(validation, MeasureType::Field, mes_type, 
                         err_name);
 }
 
@@ -219,10 +235,12 @@ int main(int argc, char* argv[])
     return 1;
     }
   std::vector<error_metrics> em{};
+  std::vector<error_metrics> eminra{};
   for(size_t i = 2; i<argc; ++i)
     {
     std::cout << argv[i] << '\n';
     em.push_back(retrieve_errors(argv[i]));
+    eminra.push_back(retrieve_errors(argv[i],MeasureType::Inra));
     }
 
   switch(to_sorting(sorting))
@@ -242,9 +260,15 @@ int main(int argc, char* argv[])
     case Sorting::r2:
       std::sort(em.begin(), em.end(), by_r2);
       break;
-        }
+    }
 
-  for(const auto& e : em)
-    std::cout << e;
+  auto emIt = em.begin();
+  auto eminraIt = eminra.begin();
+  while(emIt != em.end() && eminraIt != eminra.end())
+    {
+    std::cout << std::make_pair(*emIt,*eminraIt);
+    ++emIt;
+    ++eminraIt;
+    }
   return 0;
 }
