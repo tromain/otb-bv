@@ -19,13 +19,6 @@
 
 namespace otb
 {
-namespace Wrapper
-{
-namespace Tags
-{
-static const std::string BV="Biophysical Variables";
-}
-}
 
 namespace BV
 {
