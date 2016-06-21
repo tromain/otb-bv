@@ -15,6 +15,7 @@
 #define __OTBBVPROFREPR_H
 
 #include <vector>
+#include "phenoFunctions.h"
 
 using PrecisionType = double;
 using VectorType = std::vector<PrecisionType>;

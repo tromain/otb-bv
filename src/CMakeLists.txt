@@ -11,44 +11,11 @@
 # PURPOSE.  See the above copyright notices for more information.
 #
 # =========================================================================
-project(otb-bv)
+set(${otb-module}_SRC
+  otbBVUtil.cxx
+  )
 
-cmake_minimum_required(VERSION 3.0)
+add_library(${otb-module} ${${otb-module}_SRC})
+target_link_libraries(${otb-module} ${OTBCommon_LIBRARIES} ${OTBITK_LIBRARIES} ${OTBBoost_LIB})
+otb_module_target(${otb-module})
 
-find_package(OTB)
-if(OTB_FOUND)
-  include(${OTB_USE_FILE})
-else(OTB_FOUND)
-  message(FATAL_ERROR
-    "OTB not found. Please set OTB_DIR")
-endif(OTB_FOUND)
-
-include(FindPackageHandleStandardArgs)
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
-find_package(GSL)
-if(GSL_FOUND)
-  message("-- Using GSL. Your OTB will be under the GNU GPL License.")
-else(GSL_FOUND)
-  message(FATAL_ERROR "GSL not.")
-endif(GSL_FOUND)
-
-include_directories(${GSL_INCLUDE_DIRS})
-
-if(NOT OTBBV_INSTALL_BIN_DIR)
-  set(OTBBV_INSTALL_BIN_DIR "bin")
-endif()
-
-option(BUILD_SHARED_LIBS "Build ITK with shared libraries." ON)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/library)
-
-include(${CMAKE_ROOT}/Modules/Dart.cmake)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-
-include(${OTB_DIR}/OTBApplicationMacros.cmake)
-
-set(TEMP ${otb-bv_BINARY_DIR}/Testing/Temporary)
-add_subdirectory(library)
-add_subdirectory(applications)
-add_subdirectory(testing)
