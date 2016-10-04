@@ -23,7 +23,7 @@
 #include "otbBVUtil.h"
 
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
 #include "otbRandomForestsMachineLearningModel.h"
 #include "otbMultiLinearRegressionModel.h"
@@ -36,7 +36,7 @@ typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
 typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
 typedef otb::MachineLearningModel<PrecisionType, PrecisionType> ModelType;
 typedef ModelType::Pointer ModelPointerType;
-typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
+typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
                                                          PrecisionType> 
 NeuralNetworkType;
 typedef otb::RandomForestsMachineLearningModel<PrecisionType, 

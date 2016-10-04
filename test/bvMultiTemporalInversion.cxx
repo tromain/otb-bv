@@ -19,7 +19,7 @@
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
 #include "otbProfileReprocessing.h"
 
 #include <vector>
@@ -33,7 +33,7 @@ using ProSailType = otb::Functor::ProSailSimulator<SatRSRType>;
 using SimulationType = typename ProSailType::OutputType;
 using PixelType = ProSailType::OutputType;
 typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
-typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
+typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
                                                          PrecisionType> 
 NeuralNetworkType;
 

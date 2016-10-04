@@ -24,7 +24,7 @@
 #include "otbBVTypes.h"
 
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
 #include "otbRandomForestsMachineLearningModel.h"
 #include "otbMultiLinearRegressionModel.h"
@@ -55,8 +55,8 @@ public:
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
-  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
-                                                           PrecisionType> 
+  typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
+                                                          PrecisionType> 
   NeuralNetworkType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
   typedef otb::RandomForestsMachineLearningModel<PrecisionType, 
@@ -303,8 +303,10 @@ private:
   {
     otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
+    regression->SetRegressionMode(1);
     regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
-    // Two hidden layer with 5 neurons and one output variable
+    // One hidden layer with 5 neurons and one output variable
+    otbAppLogINFO("Input layer : " << nbVars);
     regression->SetLayerSizes(std::vector<unsigned int>(
       {static_cast<unsigned int>(nbVars), 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
@@ -389,8 +391,9 @@ private:
       }
 
     auto err_regression = NeuralNetworkType::New();
+    err_regression->SetRegressionMode(1);
     err_regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
-    // Two hidden layer with 5 neurons and one output variable
+    // One hidden layer with 5 neurons and one output variable
     err_regression->SetLayerSizes(std::vector<unsigned int>(
       {static_cast<unsigned int>(nbVars), 5, 1}));
     err_regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
