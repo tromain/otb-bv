@@ -101,9 +101,6 @@ otb_add_test(NAME bvMultiTemporalInversionFile
   1
   10e-5)
 
-otb_add_test(NAME bvLaiLogNdvi 
-  COMMAND otbBioVarsTests bvLaiLogNdvi)
-
 add_executable(testSimus testSimus.cxx)
 target_link_libraries(testSimus ${OTB_LIBRARIES} ${OTBBioVars_LIBRARIES} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
 
