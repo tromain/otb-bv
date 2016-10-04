@@ -405,8 +405,8 @@ private:
     err_regression->SetRegPropDW0(0.1);
     err_regression->SetRegPropDWMin(1e-7);
     err_regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
-    err_regression->SetEpsilon(1e-20);
-    err_regression->SetMaxIter(1e7);
+    err_regression->SetEpsilon(1e-5);
+    err_regression->SetMaxIter(1e5);
     err_regression->SetInputListSample(ils);
     err_regression->SetTargetListSample(err_ls);
     otbAppLogINFO("Error model estimation ..." << std::endl);
