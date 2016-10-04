@@ -53,10 +53,10 @@ int bvMultiLinearFitting(int itkNotUsed(argc), char * itkNotUsed(argv)[])
     return EXIT_FAILURE;
 
   MRM::VectorType test_vec = {x_vec[2][0], x_vec[2][1]};
-  if(fabs(model->Predict(test_vec)-y_vec[2])>0.2)
+  if(fabs(model->PredictVector(test_vec)-y_vec[2])>0.2)
     {
-    std::cout << model->Predict(test_vec) << " " << y_vec[2] << " " 
-              << fabs(model->Predict(test_vec)-y_vec[2]) << "\n";
+    std::cout << model->PredictVector(test_vec) << " " << y_vec[2] << " " 
+              << fabs(model->PredictVector(test_vec)-y_vec[2]) << "\n";
     return EXIT_FAILURE;
     }
   model->Save("/tmp/mrr.txt");
@@ -81,12 +81,12 @@ int bvMultiLinearFitting(int itkNotUsed(argc), char * itkNotUsed(argv)[])
     std::cout << "\n";
     return EXIT_FAILURE;
     }
-  if(fabs(model->Predict(test_vec)-other_model->Predict(test_vec))>1e-3)
+  if(fabs(model->PredictVector(test_vec)-other_model->PredictVector(test_vec))>1e-3)
     {
     std::cout << "Saved model gives different predictions "
-              << model->Predict(test_vec) << " " 
-              << other_model->Predict(test_vec) << " " 
-              << fabs(model->Predict(test_vec)-other_model->Predict(test_vec)) 
+              << model->PredictVector(test_vec) << " " 
+              << other_model->PredictVector(test_vec) << " " 
+              << fabs(model->PredictVector(test_vec)-other_model->PredictVector(test_vec)) 
               << "\n";
     return EXIT_FAILURE;
     }

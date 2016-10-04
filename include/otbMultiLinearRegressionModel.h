@@ -61,53 +61,10 @@ public:
   {
     m_w = w;
     m_weights = true;
-      }
-  void Train()
+  }
+  void Train() ITK_OVERRIDE
   {
     this->multi_linear_fit();
-  }
-
-  void TrainClassification()
-  {
-  }
-
-  void TrainRegression()
-  {
-  }
-
-  PrecisionType Predict(const VectorType x) const
-  {
-    if(m_model.size()==0)
-      {
-      itkExceptionMacro(<< "Model is not initialized.")
-        }    
-    if(x.size()!=(m_model.size()-1))
-      {
-      itkExceptionMacro(<< "Predictor vector and model have different sizes.")
-        }
-
-    PrecisionType result = m_model[0];
-    for(size_t i=0; i<x.size(); i++)
-      result += m_model[i+1]*x[i];
-    
-    return result;
-  }
-
-  TargetSampleType Predict(const InputSampleType & input, 
-                           ConfidenceValueType *itkNotUsed(quality) = NULL) const
-  {
-    VectorType tmp_vec(this->SampleToVector(input));
-    TargetSampleType target;
-    target[0] = this->Predict(tmp_vec);
-    return target;
-  }
-
-  TargetSampleType PredictRegression(const InputSampleType & input) const
-  {
-    VectorType tmp_vec(this->SampleToVector(input));
-    TargetSampleType target;
-    target[0] = this->Predict(tmp_vec);
-    return target;
   }
 
   void SetInputListSample(InputListSampleType * ils)
@@ -161,13 +118,37 @@ public:
     return m_y;
   }
 
+  PrecisionType PredictVector(const VectorType x) const
+  {
+    return this->DoPredict(x);
+  }
+
 protected:
-  TargetSampleType PredictClassification(const InputSampleType & input,
-                                         ConfidenceValueType *quality = NULL) const
+
+  PrecisionType DoPredict(const VectorType x) const
+  {
+    if(m_model.size()==0)
+      {
+      itkExceptionMacro(<< "Model is not initialized.")
+        }    
+    if(x.size()!=(m_model.size()-1))
+      {
+      itkExceptionMacro(<< "Predictor vector and model have different sizes.")
+        }
+
+    PrecisionType result = m_model[0];
+    for(size_t i=0; i<x.size(); i++)
+      result += m_model[i+1]*x[i];
+    
+    return result;
+  }
+
+  TargetSampleType DoPredict(const InputSampleType & input, 
+                             ConfidenceValueType *itkNotUsed(quality) = NULL) const ITK_OVERRIDE
   {
     VectorType tmp_vec(this->SampleToVector(input));
     TargetSampleType target;
-    target[0] = this->Predict(tmp_vec);
+    target[0] = this->DoPredict(tmp_vec);
     return target;
   }
 

@@ -11,7 +11,10 @@
   PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+#ifndef __OTBMLRM_TXX
+#define __OTBMLRM_TXX
 
+#include "otbMultiLinearRegressionModel.h"
 #include <fstream>
 #include <iomanip>
 
@@ -140,3 +143,4 @@ bool MultiLinearRegressionModel<PrecisionType>::CanWriteFile(const std::string &
 }
 
 }//namespace otb
+#endif
