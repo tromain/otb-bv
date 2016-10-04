@@ -252,6 +252,7 @@ private:
                                << " is not valid.\n");
       }
     regressor->Load(model_file);    
+    regressor->SetRegressionMode(true);
 
     //instantiate a functor with the regressor and pass it to the
     //unary functor image filter pass also the normalization values

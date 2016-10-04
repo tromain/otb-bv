@@ -371,6 +371,7 @@ private:
     // Generate the values of the error
     auto bv_regression = RegressionType::New();
     bv_regression->Load(GetParameterString("out"));    
+    bv_regression->SetRegressionMode(true);
 
     auto err_ls = ListOutputSampleType::New();
     auto sIt = ils->Begin();
@@ -395,7 +396,7 @@ private:
     err_regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // One hidden layer with 5 neurons and one output variable
     err_regression->SetLayerSizes(std::vector<unsigned int>(
-      {static_cast<unsigned int>(nbVars), 5, 1}));
+                                    {static_cast<unsigned int>(nbVars), 5, 1}));
     err_regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     err_regression->SetAlpha(1.0);
     err_regression->SetBeta(0.01);

@@ -135,9 +135,11 @@ int bvMultiTemporalInversion(int argc, char * argv[])
 
   auto nn_regressor = NeuralNetworkType::New();
   nn_regressor->Load(bv_model_file);
+  nn_regressor->SetRegressionMode(true);
 
   auto error_regressor = NeuralNetworkType::New();
   error_regressor->Load(error_model_file);
+  error_regressor->SetRegressionMode(true);
 
   VectorType estim_lai;
   VectorType estim_error;
