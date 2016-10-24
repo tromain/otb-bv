@@ -13,6 +13,8 @@
 =========================================================================*/
 #include <random>
 
+#include "otbBVTypes.h"
+
 namespace otb
 {
 namespace BV
