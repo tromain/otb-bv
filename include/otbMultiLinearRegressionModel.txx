@@ -87,7 +87,7 @@ void  MultiLinearRegressionModel<PrecisionType>::Load(const std::string &
     }
   catch(...)
     {
-    itkGenericExceptionMacro(<< "Could not open file " << model_file);
+    itkGenericExceptionMacro(<< "Could not open file " << filename.c_str());
     }
   m_model.clear();
   std::string line;
