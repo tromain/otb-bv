@@ -24,7 +24,7 @@
 #include "otbBVTypes.h"
 
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkRegressionMachineLearningModel.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
 #include "otbRandomForestsMachineLearningModel.h"
 #include "otbMultiLinearRegressionModel.h"
@@ -55,7 +55,7 @@ public:
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
-  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
+  typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
                                                           PrecisionType> 
   NeuralNetworkType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
@@ -303,15 +303,15 @@ private:
   {
     otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
-    regression->SetRegressionMode(1);
-    regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
+    regression->SetRegressionMode(true);
+    regression->SetTrainMethod(CvANN_MLP_TrainParams::RPROP);
     // One hidden layer with 5 neurons and one output variable
     otbAppLogINFO("Input layer : " << nbVars);
     regression->SetLayerSizes(std::vector<unsigned int>(
       {static_cast<unsigned int>(nbVars), 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     regression->SetAlpha(1.0);
-    regression->SetBeta(0.01);
+    regression->SetBeta(1.0);
     regression->SetBackPropDWScale(0.1);
     regression->SetBackPropMomentScale(0.1);
     regression->SetRegPropDW0(0.1);
