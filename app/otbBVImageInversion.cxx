@@ -75,7 +75,7 @@ protected:
   UnaryFunctorImageFilterWithNBands() {}
   virtual ~UnaryFunctorImageFilterWithNBands() {}
 
-  void GenerateOutputInformation()
+  virtual void GenerateOutputInformation()
   {
     Superclass::GenerateOutputInformation();
     this->GetOutput()->SetNumberOfComponentsPerPixel( m_NumberOfOutputBands );
