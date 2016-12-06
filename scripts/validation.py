@@ -50,6 +50,11 @@ useVI = bool(str(cfg.simulation.useVI)=="yes")
 nthreads = int(cfg.simulation.nthreads)
 bestof = int(cfg.inversion.bestof)
 regressor = cfg.inversion.regressor
+formosat = bool(str(cfg.sensors.formosat)=="yes")
+spot4 = bool(str(cfg.sensors.spot4)=="yes")
+landsat2013 = bool(str(cfg.sensors.landsat2013)=="yes")
+spot5 = bool(str(cfg.sensors.spot5)=="yes")
+landsat2015 = bool(str(cfg.sensors.landsat2015)=="yes")
 
 print "Working dir = ", working_dir
 
@@ -68,11 +73,16 @@ if simulate :
     bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 
 simus_list = []
-simus_list.append(fsat_data)
-simus_list.append(spot4_data)
-simus_list.append(lsat_data)
-simus_list.append(spot5_data)
-simus_list.append(lsat2015_data)
+if formosat :
+    simus_list.append(fsat_data)
+if spot4 :
+    simus_list.append(spot4_data)
+if landsat2013 :
+    simus_list.append(lsat_data)
+if spot5 :
+    simus_list.append(spot5_data)
+if landsat2015 :
+    simus_list.append(lsat2015_data)
 
 for sat in simus_list:
     sat_name = sat[0]
