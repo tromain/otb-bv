@@ -24,7 +24,7 @@
 #include "otbBVTypes.h"
 
 #include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkMachineLearningModel.h"
+#include "otbNeuralNetworkRegressionMachineLearningModel.h"
 #include "otbSVMMachineLearningModel.h"
 #include "otbRandomForestsMachineLearningModel.h"
 #include "otbMultiLinearRegressionModel.h"
@@ -55,7 +55,7 @@ public:
   typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
   typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
   typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
-  typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
+  typedef otb::NeuralNetworkRegressionMachineLearningModel<PrecisionType, 
                                                           PrecisionType> 
   NeuralNetworkType;
   typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
