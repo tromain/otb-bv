@@ -304,21 +304,18 @@ private:
     otbAppLogINFO("Neural networks");
     auto regression = NeuralNetworkType::New();
     regression->SetRegressionMode(true);
-    regression->SetTrainMethod(CvANN_MLP_TrainParams::RPROP);
+    regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
     // One hidden layer with 5 neurons and one output variable
     otbAppLogINFO("Input layer : " << nbVars);
     regression->SetLayerSizes(std::vector<unsigned int>(
       {static_cast<unsigned int>(nbVars), 5, 1}));
     regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
-    regression->SetAlpha(1.0);
+    regression->SetAlpha(0.5);
     regression->SetBeta(1.0);
     regression->SetBackPropDWScale(0.1);
     regression->SetBackPropMomentScale(0.1);
-    regression->SetRegPropDW0(0.1);
-    regression->SetRegPropDWMin(1e-7);
-    regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
+    regression->SetTermCriteriaType(CV_TERMCRIT_EPS);
     regression->SetEpsilon(1e-10);
-    regression->SetMaxIter(1e7);
     return EstimateRegressionModel(regression, ils, ols, nbModels);
   }
 
@@ -393,20 +390,17 @@ private:
 
     auto err_regression = NeuralNetworkType::New();
     err_regression->SetRegressionMode(1);
-    err_regression->SetTrainMethod(CvANN_MLP_TrainParams::BACKPROP);
+    err_regression->SetTrainMethod(CvANN_MLP_TrainParams::RPROP);
     // One hidden layer with 5 neurons and one output variable
     err_regression->SetLayerSizes(std::vector<unsigned int>(
                                     {static_cast<unsigned int>(nbVars), 5, 1}));
     err_regression->SetActivateFunction(CvANN_MLP::SIGMOID_SYM);
     err_regression->SetAlpha(1.0);
-    err_regression->SetBeta(0.01);
+    err_regression->SetBeta(1.0);
     err_regression->SetBackPropDWScale(0.1);
     err_regression->SetBackPropMomentScale(0.1);
-    err_regression->SetRegPropDW0(0.1);
-    err_regression->SetRegPropDWMin(1e-7);
-    err_regression->SetTermCriteriaType(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS);
-    err_regression->SetEpsilon(1e-5);
-    err_regression->SetMaxIter(1e5);
+    err_regression->SetTermCriteriaType(CV_TERMCRIT_EPS);
+    err_regression->SetEpsilon(1e-7);
     err_regression->SetInputListSample(ils);
     err_regression->SetTargetListSample(err_ls);
     otbAppLogINFO("Error model estimation ..." << std::endl);
