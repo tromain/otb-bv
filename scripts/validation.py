@@ -20,6 +20,7 @@ import sys
 from config import Config
 import otbApplication as otb
 import bv_net as bv
+from formosat_data_noblue import *
 from formosat_data import *
 from spot4_data import *
 from spot5_data import *
@@ -51,6 +52,7 @@ nthreads = int(cfg.simulation.nthreads)
 bestof = int(cfg.inversion.bestof)
 regressor = cfg.inversion.regressor
 formosat = bool(str(cfg.sensors.formosat)=="yes")
+formosat_noblue = bool(str(cfg.sensors.formosat_noblue)=="yes")
 spot4 = bool(str(cfg.sensors.spot4)=="yes")
 landsat2013 = bool(str(cfg.sensors.landsat2013)=="yes")
 spot5 = bool(str(cfg.sensors.spot5)=="yes")
@@ -75,6 +77,8 @@ if simulate :
 simus_list = []
 if formosat :
     simus_list.append(fsat_data)
+if formosat_noblue :
+    simus_list.append(fsatnb_data)
 if spot4 :
     simus_list.append(spot4_data)
 if landsat2013 :
@@ -92,6 +96,9 @@ for sat in simus_list:
     if sat_name == "formosat2" and useVI:
         red_index = 3
         nir_index = 4
+    if sat_name == "formosat2noblue" and useVI:
+        red_index = 2
+        nir_index = 3
     if (sat_name == "spot4" or sat_name == "spot5") and useVI:
         red_index = 2
         nir_index = 3
