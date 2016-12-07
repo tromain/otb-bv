@@ -67,7 +67,7 @@ def generateInputBVDistribution(bvFile, nSamples, simuPars):
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
-def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False, red_index=0, nir_index=0, nthreads=2):
+def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, add_angles=False, red_index=0, nir_index=0, nthreads=2):
     """
     Generate a training file using the file of biophysical vars (bvFile) and the simulation parameters dictionary (simuPars).
     Write the result to trainingFile. The first column will be the biovar to learn and the following columns will be 
@@ -75,16 +75,17 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
     nir_index are set, the ndvi and the rvi are also used as features. red_index=3 means that the red reflectance is the 3rd column
     (starting at 1) in the reflectances file.
     """
-    app = otb.Registry.CreateApplication("ProSailSimulator")
-    app.SetParameterString("bvfile", bvFile)
-    app.SetParameterString("rsrfile", simuPars['rsrFile'])
-    app.SetParameterString("out", simuPars['outputFile'])
-    app.SetParameterFloat("solarzenith", simuPars['solarZenithAngle'])
-    app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
-    app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
-    app.SetParameterFloat("noisestd", simuPars['noisestd'])
-    app.SetParameterInt("threads", nthreads)
-    app.ExecuteAndWriteOutput()
+    if simulate :
+        app = otb.Registry.CreateApplication("ProSailSimulator")
+        app.SetParameterString("bvfile", bvFile)
+        app.SetParameterString("rsrfile", simuPars['rsrFile'])
+        app.SetParameterString("out", simuPars['outputFile'])
+        app.SetParameterFloat("solarzenith", simuPars['solarZenithAngle'])
+        app.SetParameterFloat("sensorzenith", simuPars['sensorZenithAngle'])
+        app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
+        app.SetParameterFloat("noisestd", simuPars['noisestd'])
+        app.SetParameterInt("threads", nthreads)
+        app.ExecuteAndWriteOutput()
     #combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
     with open(trainingFile, 'w') as tf:
         with open(bvFile, 'r') as bvf:

@@ -121,13 +121,11 @@ for sat in simus_list:
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
         simuPars['noisestd'] = noise_std
-        if simulate :
-            print "\tSimulation training"
-            bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index, nthreads)
+        print "\tSimulation training"
+        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
         simuPars['outputFile'] = reflectance_file_test
-        if simulate :
-            print "\tSimulation testing data"
-            bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index, nthreads)
+        print "\tSimulation testing data"
+        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
         print "\tLearning model"
         bv.learnBVModel(training_file, model_file, regressor, normalization_file, bestof)
         print "\tInversion for test data"
