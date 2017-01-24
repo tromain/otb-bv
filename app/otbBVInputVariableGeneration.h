@@ -16,6 +16,7 @@
 #include "otbWrapperApplicationFactory.h"
 #include "otbWrapperChoiceParameter.h"
 #include "otbBVTypes.h"
+#include <random>
 
 namespace otb
 {
