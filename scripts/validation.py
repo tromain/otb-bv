@@ -27,6 +27,7 @@ from spot5_data import *
 from landsat_data import *
 from landsat2015_data import *
 from s2_10m_ukr_data import *
+from s2_10m_noblue_ukr_data import *
 
 
 config_file = file(sys.argv[1])
@@ -58,6 +59,7 @@ landsat2013 = bool(str(cfg.sensors.landsat2013)=="yes")
 spot5 = bool(str(cfg.sensors.spot5)=="yes")
 landsat2015 = bool(str(cfg.sensors.landsat2015)=="yes")
 s2_10m_ukr = bool(str(cfg.sensors.s2_10m_ukr)=="yes")
+s2_10m_noblue_ukr = bool(str(cfg.sensors.s2_10m_noblue_ukr)=="yes")
 
 print "Working dir = ", working_dir
 
@@ -90,6 +92,8 @@ if landsat2015 :
     simus_list.append(lsat2015_data)
 if s2_10m_ukr:
     simus_list.append(s2_10m_ukr_data)
+if s2_10m_noblue_ukr:
+    simus_list.append(s2_10m_noblue_ukr_data)
 
 for sat in simus_list:
     sat_name = sat[0]
@@ -111,6 +115,9 @@ for sat in simus_list:
     if(sat_name == "s2_10m_ukr") and useVI:
         red_index = 3
         nir_index = 4
+    if(sat_name == "s2_10m_noblue_ukr") and useVI:
+        red_index = 2
+        nir_index = 3
 
     print useVI, red_index, nir_index
     for acqu in sat[2:]:
