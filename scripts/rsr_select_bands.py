@@ -18,13 +18,15 @@ import string
 import sys
 
 def rsr_select_bands(input_rsr_file, output_rsr_file, band_list):
-    print "Selecting bands "+string.join(sorted(band_list),', ')
+    bl = [int(b) for b in band_list]
+    band_list = [str(b) for b in sorted(bl)]
+    print "Selecting bands "+string.join(band_list,', ')
     with open(input_rsr_file, 'r') as irsr:
         with open(output_rsr_file, 'w') as orsr:
             for l in irsr.readlines():
                 fields = string.split(l)
                 ol = fields[0]+" "+fields[1]
-                for b in sorted(band_list):
+                for b in band_list:
                     ol += " "+fields[int(b)+1]
                 orsr.write(ol+"\n")
     
