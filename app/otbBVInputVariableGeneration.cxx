@@ -73,6 +73,22 @@ namespace Wrapper
     SetDefaultParameterFloat("stdala", 20.0);
     SetParameterDescription("stdala", "Standard deviation value for ALA");
 
+    AddParameter(ParameterType_Float, "minbs", "Minimum value for Bs");
+    SetDefaultParameterFloat("minbs", 0.0);
+    SetParameterDescription("minbs", "Minimum value for Bs");
+
+    AddParameter(ParameterType_Float, "maxbs", "Maximum value for Bs");
+    SetDefaultParameterFloat("maxbs", 1.0);
+    SetParameterDescription("maxbs", "Maximum value for Bs");
+
+    AddParameter(ParameterType_Float, "modbs", "Mode value for Bs");
+    SetDefaultParameterFloat("modbs", 0.5); 
+    SetParameterDescription("modbs", "Mode value for Bs");
+
+    AddParameter(ParameterType_Float, "stdbs", "Standard deviation value for Bs");
+    SetDefaultParameterFloat("stdbs", 0.5);
+    SetParameterDescription("stdbs", "Standard deviation value for Bs");
+
   }
 
   
@@ -150,6 +166,11 @@ void BVInputVariableGeneration::DoExecute()
     m_ALA.max = GetParameterFloat("maxala");
     m_ALA.mod = GetParameterFloat("modala");
     m_ALA.std = GetParameterFloat("stdala");
+
+    m_Bs.min = GetParameterFloat("minbs");
+    m_Bs.max = GetParameterFloat("maxbs");
+    m_Bs.mod = GetParameterFloat("modbs");
+    m_Bs.std = GetParameterFloat("stdbs");
 
     try
       {
