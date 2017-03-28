@@ -37,6 +37,10 @@ wdpath = cfg.paths.wdpath
 varName = cfg.paths.varName
 working_dir = wdpath+"/"+varName+"/"
 rsr_dir = cfg.paths.rsr_dir
+soil_file = cfg.paths.soil_file
+useSoilDB = bool(cfg.simulation.useSoilDB=="yes")
+soil_index_max = cfg.simulation.soil_index_max
+soil_wl_factor = float(cfg.simulation.soil_wl_factor)
 input_var_file = working_dir+cfg.paths.input_var_file
 input_var_file_test = working_dir+cfg.paths.input_var_file_test
 nbSamples_train = int(cfg.simulation.nbSamples_train)
@@ -46,6 +50,10 @@ maxlai = float(cfg.simulation.maxlai)
 modlai = float(cfg.simulation.modlai)
 stdlai = float(cfg.simulation.stdlai)
 distlai = cfg.simulation.distlai
+minbs = float(cfg.simulation.minbs)
+maxbs = float(cfg.simulation.maxbs)
+modbs = float(cfg.simulation.modbs)
+stdbs = float(cfg.simulation.stdbs)
 noise_std = float(cfg.simulation.noise_std)
 simulate = bool(str(cfg.simulation.simulate)=="yes")
 useVI = bool(str(cfg.simulation.useVI)=="yes")
@@ -63,6 +71,9 @@ s2_10m_noblue_ukr = bool(str(cfg.sensors.s2_10m_noblue_ukr)=="yes")
 
 print "Working dir = ", working_dir
 
+if(useSoilDB) :
+    print "Using soil DB "+soil_file+" from 1 to "+str(soil_index_max)+" with wlfactor "+str(soil_wl_factor)
+
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
     os.makedirs(d)
@@ -74,6 +85,10 @@ if simulate :
     varPars['modlai'] = modlai
     varPars['stdlai'] = stdlai
     varPars['distlai'] = distlai
+    varPars['minbs'] = minbs
+    varPars['maxbs'] = maxbs
+    varPars['modbs'] = modbs
+    varPars['stdbs'] = stdbs
     bv.generateInputBVDistribution(input_var_file, nbSamples_train, varPars)
     bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 
@@ -141,6 +156,10 @@ for sat in simus_list:
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
         simuPars['noisestd'] = noise_std
+        simuPars['soilfile'] = soil_file
+        simuPars['soilindexmax'] = soil_index_max
+        simuPars['soilwlfactor'] = soil_wl_factor
+        simuPars['useSoilDB'] = useSoilDB
         print "\tSimulation training"
         bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
         simuPars['outputFile'] = reflectance_file_test

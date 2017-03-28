@@ -25,6 +25,11 @@ bvindex = {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Ca
 
 bv_val_names = {"MLAI": ['gai', 'lai-bvnet'], "FAPAR": ['fapar', 'fapar-bvnet'], "FCOVER": ['fcover', 'fcover-bvnet']}
 
+def concatenate_files(basename, index_max):
+    file_list = [basename+"_"+str(si) for si in range(1,index_max+1)]
+    comm = "cat "+string.join(file_list, " ")+" > "+basename
+    os.system(comm)
+            
 def parseConfigFile(cfg):
     distFileName = cfg.bvDistribution.fileName
     nSamples = cfg.bvDistribution.samples
@@ -64,6 +69,10 @@ def generateInputBVDistribution(bvFile, nSamples, simuPars):
     app.SetParameterFloat("modlai", simuPars['modlai'])
     app.SetParameterFloat("stdlai", simuPars['stdlai'])
     app.SetParameterString("distlai", simuPars['distlai'])
+    app.SetParameterFloat("minbs", simuPars['minbs'])
+    app.SetParameterFloat("maxbs", simuPars['maxbs'])
+    app.SetParameterFloat("modbs", simuPars['modbs'])
+    app.SetParameterFloat("stdbs", simuPars['stdbs'])
     app.SetParameterString("out", bvFile)
     app.ExecuteAndWriteOutput()
 
@@ -85,7 +94,16 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, a
         app.SetParameterFloat("azimuth", simuPars['solarSensorAzimuth'])
         app.SetParameterStringList("noisestd", [str(simuPars['noisestd'])])
         app.SetParameterInt("threads", nthreads)
-        app.ExecuteAndWriteOutput()
+        if simuPars['useSoilDB']:
+            app.SetParameterString("soilfile",simuPars['soilfile'])
+            app.SetParameterFloat("wlfactor",simuPars['soilwlfactor'])
+            for si in range(1,simuPars['soilindexmax']+1):
+                app.SetParameterInt("soilindex", si)
+                app.SetParameterString("out", simuPars['outputFile']+"_"+str(si))
+                app.ExecuteAndWriteOutput()                
+            concatenate_files(simuPars['outputFile'],simuPars['soilindexmax'])
+        else :
+            app.ExecuteAndWriteOutput()
     #combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
     with open(trainingFile, 'w') as tf:
         with open(bvFile, 'r') as bvf:
