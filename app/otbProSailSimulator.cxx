@@ -43,16 +43,19 @@ std::vector<otb::BV::BVType> parse_bv_sample_file(std::ifstream& sample_file)
     BVType prosailBV;
     // Read the variable values
     std::getline(sample_file, line);
-    std::stringstream ss(line);
-    for(auto varName = 0; 
-        varName != static_cast<unsigned int>(IVNames::IVNamesEnd);
-        ++ varName)
+    if(!line.empty())
       {
-      double bvValue;
-      ss >> bvValue;
-      prosailBV[static_cast<IVNames>(varName)] = bvValue;
+      std::stringstream ss(line);
+      for(auto varName = 0; 
+          varName != static_cast<unsigned int>(IVNames::IVNamesEnd);
+          ++ varName)
+        {
+        double bvValue;
+        ss >> bvValue;
+        prosailBV[static_cast<IVNames>(varName)] = bvValue;
+        }
+      bv_vec.push_back(prosailBV);
       }
-    bv_vec.push_back(prosailBV);
     }
   sample_file.close();
   return bv_vec;
