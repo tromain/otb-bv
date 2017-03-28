@@ -22,9 +22,9 @@ size_t countColumns(std::string fileName)
 {
   std::ifstream ifile(fileName.c_str());
   std::string line;
-  size_t nbSpaces = 0;
   if (ifile.is_open())
     {
+    size_t nbSpaces = 0;
     getline(ifile,line);
     ifile.close();
     boost::trim(line);
