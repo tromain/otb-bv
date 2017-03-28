@@ -47,7 +47,22 @@ public:
   typedef typename std::vector<PrecisionType> OutputType;
   
   /** Constructor */
-  ProSailSimulator() {
+  ProSailSimulator() : 
+    m_LAI(0), 
+    m_Angl(0), 
+    m_PSoil(0), 
+    m_Skyl(0), 
+    m_HSpot(0), 
+    m_TTS(0), 
+    m_TTS_FAPAR(0), 
+    m_TTO(0), 
+    m_PSI(0), 
+    m_UseSoilFile(false), 
+    m_SoilFileName(""), 
+    m_SoilIndex(0), 
+    m_WavelengthFactor(1000), 
+    m_BV({}) 
+  {
     m_SatRSR = SatRSRType::New();
   }
 
@@ -97,6 +112,10 @@ public:
     sail->SetPSI(m_PSI);
     sail->SetReflectance(prospect->GetReflectance());
     sail->SetTransmittance(prospect->GetTransmittance());
+    if(m_UseSoilFile)
+      {
+      sail->UseExternalSoilFile(m_SoilFileName, m_SoilIndex, m_WavelengthFactor);
+      }
     sail->Update();
 
     auto sailSim = sail->GetViewingReflectance()->GetResponse();
@@ -117,18 +136,23 @@ public:
     sail_fapar->SetPSI(0.0);
     sail_fapar->SetReflectance(prospect->GetReflectance());
     sail_fapar->SetTransmittance(prospect->GetTransmittance());
+    if(m_UseSoilFile)
+      {
+      sail_fapar->UseExternalSoilFile(m_SoilFileName, m_SoilIndex, 
+                                      m_WavelengthFactor);
+      }
     sail_fapar->Update();
 
     auto fAPAR = this->ComputeFAPAR(sail_fapar->GetViewingAbsorptance());
     
     VectorPairType hxSpectrum;
     for(size_t i=0;i<SimNbBands;i++)
-      {
-      PairType resp;
-      resp.first = static_cast<PrecisionType>((400.0+i)/1000);
-      resp.second = sailSim[i].second;
-      hxSpectrum.push_back(resp);
-      }
+         {
+         PairType resp;
+         resp.first = static_cast<PrecisionType>((400.0+i)/1000);
+         resp.second = sailSim[i].second;
+         hxSpectrum.push_back(resp);
+         }
 
     auto aResponse = ResponseType::New();
     aResponse->SetResponse( hxSpectrum );
@@ -173,6 +197,15 @@ public:
     m_BV = bvmap;
   }
 
+  inline 
+  void UseExternalSoilFile(std::string SoilFileName, size_t SoilIndex, double WlFactor)
+  {
+    m_UseSoilFile = true;
+    m_SoilFileName = SoilFileName;
+    m_SoilIndex = SoilIndex;
+    m_WavelengthFactor = WlFactor;
+  }
+
   inline
   void SetParameters(otb::BV::AcquisitionParsType apmap)
   {
@@ -209,6 +242,10 @@ protected:
   double m_TTS_FAPAR; //solar zenith angle for fapar computation
   double m_TTO; //observer zenith angle
   double m_PSI; //azimuth
+  bool m_UseSoilFile; //use a soil file instead of DataSpecP5B
+  std::string m_SoilFileName; //the soil file to use
+  size_t m_SoilIndex; //which soil in the soil file
+  double m_WavelengthFactor; //to use nm in soil file
   otb::BV::BVType m_BV;
 };
 
