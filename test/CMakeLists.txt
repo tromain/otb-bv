@@ -47,6 +47,20 @@ otb_test_application(NAME appBvProSailSim
   -sensorzenith 20.071
   -azimuth 169.0)
 
+otb_test_application(NAME appBvProSailSimSoil
+  APP ProSailSimulator
+  OPTIONS
+  -bvfile ${OTBBioVars_SOURCE_DIR}/data/appBvGenInputVarssamples.txt
+  -rsrfile ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr
+  -out ${TEMP}/appProSailSimusSoil.txt
+  -solarzenith 33.469
+  -sensorzenith 20.071
+  -azimuth 169.0
+  -soilfile ${INPUTDATA}/Radiometry/Soils/sols_avignon_1990.txt
+  -soilindex 20 
+  -wlfactor 1000
+  )
+
 otb_test_application(NAME appBvInvModLear
   APP InverseModelLearning
   OPTIONS
