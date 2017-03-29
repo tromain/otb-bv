@@ -17,6 +17,7 @@
 import string
 import os
 import sys
+import math
 from config import Config
 import otbApplication as otb
 import bv_net as bv
@@ -58,6 +59,7 @@ noise_std = float(cfg.simulation.noise_std)
 simulate = bool(str(cfg.simulation.simulate)=="yes")
 useVI = bool(str(cfg.simulation.useVI)=="yes")
 nthreads = int(cfg.simulation.nthreads)
+angles_as_predictors = bool(cfg.simulation.angles_as_predictors=="yes")
 bestof = int(cfg.inversion.bestof)
 regressor = cfg.inversion.regressor
 formosat = bool(str(cfg.sensors.formosat)=="yes")
@@ -135,40 +137,125 @@ for sat in simus_list:
         nir_index = 3
 
     print useVI, red_index, nir_index
-    for acqu in sat[2:]:
-        print "-------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor
-        reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
-        training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
-        reflectance_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_test"
-        training_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_training_test"
-        normalization_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_normalization"
-        inversion_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_"+regressor
-        model_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_model_"+regressor
-        validation_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_"+regressor
-        reflectances_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_gt"
-        inversion_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_gt_"+regressor
-        validation_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_gt_"+regressor
+
+    if not angles_as_predictors :
+        for acqu in sat[2:]:
+            print "-------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor
+            reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
+            training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
+            reflectance_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_test"
+            training_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_training_test"
+            normalization_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_normalization"
+            inversion_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_"+regressor
+            model_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_model_"+regressor
+            validation_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_"+regressor
+            reflectances_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_gt"
+            inversion_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_gt_"+regressor
+            validation_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_gt_"+regressor
+            simuPars = {}
+            simuPars['rsrFile'] = rsr_dir+"/"+rsr_file
+            simuPars['outputFile'] = reflectance_file
+            simuPars['solarZenithAngle'] = acqu['ts']
+            simuPars['sensorZenithAngle'] = acqu['to']
+            simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
+            simuPars['noisestd'] = noise_std
+            simuPars['soilfile'] = soil_file
+            simuPars['soilindexmax'] = soil_index_max
+            simuPars['soilwlfactor'] = soil_wl_factor
+            simuPars['useSoilDB'] = useSoilDB
+            print "\tSimulation training"
+            bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
+            simuPars['outputFile'] = reflectance_file_test
+            print "\tSimulation testing data"
+            bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
+            print "\tLearning model"
+            bv.learnBVModel(training_file, model_file, regressor, normalization_file, bestof)
+            print "\tInversion for test data"
+            bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, red_index, nir_index)
+            with open(inversion_file, 'r') as ivf:
+                with open(training_file_test, 'r') as tft:
+                    with open(validation_file, 'w') as vaf:
+                        for(ivline, tftline) in zip(ivf.readlines(), tft.readlines()):
+                            outline = string.split(ivline)[0]+" "+string.split(tftline)[0]+"\n"
+                            vaf.write(outline)
+            var_values_gt = []
+            var_values_bvnet = []
+            with open(reflectances_gt_file, 'w') as rfgtf:
+                for gt_case in acqu['gt']:
+                    for refl in gt_case['refls']:
+                        rfgtf.write(str(refl/1000.0)+" ")
+                    rfgtf.write("\n")
+                    var_values_gt.append(gt_case[bv.bv_val_names[varName][0]])
+                    var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
+            if useVI:
+                bv.addVI(reflectances_gt_file, red_index, nir_index)
+            print "\tInversion for validation data"
+            bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
+            with open(inversion_gt_file, 'r') as ivgtf:
+                with open(validation_gt_file, 'w') as vgtf:
+                    for (ival, gtval, bvnetval) in zip(ivgtf.readlines(),var_values_gt,var_values_bvnet):
+                        vgtf.write(str(gtval)+" "+str(bvnetval)+" "+str(ival))
+    else:
+        print "Estimating angle ranges - orbitography codes should be used instead"
+        suza = []
+        saza = []
+        susaaz = []
+        for acqu in sat[2:]:
+            print "-------"+sat_name+"_"+str(acqu['doy'])
+            suza.append(acqu['ts'])
+            saza.append(acqu['to'])
+            susaaz.append( acqu['ps']-acqu['po'])
+        minsuza = min(suza)
+        maxsuza = max(suza)
+        minsaza = min(saza)
+        maxsaza = max(saza)
+        minsusaaz = min(susaaz)
+        maxsusaaz = max(susaaz)
+        print sat_name+" SunZenith "+str(minsuza)+" - "+str(maxsuza)+" SatZenith "+str(minsaza)+" - "+str(maxsaza)+" Azimuth "+str(minsusaaz)+" - "+str(maxsusaaz)
+        suzastep = 10
+        sazastep = 2
+        susaazstep = 20
+        suza_values = [(maxsuza-minsuza)/suzastep*a+minsuza for a in range(suzastep+1)]
+        saza_values = [(maxsaza-minsaza)/sazastep*a+minsaza for a in range(sazastep+1)]
+        susaaz_values = [(maxsusaaz-minsusaaz)/susaazstep*a+minsusaaz for a in range(susaazstep+1)]
+        reflectance_file = working_dir+sat_name+"_"+"_reflectances"
+        training_file = working_dir+sat_name+"_"+"_training"
+        reflectance_file_test = working_dir+sat_name+"_"+"_reflectances_test"
+        training_file_test = working_dir+sat_name+"_"+"_training_test"
+        normalization_file = working_dir+sat_name+"_"+"_normalization"
+        inversion_file = working_dir+sat_name+"_"+"_inversion_"+regressor
+        model_file = working_dir+sat_name+"_"+"_model_"+regressor
+        validation_file = working_dir+sat_name+"_"+"_validation_"+regressor
+        reflectances_gt_file = working_dir+sat_name+"_"+"_reflectances_gt"
+        inversion_gt_file = working_dir+sat_name+"_"+"_inversion_gt_"+regressor
+        validation_gt_file = working_dir+sat_name+"_"+"_validation_gt_"+regressor
         simuPars = {}
         simuPars['rsrFile'] = rsr_dir+"/"+rsr_file
-        simuPars['outputFile'] = reflectance_file
-        simuPars['solarZenithAngle'] = acqu['ts']
-        simuPars['sensorZenithAngle'] = acqu['to']
-        simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
-        simuPars['soilFile'] = "whatever"
         simuPars['noisestd'] = noise_std
         simuPars['soilfile'] = soil_file
         simuPars['soilindexmax'] = soil_index_max
         simuPars['soilwlfactor'] = soil_wl_factor
-        simuPars['useSoilDB'] = useSoilDB
-        print "\tSimulation training"
-        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
-        simuPars['outputFile'] = reflectance_file_test
-        print "\tSimulation testing data"
-        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
+        simuPars['useSoilDB'] = useSoilDB                    
+        indx = 0
+        for suza in suza_values:
+            for saza in saza_values:
+                for susaaz in susaaz_values:
+                    simuPars['outputFile'] = reflectance_file+"_"+str(indx)
+                    simuPars['solarZenithAngle'] = suza
+                    simuPars['sensorZenithAngle'] = saza
+                    simuPars['solarSensorAzimuth'] = susaaz
+                    print "\tSimulation training "+str(indx)+"/"+str(len(suza_values)*len(saza_values)*len(susaaz_values))
+                    bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], simulate, True, red_index, nir_index, nthreads)
+                    simuPars['outputFile'] = reflectance_file_test+"_"+str(indx)
+                    print "\tSimulation testing data "+str(indx)+"/"+str(suzastep*sazastep*susaazstep)
+                    bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], simulate, True, red_index, nir_index, nthreads)
+                    indx += 1
+        bv.concatenate_files(reflectance_file, indx-1)
+        bv.concatenate_files(reflectance_file_test, indx-1)
         print "\tLearning model"
         bv.learnBVModel(training_file, model_file, regressor, normalization_file, bestof)
         print "\tInversion for test data"
-        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, red_index, nir_index)
+        bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, red_index, nir_index)            
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:
                 with open(validation_file, 'w') as vaf:
@@ -186,11 +273,22 @@ for sat in simus_list:
                 var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
         if useVI:
             bv.addVI(reflectances_gt_file, red_index, nir_index)
+        suza = math.cos(acqu['ts'])
+        saza = math.cos(acqu['to'])
+        susaaz =  math.cos(acqu['ps']-acqu['po'])
+        angles = `suza`+" "+`saza`+" "+`susaaz`
+        rff = open(reflectances_gt_file)
+        allfields = rff.readlines()
+        rff.close()
+        with open(reflectances_gt_file, 'w') as rf:
+            for l in allfields:
+                if len(l)>5:
+                    outline = l[:-1] + " " + angles +"\n"
+                    rf.write(outline)
+
         print "\tInversion for validation data"
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:
                 for (ival, gtval, bvnetval) in zip(ivgtf.readlines(),var_values_gt,var_values_bvnet):
-                    vgtf.write(str(gtval)+" "+str(bvnetval)+" "+str(ival))
-                
-                        
+                    vgtf.write(str(gtval)+" "+str(bvnetval)+" "+str(ival))            

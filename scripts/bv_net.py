@@ -19,6 +19,7 @@ import os
 import string
 from config import Config
 import otbApplication as otb
+import math
 
 # The indices here have to be coherent with the order used in the bv file (and the definition of the vars in otbBVTypes.h
 bvindex = {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Car": 6, "Cdm": 7, "CwRel": 4, "Cbp": 9, "Bs": 10, "FAPAR": 11, "FCOVER": 12}
@@ -121,14 +122,26 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, a
                     outline = outline+" "+string.join(string.split(refline[:-1])[:-2], ' ')
                     outline.rstrip()
                     if add_angles:
-                        angles = `simuPars['solarZenithAngle']`+" "+`simuPars['sensorZenithAngle']`+" "+`simuPars['solarSensorAzimuth']`
-                        outline += " "+angles
+                        angles = `math.cos(simuPars['solarZenithAngle'])`+" "+`math.cos(simuPars['sensorZenithAngle'])`+" "+`math.cos(simuPars['solarSensorAzimuth'])`
+                        outline = outline +" "+angles
                     outline += "\n"
                     tf.write(outline)
     if red_index!=0 and nir_index!=0:
         # we need to add 1 to the indices since the file already contains the variable in the first column
         print "Adding VIs for training data"
         addVI(trainingFile, red_index+1, nir_index+1)
+    #add angles to the reflectances file
+    if add_angles:
+        angles = `math.cos(simuPars['solarZenithAngle'])`+" "+`math.cos(simuPars['sensorZenithAngle'])`+" "+`math.cos(simuPars['solarSensorAzimuth'])`
+        rff = open(simuPars['outputFile'])
+        allfields = rff.readlines()
+        rff.close()
+        with open(simuPars['outputFile'], 'w') as rf:
+            for l in allfields:
+                if len(l)>5:
+                    outline = l[:-1] + " " + angles +"\n"
+                    rf.write(outline)
+
                 
                 
 def learnBVModel(trainingFile, outputFile, regressionType, normalizationFile, bestof=1):
