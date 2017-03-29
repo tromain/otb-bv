@@ -61,6 +61,20 @@ otb_test_application(NAME appBvProSailSimSoil
   -wlfactor 1000
   )
 
+otb_test_application(NAME appBvProSailSimSoilSent
+  APP ProSailSimulator
+  OPTIONS
+  -bvfile ${OTBBioVars_SOURCE_DIR}/data/appBvGenInputVarssamples.txt
+  -rsrfile ${OTBBioVars_SOURCE_DIR}/data/sentinel2_10m.rsr
+  -out ${TEMP}/appProSailSimusSoilSent.txt
+  -solarzenith 33.469
+  -sensorzenith 20.071
+  -azimuth 169.0
+  -soilfile ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Soils.csv
+  -soilindex 7
+  -wlfactor 1
+  )
+
 otb_test_application(NAME appBvInvModLear
   APP InverseModelLearning
   OPTIONS
