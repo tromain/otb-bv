@@ -89,6 +89,10 @@ namespace Wrapper
     SetDefaultParameterFloat("stdbs", 0.5);
     SetParameterDescription("stdbs", "Standard deviation value for Bs");
 
+    AddParameter(ParameterType_Int, "maxsoilidx", "Max number of soil spectra if external soil file is used");
+    SetDefaultParameterInt("maxsoilidx", 1);
+    SetParameterDescription("maxsoilidx", "Max number of soil spectra if external soil file is used");
+
   }
 
   
@@ -117,7 +121,7 @@ otb::BV::SampleType BVInputVariableGeneration::DrawSample()
                                    s[IVNames::MLAI], m_Cbp, m_MLAI);
   s[IVNames::Bs] = CorrelateValue(Rng(m_Bs,m_RNG), 
                                   s[IVNames::MLAI], m_Bs, m_MLAI);
-
+  s[IVNames::SoilIndex] = std::round(Rng(m_SoilIndex, m_RNG));
   return s;
 }
 
@@ -172,6 +176,10 @@ void BVInputVariableGeneration::DoExecute()
     m_Bs.mod = GetParameterFloat("modbs");
     m_Bs.std = GetParameterFloat("stdbs");
 
+    if(IsParameterEnabled("maxsoilidx"))
+      {
+      m_SoilIndex.max = GetParameterInt("maxsoilidx");
+      }
     try
       {
       m_SampleFile.open(GetParameterString("out").c_str(), std::ofstream::out);
@@ -192,7 +200,8 @@ void BVInputVariableGeneration::DoExecute()
     m_SampleFile << std::setw(12) << std::left    << "Cdm";
     m_SampleFile << std::setw(12) << std::left    << "CwRel";
     m_SampleFile << std::setw(12) << std::left    << "Cbp";
-    m_SampleFile << std::setw(12) << std::left    << "Bs" << std::endl;
+    m_SampleFile << std::setw(12) << std::left    << "Bs";
+    m_SampleFile << std::setw(12) << std::left    << "SoilIndex" << std::endl;
     
     auto maxSamples = GetParameterInt("samples");
     auto sampleCount = 0;

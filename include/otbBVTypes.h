@@ -23,7 +23,7 @@ namespace otb
 namespace BV
 {
 enum class IVNames {MLAI, ALA, CrownCover, HsD, N, Cab, Car, Cdm, CwRel, Cbp, 
-                    Bs, IVNamesEnd};
+                    Bs, SoilIndex, IVNamesEnd};
 enum class AcquisitionParameters {TTS, TTO, PSI, TTS_FAPAR, AcquisitionParametersEnd};
 
 using AcquisitionParsType = std::map< AcquisitionParameters, double >;
