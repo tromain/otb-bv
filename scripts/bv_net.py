@@ -75,6 +75,7 @@ def generateInputBVDistribution(bvFile, nSamples, simuPars):
     app.SetParameterFloat("modbs", simuPars['modbs'])
     app.SetParameterFloat("stdbs", simuPars['stdbs'])
     app.SetParameterString("out", bvFile)
+    app.SetParameterInt("maxsoilidx",simuPars['soilindexmax'])
     app.ExecuteAndWriteOutput()
 
 def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, add_angles=False, red_index=0, nir_index=0, nthreads=2):
@@ -98,13 +99,7 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, a
         if simuPars['useSoilDB']:
             app.SetParameterString("soilfile",simuPars['soilfile'])
             app.SetParameterFloat("wlfactor",simuPars['soilwlfactor'])
-            for si in range(1,simuPars['soilindexmax']+1):
-                app.SetParameterInt("soilindex", si)
-                app.SetParameterString("out", simuPars['outputFile']+"_"+str(si))
-                app.ExecuteAndWriteOutput()                
-            concatenate_files(simuPars['outputFile'],simuPars['soilindexmax'])
-        else :
-            app.ExecuteAndWriteOutput()
+        app.ExecuteAndWriteOutput()
     #combine the bv samples, the angles and the simulated reflectances for variable inversion and produce the training file
     with open(trainingFile, 'w') as tf:
         with open(bvFile, 'r') as bvf:

@@ -91,6 +91,7 @@ if simulate :
     varPars['maxbs'] = maxbs
     varPars['modbs'] = modbs
     varPars['stdbs'] = stdbs
+    varPars['soilindexmax'] = soil_index_max
     bv.generateInputBVDistribution(input_var_file, nbSamples_train, varPars)
     bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 
