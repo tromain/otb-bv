@@ -57,7 +57,6 @@ otb_test_application(NAME appBvProSailSimSoil
   -sensorzenith 20.071
   -azimuth 169.0
   -soilfile ${INPUTDATA}/Radiometry/Soils/sols_avignon_1990.txt
-  -soilindex 20 
   -wlfactor 1000
   )
 
@@ -71,7 +70,6 @@ otb_test_application(NAME appBvProSailSimSoilSent
   -sensorzenith 20.071
   -azimuth 169.0
   -soilfile ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Soils.csv
-  -soilindex 7
   -wlfactor 1
   )
 

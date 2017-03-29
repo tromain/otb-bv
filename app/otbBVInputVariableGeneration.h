@@ -56,7 +56,7 @@ private:
   otb::BV::VarParams m_CwRel ={0.60, 0.85, 0.75, 0.08, 0.70, 0.80, true, 4, otb::BV::DistType::UNIFORM};
   otb::BV::VarParams m_Cbp ={0.00, 2.00, 0.00, 0.30, 0.00, 0.20, true, 3, otb::BV::DistType::GAUSSIAN  };
   otb::BV::VarParams m_Bs ={ 0.0, 1.00, 0.5, 2.00, 0.50, 1.20, true, 4, otb::BV::DistType::GAUSSIAN};
-  otb::BV::VarParams m_SoilIndex ={ 0.0, 10.00, 5.0, 5.0, 0.0, 0.0, false, 1, otb::BV::DistType::UNIFORM};
+  otb::BV::VarParams m_SoilIndex ={ 1.0, 1.0, 5.0, 5.0, 0.0, 0.0, false, 1, otb::BV::DistType::UNIFORM};
 
   // the random number generator
   std::mt19937 m_RNG;

@@ -135,16 +135,9 @@ private:
     SetParameterDescription( "rsrfile", "Input file containing a soil data base." );
     MandatoryOff("soilfile");
 
-    AddParameter(ParameterType_Int, "soilindex", "index of the soil in the data base");
-    MandatoryOff("soilindex");
-
     AddParameter(ParameterType_Float, "wlfactor", "factor to conver wavelenghts in the soil file into nm");
     SetParameterDescription( "wlfactor", "." );
     MandatoryOff("wlfactor");
-
-
-
-
   }
 
   virtual ~ProSailSimulator()
@@ -195,13 +188,11 @@ private:
     otbAppLogINFO(""<<ss.str());
 
     std::string SoilFileName{};
-    size_t SoilIndex{1};
     double WlFactor{1000};
     bool UseSoilFile =IsParameterEnabled("soilfile");
     if(UseSoilFile)
       {
       SoilFileName = GetParameterString("soilfile");
-      if(IsParameterEnabled("soilindex")) SoilIndex = GetParameterInt("soilindex");
       if(IsParameterEnabled("wlfactor")) WlFactor = GetParameterFloat("wlfactor");
       }
 
@@ -209,28 +200,28 @@ private:
     std::vector<std::normal_distribution<>> noise_generators;
     std::mt19937 RNG;
     if(add_noise)
-         {
-         RNG = std::mt19937(std::random_device{}());
-         std::vector<std::string> std_str = GetParameterStringList("noisestd");
-         if(std_str.size()==1)
-           {
-           std_str = std::vector<std::string>(nbBands, std_str[0]);
-           otbAppLogINFO("All noise stds initialized to " << std_str[0] << "\n");
-           }
-         else if(std_str.size()!=nbBands)
-           {
-           itkGenericExceptionMacro(<< "Number of noise stds (" << std_str.size()
-                                    << ") does not match number of spectral bands in "
-                                    << rsrFileName << ": " << nbBands);
-           }
-         for(size_t i=0; i<std_str.size(); i++)
-           {
-           auto noise_std = boost::lexical_cast<PrecisionType>(std_str[i]);
-           noise_generators.push_back(std::normal_distribution<>(0,noise_std));
-           otbAppLogINFO("Noise std for band " << i << " equal to " << 
-                         noise_std << "\n");
-           }
-         }    
+      {
+      RNG = std::mt19937(std::random_device{}());
+      std::vector<std::string> std_str = GetParameterStringList("noisestd");
+      if(std_str.size()==1)
+        {
+        std_str = std::vector<std::string>(nbBands, std_str[0]);
+        otbAppLogINFO("All noise stds initialized to " << std_str[0] << "\n");
+        }
+      else if(std_str.size()!=nbBands)
+        {
+        itkGenericExceptionMacro(<< "Number of noise stds (" << std_str.size()
+                                 << ") does not match number of spectral bands in "
+                                 << rsrFileName << ": " << nbBands);
+        }
+      for(size_t i=0; i<std_str.size(); i++)
+        {
+        auto noise_std = boost::lexical_cast<PrecisionType>(std_str[i]);
+        noise_generators.push_back(std::normal_distribution<>(0,noise_std));
+        otbAppLogINFO("Noise std for band " << i << " equal to " << 
+                      noise_std << "\n");
+        }
+      }    
 
     std::string bvFileName = GetParameterString("bvfile");
     std::string outFileName = GetParameterString("out");
@@ -275,22 +266,22 @@ private:
       prosail.SetParameters(prosailPars);
       if(UseSoilFile)
         {
-        prosail.UseExternalSoilFile(SoilFileName, SoilIndex, WlFactor);
+        prosail.UseExternalSoilFile(SoilFileName, WlFactor);
         }
       while(sample_first != sample_last)
-           {
-           prosail.SetBVs(*sample_first);
-           *simu_first = prosail();
-           if(add_noise)
-             {
-             for(size_t i=0; i<nbBands; i++)
-               {
-               (*simu_first)[i] += noise_generators[i](RNG);
-               }
-             }
-           ++sample_first;
-           ++simu_first;
-           }
+        {
+          prosail.SetBVs(*sample_first);
+          *simu_first = prosail();
+          if(add_noise)
+            {
+            for(size_t i=0; i<nbBands; i++)
+              {
+              (*simu_first)[i] += noise_generators[i](RNG);
+              }
+            }
+          ++sample_first;
+          ++simu_first;
+        }
     };    
 
     auto num_threads = std::thread::hardware_concurrency();

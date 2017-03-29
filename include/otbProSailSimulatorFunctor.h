@@ -93,6 +93,7 @@ public:
     m_PSoil = m_BV[IVNames::Bs];
     m_Skyl = 0.3;
     m_HSpot = m_BV[IVNames::HsD];
+    m_SoilIndex = m_BV[IVNames::SoilIndex];
 
     auto prospect = ProspectType::New();
     prospect->SetInput(leaf_pars);
@@ -198,11 +199,10 @@ public:
   }
 
   inline 
-  void UseExternalSoilFile(std::string SoilFileName, size_t SoilIndex, double WlFactor)
+  void UseExternalSoilFile(std::string SoilFileName, double WlFactor)
   {
     m_UseSoilFile = true;
     m_SoilFileName = SoilFileName;
-    m_SoilIndex = SoilIndex;
     m_WavelengthFactor = WlFactor;
   }
 
