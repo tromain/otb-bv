@@ -14,14 +14,14 @@
 project(OTBBioVars)
 
 set(CMAKE_MODULE_PATH ${OTBBioVars_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
-find_package(GSL)
-if(GSL_FOUND)
-  message("-- Using GSL. Your OTB will be under the GNU GPL License or better.")
-else(GSL_FOUND)
-  message(FATAL_ERROR "GSL not found but needed for spline interpolation.")
-endif(GSL_FOUND)
+# find_package(GSL)
+# if(GSL_FOUND)
+#   message("-- Using GSL. Your OTB will be under the GNU GPL License or better.")
+# else(GSL_FOUND)
+#   message(FATAL_ERROR "GSL not found but needed for spline interpolation.")
+# endif(GSL_FOUND)
 
-include_directories(${GSL_INCLUDE_DIRS})
+# include_directories(${GSL_INCLUDE_DIRS})
 
 message("-- Using OTBBioVars. Your OTB will be under the Affero GNU GPL License or better.")
 
