@@ -16,6 +16,6 @@ set(${otb-module}_SRC
   )
 
 add_library(${otb-module} ${${otb-module}_SRC})
-target_link_libraries(${otb-module} ${OTBCommon_LIBRARIES} ${OTBITK_LIBRARIES} ${OTBBoost_LIB})
+target_link_libraries(${otb-module} ${OTBCommon_LIBRARIES} ${OTBITK_LIBRARIES} ${OTBTemporalGapFilling_LIBRARIES} ${OTBBoost_LIBRARIES} ${GSL_LIBRARIES})
 otb_module_target(${otb-module})
 

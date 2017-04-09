@@ -22,7 +22,7 @@ set(${otb-module}Tests
 
 set(OTBBioVars_TEST_LINK_LIBS ${otb-module}
   ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${OTBPhenology_LIBRARIES} ${OTBSimulation_LIBRARIES}
-  ${OTBSupervised_LIBRARIES}
+  ${OTBSupervised_LIBRARIES} ${OTBTemporalGapFilling_LIBRARIES} ${OTBBoost_LIBRARIES} ${GSL_LIBRARIES}
   )
 
 add_executable(otbBioVarsTests ${${otb-module}Tests})

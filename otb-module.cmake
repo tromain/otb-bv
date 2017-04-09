@@ -10,6 +10,7 @@ otb_module(OTBBioVars
   OTBCommon
   OTBITK
   OTBPhenology
+  OTBTemporalGapFilling 
   OTBSimulation
   OTBSupervised
   TEST_DEPENDS
