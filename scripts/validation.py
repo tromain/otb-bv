@@ -20,6 +20,7 @@ import sys
 from config import Config
 import otbApplication as otb
 import bv_net as bv
+from dummy_data import *
 from formosat_data_noblue import *
 from formosat_data import *
 from spot4_data import *
@@ -28,6 +29,8 @@ from landsat_data import *
 from landsat2015_data import *
 from s2_10m_ukr_data import *
 from s2_10m_noblue_ukr_data import *
+from s2_allbands_noblue_ukr_data import *
+from s2_allbands_noblue_fr_data import *
 
 
 config_file = file(sys.argv[1])
@@ -52,6 +55,7 @@ useVI = bool(str(cfg.simulation.useVI)=="yes")
 nthreads = int(cfg.simulation.nthreads)
 bestof = int(cfg.inversion.bestof)
 regressor = cfg.inversion.regressor
+dummy = bool(str(cfg.sensors.dummy)=="yes")
 formosat = bool(str(cfg.sensors.formosat)=="yes")
 formosat_noblue = bool(str(cfg.sensors.formosat_noblue)=="yes")
 spot4 = bool(str(cfg.sensors.spot4)=="yes")
@@ -60,6 +64,8 @@ spot5 = bool(str(cfg.sensors.spot5)=="yes")
 landsat2015 = bool(str(cfg.sensors.landsat2015)=="yes")
 s2_10m_ukr = bool(str(cfg.sensors.s2_10m_ukr)=="yes")
 s2_10m_noblue_ukr = bool(str(cfg.sensors.s2_10m_noblue_ukr)=="yes")
+s2_allbands_noblue_ukr = bool(str(cfg.sensors.s2_allbands_noblue_ukr)=="yes")
+s2_allbands_noblue_fr = bool(str(cfg.sensors.s2_allbands_noblue_fr)=="yes")
 
 print "Working dir = ", working_dir
 
@@ -78,6 +84,8 @@ if simulate :
     bv.generateInputBVDistribution(input_var_file_test, nbSamples_test, varPars)
 
 simus_list = []
+if dummy :
+    simus_list.append(dummy_data)
 if formosat :
     simus_list.append(fsat_data)
 if formosat_noblue :
@@ -94,6 +102,10 @@ if s2_10m_ukr:
     simus_list.append(s2_10m_ukr_data)
 if s2_10m_noblue_ukr:
     simus_list.append(s2_10m_noblue_ukr_data)
+if s2_allbands_noblue_ukr:
+    simus_list.append(s2_allbands_noblue_ukr_data)
+if s2_allbands_noblue_fr:
+    simus_list.append(s2_allbands_noblue_fr_data)
 
 for sat in simus_list:
     sat_name = sat[0]
@@ -116,6 +128,9 @@ for sat in simus_list:
         red_index = 3
         nir_index = 4
     if(sat_name == "s2_10m_noblue_ukr") and useVI:
+        red_index = 2
+        nir_index = 3
+    if(sat_name == "s2_allbands_noblue_fr") and useVI:
         red_index = 2
         nir_index = 3
 
