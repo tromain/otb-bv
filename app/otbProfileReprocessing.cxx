@@ -151,7 +151,7 @@ private:
       }
     else if (algo == "fit")
       std::tie(out_bv_vec, out_flag_vec) = 
-        fit_csdm(date_vec, bv_vec, err_vec);
+        fit_csdm(date_vec, bv_vec);
     else
       itkGenericExceptionMacro(<< "Unknown algorithm " << algo 
                                << ". Available algorithms are: local, fit.\n");
