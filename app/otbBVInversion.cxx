@@ -66,6 +66,7 @@ private:
   {
     SetName("BVInversion");
     SetDescription("Estimate biophysical variables using aninversion of Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert.");
     SetParameterDescription( "reflectances", "Input file containing the reflectances to invert. This is an ASCII file where each line is a sample. A line is a set of fields containing numerical values. The order of the fields must respect the one used for the training." );

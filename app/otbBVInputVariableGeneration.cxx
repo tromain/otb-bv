@@ -26,7 +26,7 @@ namespace Wrapper
   {
     SetName("BVInputVariableGeneration");
     SetDescription("Generate random input variable distribution for ... .");
-
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     AddDocTag("Biophysical Variables");
     AddParameter(ParameterType_Int, "samples", "Sample size");
     SetDefaultParameterInt("samples", 1000);

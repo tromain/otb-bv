@@ -167,6 +167,7 @@ private:
   {
     SetName("BVImageInversion");
     SetDescription("Estimate biophysical variables for every pixel of an image using an inversion of Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputImage, "in", "Input Image");
     SetParameterDescription("in","Input image.");

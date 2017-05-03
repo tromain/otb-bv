@@ -83,6 +83,7 @@ private:
   {
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples.");
     SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
