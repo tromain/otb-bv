@@ -62,7 +62,7 @@ public:
   typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("BVInversion");
     SetDescription("Estimate biophysical variables using aninversion of Prospect+Sail.");
@@ -85,18 +85,18 @@ private:
     MandatoryOff("normalization");
   }
 
-  virtual ~BVInversion()
+  virtual ~BVInversion() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
 
   
-  void DoExecute()
+  void DoExecute() override
   {
    
     auto reflectancesFileName = GetParameterString("reflectances");

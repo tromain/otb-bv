@@ -64,7 +64,7 @@ public:
   typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("InverseModelLearning");
     SetDescription("Simulate reflectances using Prospect+Sail.");
@@ -106,18 +106,18 @@ private:
 
   }
 
-  virtual ~InverseModelLearning()
+  virtual ~InverseModelLearning() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
 
   
-  void DoExecute()
+  void DoExecute() override
   {
    
     auto trainingFileName = GetParameterString("training");

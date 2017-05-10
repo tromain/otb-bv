@@ -46,7 +46,7 @@ public:
   itkTypeMacro(ProfileReprocessing, otb::Application);
 
 private:
-  void DoInit()
+  void DoInit() override
   {
 
     SetName("ProfileReprocessing");
@@ -83,12 +83,12 @@ private:
     MandatoryOff("algo");
   }
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     //std::cout << "ProfileReprocessing::DoUpdateParameters" << std::endl;
   }
 
-  void DoExecute()
+  void DoExecute() override
   {
     auto ipfn = GetParameterString("ipf");
     std::ifstream in_profile_file;

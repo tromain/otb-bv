@@ -79,7 +79,7 @@ public:
   typedef typename ProSailType::OutputType SimulationType;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
@@ -131,12 +131,12 @@ private:
 
   }
 
-  virtual ~ProSailSimulator()
+  virtual ~ProSailSimulator() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
@@ -148,7 +148,7 @@ private:
     m_SimulationsFile << std::endl;
   }
   
-  void DoExecute()
+  void DoExecute() override
   {
     using namespace otb::BV;
     m_Azimuth = GetParameterFloat("azimuth");
