@@ -116,7 +116,7 @@ gt = [{'refls': [35, 45, 83, 104, 383, 253, 138], 'doy': '20160906', 'gai': 0.25
 {'refls': [0, 0, 0, 0, 104, 35, 15], 'doy': '20160805', 'gai': 0.730142, 'y': 4812168.0, 'x': 390294.0, 'id': 8, 'lai-bvnet': 0},
 {'refls': [0, 0, 0, 0, 102, 35, 14], 'doy': '20160805', 'gai': 0.858784, 'y': 4812238.0, 'x': 390424.0, 'id': 9, 'lai-bvnet': 0},
 ]
-l8_no_pan_fr_rsr = "landsat8_no_pan.rsr"
+l8_no_pan_fr_rsr = "landsat8_nopan.rsr"
 l8_no_pan_fr_data = ["l8_no_pan_fr", l8_no_pan_fr_rsr]
 l8_no_pan_fr_20160906 = {'doy' : 20160906, 'to' : 0.0, 'po' : 0.0, 'ts' : 150.669083830, 'ps' : 40.480858810, 'gt':[s for s in gt if s['doy']=='20160906']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160906)

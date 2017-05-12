@@ -31,6 +31,7 @@ from s2_10m_ukr_data import *
 from s2_10m_noblue_ukr_data import *
 from s2_allbands_noblue_ukr_data import *
 from s2_allbands_noblue_fr_data import *
+from l8_no_pan_fr_data import *
 
 
 config_file = file(sys.argv[1])
@@ -66,6 +67,7 @@ s2_10m_ukr = bool(str(cfg.sensors.s2_10m_ukr)=="yes")
 s2_10m_noblue_ukr = bool(str(cfg.sensors.s2_10m_noblue_ukr)=="yes")
 s2_allbands_noblue_ukr = bool(str(cfg.sensors.s2_allbands_noblue_ukr)=="yes")
 s2_allbands_noblue_fr = bool(str(cfg.sensors.s2_allbands_noblue_fr)=="yes")
+l8_no_pan_fr = bool(str(cfg.sensors.l8_no_pan_fr)=="yes")
 
 print "Working dir = ", working_dir
 
@@ -106,6 +108,8 @@ if s2_allbands_noblue_ukr:
     simus_list.append(s2_allbands_noblue_ukr_data)
 if s2_allbands_noblue_fr:
     simus_list.append(s2_allbands_noblue_fr_data)
+if l8_no_pan_fr:
+    simus_list.append(l8_no_pan_fr_data)
 
 for sat in simus_list:
     sat_name = sat[0]
@@ -133,6 +137,9 @@ for sat in simus_list:
     if(sat_name == "s2_allbands_noblue_fr") and useVI:
         red_index = 2
         nir_index = 3
+    if(sat_name =="l8_no_pan_fr") and useVI:
+        red_index = 3
+        nir_index = 4
 
     print useVI, red_index, nir_index
     for acqu in sat[2:]:
