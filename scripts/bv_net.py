@@ -38,11 +38,6 @@ def parseConfigFile(cfg):
     modelFile = cfg.learning.outputFileName
     return (distFileName, nSamples, simuPars, trainingFile, modelFile)
 
-def has_nan(text_line):
-    if "nan" in text_line:
-        return True
-    return False
-
 def addVI(reflectances_file, red_index, nir_index):
     rff = open(reflectances_file)
     allfields = rff.readlines()
@@ -98,14 +93,13 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, a
             with open(simuPars['outputFile'], 'r') as rf:
                 #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
-                    outline = "0.0"
-                    if not has_nan(refline):
-                        if bvidx == bvindex["FCOVER"] :
-                            outline = string.split(refline)[-1]
-                        elif bvidx == bvindex["FAPAR"] : 
-                            outline = string.split(refline)[-2]
-                        else:
-                            outline = string.split(bvline)[bvidx]
+                    outline = ""
+                    if bvidx == bvindex["FCOVER"] :
+                        outline = string.split(refline)[-1]
+                    elif bvidx == bvindex["FAPAR"] : 
+                        outline = string.split(refline)[-2]
+                    else:
+                        outline = string.split(bvline)[bvidx]
                     outline = outline+" "+string.join(string.split(refline[:-1])[:-2], ' ')
                     outline.rstrip()
                     if add_angles:
