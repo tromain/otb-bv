@@ -119,8 +119,6 @@ l8_no_pan_fr_rsr = "landsat8_nopan.rsr"
 l8_no_pan_fr_data = ["l8_no_pan_fr", l8_no_pan_fr_rsr]
 l8_no_pan_fr_20160906 = {'doy' : 20160906, 'to' : 0.0, 'po' : 0.0, 'ts' : 150.669083830, 'ps' : 40.480858810, 'gt':[s for s in gt if s['doy']=='20160906']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160906)
-l8_no_pan_fr_20160305 = {'doy' : 20160305, 'to' : 0.0, 'po' : 0.0, 'ts' : 152.073325090, 'ps' : 52.899456070, 'gt':[s for s in gt if s['doy']=='20160305']}
-l8_no_pan_fr_data.append(l8_no_pan_fr_20160305)
 l8_no_pan_fr_20160406 = {'doy' : 20160406, 'to' : 0.0, 'po' : 0.0, 'ts' : 148.688153990, 'ps' : 40.447358790, 'gt':[s for s in gt if s['doy']=='20160406']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160406)
 l8_no_pan_fr_20160117 = {'doy' : 20160117, 'to' : 0.0, 'po' : 0.0, 'ts' : 158.025337570, 'ps' : 67.010610420, 'gt':[s for s in gt if s['doy']=='20160117']}
