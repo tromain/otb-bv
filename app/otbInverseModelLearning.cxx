@@ -19,6 +19,7 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <cmath>
 
 #include "otbBVUtil.h"
 #include "otbBVTypes.h"
@@ -159,19 +160,27 @@ private:
         ss >> outputValue[0];
         InputSampleType inputValue;
         inputValue.Reserve(nbInputVariables);
+        bool has_nan = false;
         for(size_t var = 0; var < nbInputVariables; ++var)
-          ss >> inputValue[var];
-        if (IsParameterEnabled("errest") && (nbSamples%2 == 0))
           {
-          inputListSample_err->PushBack(inputValue);
-          outputListSample_err->PushBack(outputValue);
+          bool nan_var = false;
+          std::tie(nan_var, inputValue[var]) = read_value_or_nan(ss);
+          has_nan = has_nan || nan_var;
           }
+        if(!has_nan)
+          {
+          if (IsParameterEnabled("errest") && (nbSamples%2 == 0))
+            {
+            inputListSample_err->PushBack(inputValue);
+            outputListSample_err->PushBack(outputValue);
+            }
         else
           {
           inputListSample->PushBack(inputValue);
           outputListSample->PushBack(outputValue);
           }
         ++nbSamples;
+          }
         }
       }
     trainingFile.close();
@@ -407,6 +416,19 @@ private:
     otbAppLogINFO("Error model estimation ..." << std::endl);
     err_regression->Train();
     err_regression->Save(GetParameterString("errest"));
+  }
+
+  std::tuple<bool, PrecisionType> read_value_or_nan(std::istringstream& ss)
+  {
+    bool nan_var = false;
+    std::string in_value;
+    ss >> in_value;
+    if(in_value=="nan")
+      {
+      nan_var = true;
+      }
+    return std::make_tuple(nan_var,
+                           static_cast<PrecisionType>(std::stod(in_value)));
   }
 protected:
   otb::BV::NormalizationVectorType var_minmax;
