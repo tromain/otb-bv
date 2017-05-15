@@ -117,27 +117,27 @@ gt = [{'refls': [35, 45, 83, 104, 383, 253, 138], 'doy': '20160906', 'gai': 0.25
 ]
 l8_no_pan_fr_rsr = "landsat8_nopan.rsr"
 l8_no_pan_fr_data = ["l8_no_pan_fr", l8_no_pan_fr_rsr]
-l8_no_pan_fr_20160906 = {'doy' : 20160906, 'to' : 0.0, 'po' : 0.0, 'ts' : 150.669083830, 'ps' : 40.480858810, 'gt':[s for s in gt if s['doy']=='20160906']}
+l8_no_pan_fr_20160906 = {'doy' : 20160906, 'to' : 0.0, 'po' : 0.0,   'ts' :40.480858810, 'ps' :  150.669083830, 'gt':[s for s in gt if s['doy']=='20160906']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160906)
-l8_no_pan_fr_20160406 = {'doy' : 20160406, 'to' : 0.0, 'po' : 0.0, 'ts' : 148.688153990, 'ps' : 40.447358790, 'gt':[s for s in gt if s['doy']=='20160406']}
+l8_no_pan_fr_20160406 = {'doy' : 20160406, 'to' : 0.0, 'po' : 0.0,   'ts' :40.447358790, 'ps' :  148.688153990, 'gt':[s for s in gt if s['doy']=='20160406']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160406)
-l8_no_pan_fr_20160117 = {'doy' : 20160117, 'to' : 0.0, 'po' : 0.0, 'ts' : 158.025337570, 'ps' : 67.010610420, 'gt':[s for s in gt if s['doy']=='20160117']}
+l8_no_pan_fr_20160117 = {'doy' : 20160117, 'to' : 0.0, 'po' : 0.0,   'ts' :67.010610420, 'ps' :  158.025337570, 'gt':[s for s in gt if s['doy']=='20160117']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160117)
-l8_no_pan_fr_20160524 = {'doy' : 20160524, 'to' : 0.0, 'po' : 0.0, 'ts' : 139.497912360, 'ps' : 27.111922680, 'gt':[s for s in gt if s['doy']=='20160524']}
+l8_no_pan_fr_20160524 = {'doy' : 20160524, 'to' : 0.0, 'po' : 0.0,   'ts' :27.111922680, 'ps' :  139.497912360, 'gt':[s for s in gt if s['doy']=='20160524']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160524)
-l8_no_pan_fr_20160609 = {'doy' : 20160609, 'to' : 0.0, 'po' : 0.0, 'ts' : 135.962984360, 'ps' : 25.620463480, 'gt':[s for s in gt if s['doy']=='20160609']}
+l8_no_pan_fr_20160609 = {'doy' : 20160609, 'to' : 0.0, 'po' : 0.0,   'ts' :25.620463480, 'ps' :  135.962984360, 'gt':[s for s in gt if s['doy']=='20160609']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160609)
-l8_no_pan_fr_20160704 = {'doy' : 20160704, 'to' : 0.0, 'po' : 0.0, 'ts' : 134.010578480, 'ps' : 26.403065730, 'gt':[s for s in gt if s['doy']=='20160704']}
+l8_no_pan_fr_20160704 = {'doy' : 20160704, 'to' : 0.0, 'po' : 0.0,   'ts' :26.403065730, 'ps' :  134.010578480, 'gt':[s for s in gt if s['doy']=='20160704']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160704)
-l8_no_pan_fr_20160711 = {'doy' : 20160711, 'to' : 0.0, 'po' : 0.0, 'ts' : 134.574293550, 'ps' : 27.200585520, 'gt':[s for s in gt if s['doy']=='20160711']}
+l8_no_pan_fr_20160711 = {'doy' : 20160711, 'to' : 0.0, 'po' : 0.0,   'ts' :27.200585520, 'ps' :  134.574293550, 'gt':[s for s in gt if s['doy']=='20160711']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160711)
-l8_no_pan_fr_20160720 = {'doy' : 20160720, 'to' : 0.0, 'po' : 0.0, 'ts' : 136.000543090, 'ps' : 28.532671650, 'gt':[s for s in gt if s['doy']=='20160720']}
+l8_no_pan_fr_20160720 = {'doy' : 20160720, 'to' : 0.0, 'po' : 0.0,   'ts' :28.532671650, 'ps' :  136.000543090, 'gt':[s for s in gt if s['doy']=='20160720']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160720)
-l8_no_pan_fr_20160821 = {'doy' : 20160821, 'to' : 0.0, 'po' : 0.0, 'ts' : 145.254628110, 'ps' : 35.705937000, 'gt':[s for s in gt if s['doy']=='20160821']}
+l8_no_pan_fr_20160821 = {'doy' : 20160821, 'to' : 0.0, 'po' : 0.0,   'ts' :35.705937000, 'ps' :  145.254628110, 'gt':[s for s in gt if s['doy']=='20160821']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160821)
-l8_no_pan_fr_20160812 = {'doy' : 20160812, 'to' : 0.0, 'po' : 0.0, 'ts' : 142.246250730, 'ps' : 33.342586490, 'gt':[s for s in gt if s['doy']=='20160812']}
+l8_no_pan_fr_20160812 = {'doy' : 20160812, 'to' : 0.0, 'po' : 0.0,   'ts' :33.342586490, 'ps' :  142.246250730, 'gt':[s for s in gt if s['doy']=='20160812']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160812)
-l8_no_pan_fr_20160618 = {'doy' : 20160618, 'to' : 0.0, 'po' : 0.0, 'ts' : 134.598868660, 'ps' : 25.495243460, 'gt':[s for s in gt if s['doy']=='20160618']}
+l8_no_pan_fr_20160618 = {'doy' : 20160618, 'to' : 0.0, 'po' : 0.0,   'ts' :25.495243460, 'ps' :  134.598868660, 'gt':[s for s in gt if s['doy']=='20160618']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160618)
-l8_no_pan_fr_20160805 = {'doy' : 20160805, 'to' : 0.0, 'po' : 0.0, 'ts' : 140.055531060, 'ps' : 31.680487180, 'gt':[s for s in gt if s['doy']=='20160805']}
+l8_no_pan_fr_20160805 = {'doy' : 20160805, 'to' : 0.0, 'po' : 0.0,   'ts' :31.680487180, 'ps' :  140.055531060, 'gt':[s for s in gt if s['doy']=='20160805']}
 l8_no_pan_fr_data.append(l8_no_pan_fr_20160805)
