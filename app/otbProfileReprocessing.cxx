@@ -46,11 +46,12 @@ public:
   itkTypeMacro(ProfileReprocessing, otb::Application);
 
 private:
-  void DoInit()
+  void DoInit() override
   {
 
     SetName("ProfileReprocessing");
     SetDescription("Reprocess a BV time profile.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
    
     AddParameter(ParameterType_InputFilename, "ipf", "Input profile file.");
     SetParameterDescription( "ipf", "Input file containing the profile to process. This is an ASCII file where each line contains the date (YYYMMDD) the BV estimation and the error." );
@@ -82,12 +83,12 @@ private:
     MandatoryOff("algo");
   }
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     //std::cout << "ProfileReprocessing::DoUpdateParameters" << std::endl;
   }
 
-  void DoExecute()
+  void DoExecute() override
   {
     auto ipfn = GetParameterString("ipf");
     std::ifstream in_profile_file;
@@ -151,7 +152,7 @@ private:
       }
     else if (algo == "fit")
       std::tie(out_bv_vec, out_flag_vec) = 
-        fit_csdm(date_vec, bv_vec, err_vec);
+        fit_csdm(date_vec, bv_vec);
     else
       itkGenericExceptionMacro(<< "Unknown algorithm " << algo 
                                << ". Available algorithms are: local, fit.\n");

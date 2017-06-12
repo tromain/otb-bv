@@ -37,13 +37,13 @@ public:
 
 
 private:
-  void DoInit();
-  virtual ~BVInputVariableGeneration(){}
-  void DoUpdateParameters() {}
+  void DoInit() override; 
+  virtual ~BVInputVariableGeneration() override {}
+  void DoUpdateParameters() override {}
   ///Builds the map with the values of the sample
   otb::BV::SampleType DrawSample();
   void WriteSample(otb::BV::SampleType s);
-  void DoExecute();
+  void DoExecute() override;
 
   otb::BV::VarParams m_MLAI = {0.0, 15.0, 2.0, 2.0, 0, 0, true, 6, otb::BV::DistType::LOGNORMAL};
   otb::BV::VarParams m_ALA ={30.0, 80.0, 60.0, 20.0, 55, 65, true, 3, otb::BV::DistType::GAUSSIAN};

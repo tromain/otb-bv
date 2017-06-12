@@ -34,7 +34,7 @@ T compute_weight(T delta, T err)
 }
 
 std::pair<VectorType, VectorType> 
-fit_csdm(VectorType dts, VectorType ts, VectorType ets)
+fit_csdm(VectorType dts, VectorType ts)
 {
   assert(ts.size()==ets.size() && ts.size()==dts.size());
   auto result = ts;

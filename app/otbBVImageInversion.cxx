@@ -163,10 +163,11 @@ public:
                                                        FunctorType>;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("BVImageInversion");
     SetDescription("Estimate biophysical variables for every pixel of an image using an inversion of Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputImage, "in", "Input Image");
     SetParameterDescription("in","Input image.");
@@ -185,17 +186,17 @@ private:
 
   }
 
-  virtual ~BVImageInversion()
+  virtual ~BVImageInversion() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
 
-  void DoExecute()
+  void DoExecute() override
   {
     // read output info of the input image
     FloatVectorImageType::Pointer input_image = this->GetParameterImage("in");

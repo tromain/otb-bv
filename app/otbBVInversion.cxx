@@ -62,10 +62,11 @@ public:
   typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("BVInversion");
     SetDescription("Estimate biophysical variables using aninversion of Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert.");
     SetParameterDescription( "reflectances", "Input file containing the reflectances to invert. This is an ASCII file where each line is a sample. A line is a set of fields containing numerical values. The order of the fields must respect the one used for the training." );
@@ -84,18 +85,18 @@ private:
     MandatoryOff("normalization");
   }
 
-  virtual ~BVInversion()
+  virtual ~BVInversion() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
 
   
-  void DoExecute()
+  void DoExecute() override
   {
    
     auto reflectancesFileName = GetParameterString("reflectances");

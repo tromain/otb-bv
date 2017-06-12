@@ -84,10 +84,11 @@ public:
   typedef typename ProSailType::OutputType SimulationType;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples.");
     SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
@@ -147,12 +148,12 @@ private:
     MandatoryOff("wlfactor");
   }
 
-  virtual ~ProSailSimulator()
+  virtual ~ProSailSimulator() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
@@ -215,7 +216,7 @@ private:
       }
   }
   
-  void DoExecute()
+  void DoExecute() override
   {
     using namespace otb::BV;
     m_Azimuth = GetParameterFloat("azimuth");

@@ -19,6 +19,7 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <cmath>
 
 #include "otbBVUtil.h"
 #include "otbBVTypes.h"
@@ -64,10 +65,11 @@ public:
   typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
   
 private:
-  void DoInit()
+  void DoInit() override
   {
     SetName("InverseModelLearning");
     SetDescription("Simulate reflectances using Prospect+Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputFilename, "training", 
                  "Input file containing the training samples.");
@@ -105,18 +107,18 @@ private:
 
   }
 
-  virtual ~InverseModelLearning()
+  virtual ~InverseModelLearning() override
   {
   }
 
 
-  void DoUpdateParameters()
+  void DoUpdateParameters() override
   {
     // Nothing to do here : all parameters are independent
   }
 
   
-  void DoExecute()
+  void DoExecute() override
   {
    
     auto trainingFileName = GetParameterString("training");
@@ -147,53 +149,14 @@ private:
 
     inputListSample_err->SetMeasurementVectorSize(nbInputVariables);
     outputListSample_err->SetMeasurementVectorSize(1);
-    
-    auto nbSamples = 0;
-    for(std::string line; std::getline(trainingFile, line); )
-      {
-      if(line.size() > 1)
-        {
-        std::istringstream ss(line);
-        OutputSampleType outputValue;
-        ss >> outputValue[0];
-        InputSampleType inputValue;
-        inputValue.Reserve(nbInputVariables);
-        for(size_t var = 0; var < nbInputVariables; ++var)
-          ss >> inputValue[var];
-        if (IsParameterEnabled("errest") && (nbSamples%2 == 0))
-          {
-          inputListSample_err->PushBack(inputValue);
-          outputListSample_err->PushBack(outputValue);
-          }
-        else
-          {
-          inputListSample->PushBack(inputValue);
-          outputListSample->PushBack(outputValue);
-          }
-        ++nbSamples;
-        }
-      }
-    trainingFile.close();
 
-    if( HasValue( "normalization" )==true )
-      {
-      otbAppLogINFO("Variable normalization."<< std::endl);
-      typename ListInputSampleType::Iterator ilFirst = inputListSample->Begin();
-      typename ListOutputSampleType::Iterator olFirst = outputListSample->Begin();
-      typename ListInputSampleType::Iterator ilLast = inputListSample->End();
-      typename ListOutputSampleType::Iterator olLast = outputListSample->End();
-      var_minmax = otb::BV::estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
-      otb::BV::write_normalization_file(var_minmax, GetParameterString("normalization"));
-      otb::BV::normalize_variables(inputListSample, outputListSample, var_minmax);
-      for(size_t var = 0; var < nbInputVariables; ++var)
-        otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
-                      " max=" << var_minmax[var].second <<std::endl);
-      otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
-                    " max=" << var_minmax[nbInputVariables].second <<std::endl)
-        }
+    auto nbSamples = read_input_samples(trainingFile, nbInputVariables, 
+                                        inputListSample, outputListSample, 
+                                        inputListSample_err, 
+                                        outputListSample_err);
     otbAppLogINFO("Found " << nbSamples << " samples in "
                   << trainingFileName << std::endl);
-
+    trainingFile.close();
 
     double rmse{0.0};
     std::string regressor_type{"nn"};
@@ -406,6 +369,79 @@ private:
     otbAppLogINFO("Error model estimation ..." << std::endl);
     err_regression->Train();
     err_regression->Save(GetParameterString("errest"));
+  }
+
+  std::size_t read_input_samples(std::ifstream& trainingFile, 
+                                 std::size_t nbInputVariables,
+                          ListInputSampleType::Pointer inputListSample,
+                          ListOutputSampleType::Pointer outputListSample,
+                          ListInputSampleType::Pointer inputListSample_err,
+                          ListOutputSampleType::Pointer outputListSample_err)
+  {
+    auto nbSamples = 0;
+    for(std::string line; std::getline(trainingFile, line); )
+      {
+      if(line.size() > 1)
+        {
+        std::istringstream ss(line);
+        OutputSampleType outputValue;
+        ss >> outputValue[0];
+        InputSampleType inputValue;
+        inputValue.Reserve(nbInputVariables);
+        bool has_nan = false;
+        for(size_t var = 0; var < nbInputVariables; ++var)
+          {
+          bool nan_var = false;
+          std::tie(nan_var, inputValue[var]) = read_value_or_nan(ss);
+          has_nan = has_nan || nan_var;
+          }
+        if(!has_nan)
+          {
+          if (IsParameterEnabled("errest") && (nbSamples%2 == 0))
+            {
+            inputListSample_err->PushBack(inputValue);
+            outputListSample_err->PushBack(outputValue);
+            }
+          else
+            {
+            inputListSample->PushBack(inputValue);
+            outputListSample->PushBack(outputValue);
+            }
+          ++nbSamples;
+          }
+        }
+      }
+
+    if( HasValue( "normalization" )==true )
+      {
+      otbAppLogINFO("Variable normalization."<< std::endl);
+      typename ListInputSampleType::Iterator ilFirst = inputListSample->Begin();
+      typename ListOutputSampleType::Iterator olFirst = outputListSample->Begin();
+      typename ListInputSampleType::Iterator ilLast = inputListSample->End();
+      typename ListOutputSampleType::Iterator olLast = outputListSample->End();
+      var_minmax = otb::BV::estimate_var_minmax(ilFirst, ilLast, olFirst, olLast);
+      otb::BV::write_normalization_file(var_minmax, GetParameterString("normalization"));
+      otb::BV::normalize_variables(inputListSample, outputListSample, var_minmax);
+      for(size_t var = 0; var < nbInputVariables; ++var)
+        otbAppLogINFO("Variable "<< var+1 << " min=" << var_minmax[var].first <<
+                      " max=" << var_minmax[var].second <<std::endl);
+      otbAppLogINFO("Output min=" << var_minmax[nbInputVariables].first <<
+                    " max=" << var_minmax[nbInputVariables].second <<std::endl)
+        }
+    return nbSamples;
+
+  }
+  std::tuple<bool, PrecisionType> read_value_or_nan(std::istringstream& ss)
+  {
+    bool nan_var = false;
+    std::string in_value;
+    ss >> in_value;
+    if(in_value=="nan")
+      {
+      nan_var = true;
+      }
+    return std::make_tuple(nan_var,
+                           static_cast<PrecisionType>(std::stod(in_value)));
   }
 protected:
   otb::BV::NormalizationVectorType var_minmax;
