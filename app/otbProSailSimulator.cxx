@@ -89,9 +89,16 @@ private:
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
+    SetDocLimitations("Simulations can be very long depending on the contents "
+                      "of the RSR and the (optional) soil file. These should "
+                      "contain only the spectral bands and the wavelength ranges "
+                      "really needed for the simulations, otherwise a lot of "
+                      "useless computations are made.");
 
     AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples.");
-    SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
+    SetParameterDescription( "bvfile", "Input file containing the biophysical "
+                             "variable samples. It can be generated using the "
+                             "BVInputVariableGeneration application." );
     MandatoryOn("bvfile");
 
     AddParameter(ParameterType_InputFilename, "rsrfile", 
@@ -100,8 +107,8 @@ private:
     MandatoryOn("rsrfile");
     
     AddParameter(ParameterType_OutputFilename, "out", "Output file");
-    SetParameterDescription( "out", 
-                             "Filename where the simulations are saved. The last 2 bands are fcover and fapar." );
+    SetParameterDescription( "out", "Filename where the simulations are saved. " 
+"The last 2 bands are fcover and fapar." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_OutputFilename, "covariance", "Output file containing the covariance and the mean of the simulated reflectances");
