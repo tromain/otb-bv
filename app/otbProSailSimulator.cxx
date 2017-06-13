@@ -317,6 +317,11 @@ private:
 
     std::vector<SimulationType> simus{sampleCount};
     
+    if(UseSoilFile)
+      {
+      m_SoilDB = std::make_shared<otb::SoilDataBase>(SoilFileName, WlFactor);
+      }
+
     auto simulator = [&](std::vector<BVType>::const_iterator sample_first,
                          std::vector<BVType>::const_iterator sample_last,
                          std::vector<SimulationType>::iterator simu_first){
@@ -325,7 +330,7 @@ private:
       prosail.SetParameters(prosailPars);
       if(UseSoilFile)
         {
-        prosail.UseExternalSoilFile(SoilFileName, WlFactor);
+        prosail.UseExternalSoilDB(m_SoilDB, WlFactor);
         }
       while(sample_first != sample_last)
         {
@@ -406,6 +411,7 @@ private:
   std::ifstream m_SampleFile;
   // the output file
   std::ofstream m_SimulationsFile;
+  std::shared_ptr<SoilDataBase> m_SoilDB;
 };
 
 }

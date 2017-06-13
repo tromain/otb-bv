@@ -57,8 +57,7 @@ public:
     m_TTS_FAPAR(0), 
     m_TTO(0), 
     m_PSI(0), 
-    m_UseSoilFile(false), 
-    m_SoilFileName(""), 
+    m_UseSoilDB(false), 
     m_SoilIndex(0), 
     m_WavelengthFactor(1000), 
     m_BV({}) 
@@ -113,9 +112,9 @@ public:
     sail->SetPSI(m_PSI);
     sail->SetReflectance(prospect->GetReflectance());
     sail->SetTransmittance(prospect->GetTransmittance());
-    if(m_UseSoilFile)
+    if(m_UseSoilDB)
       {
-      sail->UseExternalSoilFile(m_SoilFileName, m_SoilIndex, m_WavelengthFactor);
+      sail->UseExternalSoilDB(m_SoilDB, m_SoilIndex);
       }
     sail->Update();
 
@@ -137,10 +136,9 @@ public:
     sail_fapar->SetPSI(0.0);
     sail_fapar->SetReflectance(prospect->GetReflectance());
     sail_fapar->SetTransmittance(prospect->GetTransmittance());
-    if(m_UseSoilFile)
+    if(m_UseSoilDB)
       {
-      sail_fapar->UseExternalSoilFile(m_SoilFileName, m_SoilIndex, 
-                                      m_WavelengthFactor);
+      sail_fapar->UseExternalSoilDB(m_SoilDB, m_SoilIndex);
       }
     sail_fapar->Update();
 
@@ -199,10 +197,10 @@ public:
   }
 
   inline 
-  void UseExternalSoilFile(std::string SoilFileName, double WlFactor)
+  void UseExternalSoilDB(std::shared_ptr<SoilDataBase> SoilDB, double WlFactor)
   {
-    m_UseSoilFile = true;
-    m_SoilFileName = SoilFileName;
+    m_UseSoilDB = true;
+    m_SoilDB = SoilDB;
     m_WavelengthFactor = WlFactor;
   }
 
@@ -242,8 +240,8 @@ protected:
   double m_TTS_FAPAR; //solar zenith angle for fapar computation
   double m_TTO; //observer zenith angle
   double m_PSI; //azimuth
-  bool m_UseSoilFile; //use a soil file instead of DataSpecP5B
-  std::string m_SoilFileName; //the soil file to use
+  bool m_UseSoilDB; //use a soil DB instead of DataSpecP5B
+  std::shared_ptr<SoilDataBase> m_SoilDB; //the soil file to use
   size_t m_SoilIndex; //which soil in the soil file
   double m_WavelengthFactor; //to use nm in soil file
   otb::BV::BVType m_BV;
