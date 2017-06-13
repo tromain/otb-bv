@@ -140,7 +140,7 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, simulate=True, a
                 
                 
 def learnBVModel(trainingFile, outputFile, regressionType, normalizationFile, bestof=1):
-    app = otb.Registry.CreateApplication("InverseModelLearning")
+    app = otb.Registry.CreateApplication("BVInverseModelLearning")
     app.SetParameterString("training", trainingFile)
     app.SetParameterString("out", outputFile)
     app.SetParameterString("errest", outputFile+"_errest")

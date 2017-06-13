@@ -20,7 +20,7 @@
 #include "otbProSailSimulatorFunctor.h"
 #include "otbMachineLearningModelFactory.h"
 #include "otbNeuralNetworkMachineLearningModel.h"
-#include "otbProfileReprocessing.h"
+#include "otbBVTimeProfileReprocessing.h"
 
 #include <vector>
 #include <random>

@@ -74,7 +74,7 @@ otb_test_application(NAME appBvProSailSimSoilSent
   )
 
 otb_test_application(NAME appBvInvModLear
-  APP InverseModelLearning
+  APP BVInverseModelLearning
   OPTIONS
   -training ${OTBBioVars_SOURCE_DIR}/data/train-refls-lai.txt
   -regression nn

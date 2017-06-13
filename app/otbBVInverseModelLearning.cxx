@@ -38,18 +38,18 @@ namespace otb
 namespace Wrapper
 {
 
-class InverseModelLearning : public Application
+class BVInverseModelLearning : public Application
 {
 public:
 /** Standard class typedefs. */
-  typedef InverseModelLearning     Self;
+  typedef BVInverseModelLearning     Self;
   typedef Application                   Superclass;
 
   
 /** Standard macro */
   itkNewMacro(Self);
 
-  itkTypeMacro(InverseModelLearning, otb::Application);
+  itkTypeMacro(BVInverseModelLearning, otb::Application);
 
   using PrecisionType = otb::BV::PrecisionType;
   typedef itk::FixedArray<PrecisionType, 1> OutputSampleType;
@@ -67,7 +67,7 @@ public:
 private:
   void DoInit() override
   {
-    SetName("InverseModelLearning");
+    SetName("BVInverseModelLearning");
     SetDescription("Simulate reflectances using Prospect+Sail.");
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
@@ -107,7 +107,7 @@ private:
 
   }
 
-  virtual ~InverseModelLearning() override
+  virtual ~BVInverseModelLearning() override
   {
   }
 
@@ -450,4 +450,4 @@ protected:
 }
 }
 
-OTB_APPLICATION_EXPORT(otb::Wrapper::InverseModelLearning)
+OTB_APPLICATION_EXPORT(otb::Wrapper::BVInverseModelLearning)

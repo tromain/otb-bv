@@ -23,8 +23,8 @@ OTB_CREATE_APPLICATION(NAME           ProSailSimulator
   SOURCES        otbProSailSimulator.cxx
   LINK_LIBRARIES ${OTB_LIBRARIES};${OTBBioVarsApps_LIBRARIES})                     
 
-OTB_CREATE_APPLICATION(NAME           InverseModelLearning
-  SOURCES        otbInverseModelLearning.cxx
+OTB_CREATE_APPLICATION(NAME           BVInverseModelLearning
+  SOURCES        otbBVInverseModelLearning.cxx
   LINK_LIBRARIES ${OTB_LIBRARIES};${OTBBioVarsApps_LIBRARIES})
 
 OTB_CREATE_APPLICATION(NAME           BVInversion
@@ -35,7 +35,7 @@ OTB_CREATE_APPLICATION(NAME           BVImageInversion
   SOURCES        otbBVImageInversion.cxx
   LINK_LIBRARIES ${OTB_LIBRARIES};${OTBBioVarsApps_LIBRARIES})
 
-OTB_CREATE_APPLICATION(NAME           ProfileReprocessing
-  SOURCES        otbProfileReprocessing.cxx
+OTB_CREATE_APPLICATION(NAME           BVTimeProfileReprocessing
+  SOURCES        otbBVTimeProfileReprocessing.cxx
   LINK_LIBRARIES ${OTB_LIBRARIES};${OTBBioVarsApps_LIBRARIES})
 

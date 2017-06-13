@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "phenoFunctions.h"
-#include "otbProfileReprocessing.h"
+#include "otbBVTimeProfileReprocessing.h"
 
 namespace otb
 {
@@ -31,11 +31,11 @@ int date_to_doy(std::string& date_str)
 namespace Wrapper
 {
 
-class ProfileReprocessing : public Application
+class BVTimeProfileReprocessing : public Application
 {
 public:
   /** Standard class typedefs. */
-  typedef ProfileReprocessing               Self;
+  typedef BVTimeProfileReprocessing               Self;
   typedef Application                   Superclass;
   typedef itk::SmartPointer<Self>       Pointer;
   typedef itk::SmartPointer<const Self> ConstPointer;
@@ -43,13 +43,13 @@ public:
   /** Standard macro */
   itkNewMacro(Self);
 
-  itkTypeMacro(ProfileReprocessing, otb::Application);
+  itkTypeMacro(BVTimeProfileReprocessing, otb::Application);
 
 private:
   void DoInit() override
   {
 
-    SetName("ProfileReprocessing");
+    SetName("BVTimeProfileReprocessing");
     SetDescription("Reprocess a BV time profile.");
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
    
@@ -85,7 +85,7 @@ private:
 
   void DoUpdateParameters() override
   {
-    //std::cout << "ProfileReprocessing::DoUpdateParameters" << std::endl;
+    //std::cout << "BVTimeProfileReprocessing::DoUpdateParameters" << std::endl;
   }
 
   void DoExecute() override
@@ -183,4 +183,4 @@ private:
 }
 }
 
-OTB_APPLICATION_EXPORT(otb::Wrapper::ProfileReprocessing)
+OTB_APPLICATION_EXPORT(otb::Wrapper::BVTimeProfileReprocessing)
