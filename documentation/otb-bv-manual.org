@@ -2312,6 +2312,9 @@ python ../src/scripts/scatterplots.py $outfile $figfile
 
 *** Reflectance simulation
 
+**** Skyl is set to 30
+
+**** Using an external soil data base
 **** Soil in Sail OTB
 ./otbSailModel.cxx:280:      Rsoil1 = DataSpecP5B[i].drySoil; //10
 ./otbSailModel.cxx:281:      Rsoil2 = DataSpecP5B[i].wetSoil; //11
@@ -2331,7 +2334,6 @@ rsoil0 = m_PSoil*Rsoil1+(1-m_PSoil)*Rsoil2;
 #+begin_src sh :var simufile=simu-file-train  :tangle no
 head $simufile
 #+end_src
-
 *** Mismatch estimation
 
 *** Model inversion
