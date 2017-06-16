@@ -90,7 +90,7 @@ public:
     m_LAI = m_BV[IVNames::MLAI];
     m_Angl = m_BV[IVNames::ALA];
     m_PSoil = m_BV[IVNames::Bs];
-    m_Skyl = 0.3;
+    m_Skyl = 30.0;
     m_HSpot = m_BV[IVNames::HsD];
     m_SoilIndex = m_BV[IVNames::SoilIndex];
 
