@@ -57,6 +57,14 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   prosail.SetParameters(prosailPars);
   auto pix = prosail();
 
+
+  std::cout << "--------------------" << std::endl;
+  for(auto& p : pix)
+    std::cout << p << " ";
+
+  std::cout << std::endl;
+  std::cout << "--------------------" << std::endl;
+
   auto tolerance = double{1e-5};
   decltype(pix) ref_pix{0.019252, 0.0257225, 0.0162109, 0.388866, 0.854399, 0.850187};
   auto err_sim = double{0};
@@ -67,16 +75,15 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   if(err_sim>tolerance)
     {
     std::cout << "Regression error" << std::endl;
+    for(auto& p : ref_pix)
+      std::cout << p << " ";
+
+    std::cout << std::endl;
+    std::cout << "--------------------" << std::endl;
+
     return EXIT_FAILURE;
     }
   
-  std::cout << "--------------------" << std::endl;
-  for(auto& p : pix)
-    std::cout << p << " ";
-
-  std::cout << std::endl;
-  std::cout << "--------------------" << std::endl;
-
   return EXIT_SUCCESS;
 }
 
