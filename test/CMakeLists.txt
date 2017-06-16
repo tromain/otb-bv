@@ -89,46 +89,57 @@ otb_test_application(NAME appBvInversion
   -out ${TEMP}/appInvLai.txt)
 
 ### Test functions and classes
-otb_add_test(NAME bvProSailSimulatorFunctor 
-  COMMAND otbBioVarsTests bvProSailSimulatorFunctor ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr)
+otb_add_test(NAME bvProSailSimulatorFunctorPixel 
+  COMMAND otbBioVarsTests bvProSailSimulatorFunctorPixel ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr)
 
-otb_add_test(NAME bvCorrelateWithLAI 
-  COMMAND otbBioVarsTests bvCorrelateWithLAI)
+otb_add_test(NAME bvProSailSimulatorFunctor
+  COMMAND otbBioVarsTests bvProSailSimulatorFunctor 
+  ${OTBBioVars_SOURCE_DIR}/data/sentinel2_10m_20m_noblue_nob8.rsr   #RSRFile 
+  ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Soils.csv  #soilFile 
+  1  #wlfactor 
+  ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Laws.txt #bvVariableFile 
+  ${OTBBioVars_SOURCE_DIR}/data/NNETInOutTrue.csv #simulationFile 
+  8 #nbBands
+  )
 
-otb_add_test(NAME bvMultiLinearFitting 
-  COMMAND otbBioVarsTests bvMultiLinearFitting)       
 
-otb_add_test(NAME bvMultiLinearFittingConversions 
-  COMMAND otbBioVarsTests bvMultiLinearFittingConversions)
+  otb_add_test(NAME bvCorrelateWithLAI 
+    COMMAND otbBioVarsTests bvCorrelateWithLAI)
 
-otb_add_test(NAME bvMultiTemporalInversion 
-  COMMAND otbBioVarsTests bvMultiTemporalInversion ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr
-  33.469
-  20.071
-  169.0
-  ${OTBBioVars_SOURCE_DIR}/data/appInvMod.txt
-  ${OTBBioVars_SOURCE_DIR}/data/appInvModErrEst.txt
-  ${TEMP}/bvMulTeInvRes.txt)
+  otb_add_test(NAME bvMultiLinearFitting 
+    COMMAND otbBioVarsTests bvMultiLinearFitting)       
 
-otb_add_test(NAME bvMultiTemporalInversionRadius 
-  COMMAND otbBioVarsTests bvMultiTemporalInversion ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr
-  33.469
-  20.071
-  169.0
-  ${OTBBioVars_SOURCE_DIR}/data/appInvMod.txt
-  ${OTBBioVars_SOURCE_DIR}/data/appInvModErrEst.txt
-  ${TEMP}/bvMulTeInvResRadius.txt
-  5
-  0)
+  otb_add_test(NAME bvMultiLinearFittingConversions 
+    COMMAND otbBioVarsTests bvMultiLinearFittingConversions)
 
-otb_add_test(NAME bvMultiTemporalInversionFile 
-  COMMAND otbBioVarsTests bvMultiTemporalInversionFromFile ${OTBBioVars_SOURCE_DIR}/data/bvMulTeInvRes.txt
-  1
-  1
-  10e-5)
+  otb_add_test(NAME bvMultiTemporalInversion 
+    COMMAND otbBioVarsTests bvMultiTemporalInversion ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr
+    33.469
+    20.071
+    169.0
+    ${OTBBioVars_SOURCE_DIR}/data/appInvMod.txt
+    ${OTBBioVars_SOURCE_DIR}/data/appInvModErrEst.txt
+    ${TEMP}/bvMulTeInvRes.txt)
 
-add_executable(testSimus testSimus.cxx)
-target_link_libraries(testSimus ${OTB_LIBRARIES} ${OTBBioVars_LIBRARIES} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
+  otb_add_test(NAME bvMultiTemporalInversionRadius 
+    COMMAND otbBioVarsTests bvMultiTemporalInversion ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr
+    33.469
+    20.071
+    169.0
+    ${OTBBioVars_SOURCE_DIR}/data/appInvMod.txt
+    ${OTBBioVars_SOURCE_DIR}/data/appInvModErrEst.txt
+    ${TEMP}/bvMulTeInvResRadius.txt
+    5
+    0)
 
-add_executable(an-par-sweep an-par-sweep.cxx)
-#target_link_libraries(an-par-sweep )
+  otb_add_test(NAME bvMultiTemporalInversionFile 
+    COMMAND otbBioVarsTests bvMultiTemporalInversionFromFile ${OTBBioVars_SOURCE_DIR}/data/bvMulTeInvRes.txt
+    1
+    1
+    10e-5)
+
+  add_executable(testSimus testSimus.cxx)
+  target_link_libraries(testSimus ${OTB_LIBRARIES} ${OTBBioVars_LIBRARIES} ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
+
+  add_executable(an-par-sweep an-par-sweep.cxx)
+  #target_link_libraries(an-par-sweep )

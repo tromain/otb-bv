@@ -15,10 +15,11 @@
 
 void RegisterTests()
 {
+  REGISTER_TEST(bvProSailSimulatorFunctorPixel);
   REGISTER_TEST(bvProSailSimulatorFunctor);
   REGISTER_TEST(bvMultiLinearFitting);
   REGISTER_TEST(bvMultiLinearFittingConversions);
   REGISTER_TEST(bvMultiTemporalInversion);
   REGISTER_TEST(bvMultiTemporalInversionFromFile);
-  REGISTER_TEST(bvCorrelateWithLAI);
+  REGISTER_TEST(bvCorrelateWithLAI); 
 }
