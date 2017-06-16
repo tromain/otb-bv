@@ -31,6 +31,7 @@ namespace BV
 template<typename RNGType>
 double Rng(otb::BV::VarParams vpars, RNGType& rngen);
 double CorrelateValue(double v, double lai, VarParams vpars, VarParams laipars);
+std::vector<BVType> parse_bv_sample_file(std::ifstream& sample_file);
 
 template<typename II, typename OI>
 inline

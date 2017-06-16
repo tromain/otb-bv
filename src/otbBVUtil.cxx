@@ -104,6 +104,36 @@ double CorrelateValue(double v, double lai, VarParams vpars, VarParams laipars)
     return v;
 }
 
+std::vector<BVType> parse_bv_sample_file(std::ifstream& sample_file)
+{    
+  //read variable names (first line)
+  std::string line;
+  std::getline(sample_file, line);
+
+  std::vector<BVType> bv_vec{};
+  while(sample_file.good())
+    {
+    BVType prosailBV;
+    // Read the variable values
+    std::getline(sample_file, line);
+    if(!line.empty())
+      {
+      std::stringstream ss(line);
+      for(auto varName = 0; 
+          varName != static_cast<unsigned int>(IVNames::IVNamesEnd);
+          ++ varName)
+        {
+        double bvValue;
+        ss >> bvValue;
+        prosailBV[static_cast<IVNames>(varName)] = bvValue;
+        }
+      bv_vec.push_back(prosailBV);
+      }
+    }
+  sample_file.close();
+  return bv_vec;
+}
+
 }//namespace BV 
 }
 
