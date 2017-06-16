@@ -66,7 +66,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   std::cout << "--------------------" << std::endl;
 
   auto tolerance = double{1e-5};
-  decltype(pix) ref_pix{0.019252, 0.0257225, 0.0162109, 0.388866, 0.854399, 0.850187};
+  decltype(pix) ref_pix{0.0181956, 0.0254008, 0.0152147, 0.392725, 0.854399, 0.850187};
   auto err_sim = double{0};
 
   for(size_t i=0; i<ref_pix.size(); i++)
