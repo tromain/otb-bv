@@ -59,7 +59,6 @@ public:
     m_PSI(0), 
     m_UseSoilDB(false), 
     m_SoilIndex(0), 
-    m_WavelengthFactor(1000), 
     m_BV({}) 
   {
     m_SatRSR = SatRSRType::New();
@@ -197,11 +196,10 @@ public:
   }
 
   inline 
-  void UseExternalSoilDB(std::shared_ptr<SoilDataBase> SoilDB, double WlFactor)
+  void UseExternalSoilDB(std::shared_ptr<SoilDataBase> SoilDB)
   {
     m_UseSoilDB = true;
     m_SoilDB = SoilDB;
-    m_WavelengthFactor = WlFactor;
   }
 
   inline
@@ -243,7 +241,6 @@ protected:
   bool m_UseSoilDB; //use a soil DB instead of DataSpecP5B
   std::shared_ptr<SoilDataBase> m_SoilDB; //the soil file to use
   size_t m_SoilIndex; //which soil in the soil file
-  double m_WavelengthFactor; //to use nm in soil file
   otb::BV::BVType m_BV;
 };
 

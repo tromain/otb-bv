@@ -305,7 +305,7 @@ private:
       prosail.SetParameters(prosailPars);
       if(UseSoilFile)
         {
-        prosail.UseExternalSoilDB(m_SoilDB, WlFactor);
+        prosail.UseExternalSoilDB(m_SoilDB);
         }
       while(sample_first != sample_last)
         {
