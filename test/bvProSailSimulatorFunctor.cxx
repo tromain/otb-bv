@@ -122,6 +122,8 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     return EXIT_FAILURE;
     }
 
+  auto tolerance{10e-1};
+  auto average_tolerance{0.03};
   auto nb_bands = std::stoi(argv[6]);
   typedef double PrecisionType;
   typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
@@ -158,63 +160,70 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   std::shuffle(indices.begin(), indices.end(), g);
   indices.resize(nb_samples);
 
+  auto average_error{0.0};
   for(const auto sample_idx : indices)
+        {
+        const auto bv_sample = bvvector[sample_idx];
+        const auto simu_data = simuvector[sample_idx];
+
+        AcquisitionParsType prosailPars;
+        prosailPars[AcquisitionParameters::TTS] = std::acos(simu_data[nb_bands+1])*(180.0/3.141592);
+        prosailPars[AcquisitionParameters::TTO] = std::acos(simu_data[nb_bands])*(180.0/3.141592);
+        prosailPars[AcquisitionParameters::PSI] = std::acos(simu_data[nb_bands+2])*(180.0/3.141592);
+
+        typename otb::BV::BVType prosailBV;
+
+        prosail.SetBVs(bv_sample);
+        prosail.SetParameters(prosailPars);
+        auto pix = prosail();
+        // remove fapar and fcover
+        pix.resize(nb_bands);
+
+        decltype(pix) ref_pix(simu_data.cbegin(),simu_data.cbegin()+nb_bands);
+        auto err_sim = double{0};
+
+        for(size_t i=0; i<ref_pix.size(); i++)
+          err_sim += fabs(ref_pix[i]-pix[i]);
+
+        err_sim/=nb_bands;
+        average_error+=err_sim;
+        std::cout << " Sample " << sample_idx << "/" << simuvector.size() << 
+          " error = " << err_sim << '\n';
+
+        if(err_sim>tolerance)
+          {
+          std::cout << "Regression error : tolerance < " << err_sim << std::endl;
+
+          std::cout << "--------------------simulation" << std::endl;
+          for(auto& p : pix)
+            std::cout << p << " ";
+
+          std::cout << std::endl;
+          std::cout << "--------------------reference" << std::endl;
+
+
+          for(auto& p : ref_pix)
+            std::cout << p << " ";
+
+          std::cout << std::endl;
+
+          std::cout << bv_sample.at(IVNames::MLAI) << " " << 
+            bv_sample.at(IVNames::ALA) << " " << bv_sample.at(IVNames::CrownCover) << 
+            " " << bv_sample.at(IVNames::HsD) << " " << bv_sample.at(IVNames::N) << 
+            " " << bv_sample.at(IVNames::Cab) << " " << bv_sample.at(IVNames::Car) << 
+            " " << bv_sample.at(IVNames::Cdm) << " " << bv_sample.at(IVNames::CwRel) << 
+            " " << bv_sample.at(IVNames::Cbp) << " " << bv_sample.at(IVNames::Bs) << '\n';
+
+          std::cout << "--------------------" << std::endl;
+
+          return EXIT_FAILURE;
+          }
+        }  
+  average_error/=nb_samples;
+  if(average_error>average_tolerance)
     {
-    const auto bv_sample = bvvector[sample_idx];
-    const auto simu_data = simuvector[sample_idx];
-
-    AcquisitionParsType prosailPars;
-    prosailPars[AcquisitionParameters::TTS] = std::acos(simu_data[nb_bands+1])*(180.0/3.141592);
-    prosailPars[AcquisitionParameters::TTO] = std::acos(simu_data[nb_bands])*(180.0/3.141592);
-    prosailPars[AcquisitionParameters::PSI] = std::acos(simu_data[nb_bands+2])*(180.0/3.141592);
-
-    typename otb::BV::BVType prosailBV;
-
-    prosail.SetBVs(bv_sample);
-    prosail.SetParameters(prosailPars);
-    auto pix = prosail();
-    // remove fapar and fcover
-    pix.resize(nb_bands);
-
-    auto tolerance = double{0.1};
-    decltype(pix) ref_pix(simu_data.cbegin(),simu_data.cbegin()+nb_bands);
-    auto err_sim = double{0};
-
-    for(size_t i=0; i<ref_pix.size(); i++)
-      err_sim += fabs(ref_pix[i]-pix[i]);
-
-    err_sim/=nb_bands;
-    std::cout << " Sample " << sample_idx << "/" << simuvector.size() << 
-      " error = " << err_sim << '\n';
-
-    if(err_sim>tolerance)
-      {
-      std::cout << "Regression error : tolerance < " << err_sim << std::endl;
-
-      std::cout << "--------------------simulation" << std::endl;
-      for(auto& p : pix)
-        std::cout << p << " ";
-
-      std::cout << std::endl;
-      std::cout << "--------------------reference" << std::endl;
-
-
-      for(auto& p : ref_pix)
-        std::cout << p << " ";
-
-      std::cout << std::endl;
-
-      std::cout << bv_sample.at(IVNames::MLAI) << " " << 
-        bv_sample.at(IVNames::ALA) << " " << bv_sample.at(IVNames::CrownCover) << 
-        " " << bv_sample.at(IVNames::HsD) << " " << bv_sample.at(IVNames::N) << 
-        " " << bv_sample.at(IVNames::Cab) << " " << bv_sample.at(IVNames::Car) << 
-        " " << bv_sample.at(IVNames::Cdm) << " " << bv_sample.at(IVNames::CwRel) << 
-        " " << bv_sample.at(IVNames::Cbp) << " " << bv_sample.at(IVNames::Bs) << '\n';
-
-      std::cout << "--------------------" << std::endl;
-
-      return EXIT_FAILURE;
-      }
-    }  
+    std::cout << "average tolerance < " << average_error << '\n';
+    return EXIT_FAILURE;
+    }
   return EXIT_SUCCESS;
-}
+    }
