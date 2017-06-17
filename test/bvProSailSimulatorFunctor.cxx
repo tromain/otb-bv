@@ -150,10 +150,18 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     return EXIT_FAILURE;
     }
 
-  size_t simu_counter = 0;
-  for(const auto& bv_sample : bvvector)
+  const auto nb_samples = 100;
+  std::vector<size_t> indices{bvvector.size()};
+  std::iota(indices.begin(),indices.end(),0);
+  std::random_device rd;
+  std::mt19937 g(rd());
+  std::shuffle(indices.begin(), indices.end(), g);
+  indices.resize(nb_samples);
+
+  for(const auto sample_idx : indices)
     {
-    const auto simu_data = simuvector[simu_counter++];
+    const auto bv_sample = bvvector[sample_idx];
+    const auto simu_data = simuvector[sample_idx];
 
     AcquisitionParsType prosailPars;
     prosailPars[AcquisitionParameters::TTS] = std::acos(simu_data[nb_bands+1])*(180.0/3.141592);
@@ -168,39 +176,45 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     // remove fapar and fcover
     pix.resize(nb_bands);
 
-    std::cout << "--------------------" << std::endl;
-    for(auto& p : pix)
-          std::cout << p << " ";
+    auto tolerance = double{0.1};
+    decltype(pix) ref_pix(simu_data.cbegin(),simu_data.cbegin()+nb_bands);
+    auto err_sim = double{0};
 
-        std::cout << std::endl;
-        std::cout << "--------------------" << std::endl;
+    for(size_t i=0; i<ref_pix.size(); i++)
+      err_sim += fabs(ref_pix[i]-pix[i]);
 
-        auto tolerance = double{1e-5};
-        decltype(pix) ref_pix(simu_data.cbegin(),simu_data.cbegin()+nb_bands);
-        auto err_sim = double{0};
+    err_sim/=nb_bands;
+    std::cout << " Sample " << sample_idx << "/" << simuvector.size() << 
+      " error = " << err_sim << '\n';
 
-        for(size_t i=0; i<ref_pix.size(); i++)
-          err_sim += fabs(ref_pix[i]-pix[i]);
+    if(err_sim>tolerance)
+      {
+      std::cout << "Regression error : tolerance < " << err_sim << std::endl;
 
-        if(err_sim>tolerance)
-          {
-          std::cout << "Regression error" << std::endl;
-          for(auto& p : ref_pix)
-            std::cout << p << " ";
+      std::cout << "--------------------simulation" << std::endl;
+      for(auto& p : pix)
+        std::cout << p << " ";
 
-          std::cout << std::endl;
+      std::cout << std::endl;
+      std::cout << "--------------------reference" << std::endl;
 
-          std::cout << bv_sample.at(IVNames::MLAI) << " " << 
-            bv_sample.at(IVNames::ALA) << " " << bv_sample.at(IVNames::CrownCover) << 
-            " " << bv_sample.at(IVNames::HsD) << " " << bv_sample.at(IVNames::N) << 
-            " " << bv_sample.at(IVNames::Cab) << " " << bv_sample.at(IVNames::Car) << 
-            " " << bv_sample.at(IVNames::Cdm) << " " << bv_sample.at(IVNames::CwRel) << 
-            " " << bv_sample.at(IVNames::Cbp) << " " << bv_sample.at(IVNames::Bs) << '\n';
 
-          std::cout << "--------------------" << std::endl;
+      for(auto& p : ref_pix)
+        std::cout << p << " ";
 
-          return EXIT_FAILURE;
-          }
+      std::cout << std::endl;
+
+      std::cout << bv_sample.at(IVNames::MLAI) << " " << 
+        bv_sample.at(IVNames::ALA) << " " << bv_sample.at(IVNames::CrownCover) << 
+        " " << bv_sample.at(IVNames::HsD) << " " << bv_sample.at(IVNames::N) << 
+        " " << bv_sample.at(IVNames::Cab) << " " << bv_sample.at(IVNames::Car) << 
+        " " << bv_sample.at(IVNames::Cdm) << " " << bv_sample.at(IVNames::CwRel) << 
+        " " << bv_sample.at(IVNames::Cbp) << " " << bv_sample.at(IVNames::Bs) << '\n';
+
+      std::cout << "--------------------" << std::endl;
+
+      return EXIT_FAILURE;
+      }
     }  
   return EXIT_SUCCESS;
 }
