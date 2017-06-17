@@ -151,7 +151,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     }
 
   const auto nb_samples = 100;
-  std::vector<size_t> indices{bvvector.size()};
+  std::vector<size_t> indices(bvvector.size());
   std::iota(indices.begin(),indices.end(),0);
   std::random_device rd;
   std::mt19937 g(rd());
