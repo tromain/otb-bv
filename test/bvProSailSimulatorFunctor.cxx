@@ -132,6 +132,11 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   satRSR->Load(argv[1]);
 
   auto soilDB = std::make_shared<otb::SoilDataBase>(argv[2], std::stod(argv[3]));
+
+  ProSailType prosail;
+  prosail.SetRSR(satRSR);
+  prosail.UseExternalSoilDB(soilDB);
+
   std::ifstream bv_file(argv[4]);
   std::ifstream sim_file(argv[5]);
   using namespace otb::BV;
@@ -155,8 +160,6 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     prosailPars[AcquisitionParameters::TTO] = std::acos(simu_data[nb_bands])*(180.0/3.141592);
     prosailPars[AcquisitionParameters::PSI] = std::acos(simu_data[nb_bands+2])*(180.0/3.141592);
 
-    ProSailType prosail;
-    prosail.SetRSR(satRSR);
     typename otb::BV::BVType prosailBV;
 
     prosail.SetBVs(bv_sample);
@@ -186,6 +189,14 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
             std::cout << p << " ";
 
           std::cout << std::endl;
+
+          std::cout << bv_sample.at(IVNames::MLAI) << " " << 
+            bv_sample.at(IVNames::ALA) << " " << bv_sample.at(IVNames::CrownCover) << 
+            " " << bv_sample.at(IVNames::HsD) << " " << bv_sample.at(IVNames::N) << 
+            " " << bv_sample.at(IVNames::Cab) << " " << bv_sample.at(IVNames::Car) << 
+            " " << bv_sample.at(IVNames::Cdm) << " " << bv_sample.at(IVNames::CwRel) << 
+            " " << bv_sample.at(IVNames::Cbp) << " " << bv_sample.at(IVNames::Bs) << '\n';
+
           std::cout << "--------------------" << std::endl;
 
           return EXIT_FAILURE;
