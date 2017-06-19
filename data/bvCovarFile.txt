@@ -1,0 +1,5 @@
+# Mean vector 
+1.5 1.5 
+# Covariance matrix 
+0.25 -0.25 
+-0.25 0.25 
