@@ -190,11 +190,13 @@ private:
     double cov_det{0};
     vnl_vector<double> mean_vector;
     const auto confidence_value{0.95};
+    auto check_validity_domain{false};
     if(HasValue("covariance") == true)
           {
           vnl_matrix<double> covariance;
           BV::ReadReflectanceDensity(GetParameterString("covariance"), covariance, mean_vector);
           cov_det = BV::InverseCovarianceAndDeterminant(covariance, inv_covariance);
+          check_validity_domain = true;
           }
     auto sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )
@@ -209,25 +211,29 @@ private:
           ss >> inputValue[var];
           }
 
-        const auto valid_sample = BV::IsValidSample(inputValue, inv_covariance, 
-                                                    mean_vector, cov_det,
-                                                    confidence_value);
+        auto valid_sample{true};
+        if(check_validity_domain)
+          {
+          valid_sample = BV::IsValidSample(inputValue, inv_covariance, 
+                                           mean_vector, cov_det,
+                                           confidence_value);
+          }
 
         if(valid_sample)
-          {
-          if( HasValue( "normalization" )==true )
-             {
-             for(size_t var = 0; var < nbInputVariables; ++var)
-               {
-               inputValue[var] = otb::BV::normalize(inputValue[var], var_minmax[var]);
-               }
-             }
-        OutputSampleType outputValue = regressor->Predict(inputValue);
-        if( HasValue( "normalization" )==true )
-          outputValue[0] = otb::BV::denormalize(outputValue[0],
-                                                var_minmax[nbInputVariables]);
-        outFile << outputValue[0] << std::endl;
-          }
+            {
+            if( HasValue( "normalization" )==true )
+              {
+              for(size_t var = 0; var < nbInputVariables; ++var)
+                {
+                inputValue[var] = otb::BV::normalize(inputValue[var], var_minmax[var]);
+                }
+              }
+            OutputSampleType outputValue = regressor->Predict(inputValue);
+            if( HasValue( "normalization" )==true )
+              outputValue[0] = otb::BV::denormalize(outputValue[0],
+                                                    var_minmax[nbInputVariables]);
+            outFile << outputValue[0] << std::endl;
+            }
         else
           {
           outFile << "NaN" << std::endl;
