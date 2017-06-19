@@ -100,6 +100,7 @@ otb_add_test(NAME bvProSailSimulatorFunctor
   ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Laws.txt #bvVariableFile 
   ${OTBBioVars_SOURCE_DIR}/data/NNETInOutTrue.csv #simulationFile 
   8 #nbBands
+  100 #nbsamples
   )
 
 
