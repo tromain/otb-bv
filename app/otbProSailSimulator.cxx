@@ -318,7 +318,8 @@ private:
       vnl_vector<double> mean_vector;
 
       BV::EstimateReflectanceDensity(simus, covariance, mean_vector);
-      BV::WriteReflectanceDensity(covariance, mean_vector, GetParameterString("covariance"));
+      BV::WriteReflectanceDensity(covariance, mean_vector, 
+                                  GetParameterString("covariance"));
       }
     
 
