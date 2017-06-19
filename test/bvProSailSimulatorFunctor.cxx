@@ -162,6 +162,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
 
   auto average_error{0.0};
   std::vector<double> err_per_band(nb_bands,0.0);
+  std::vector<double> rel_err_per_band(nb_bands,0.0);
 
   for(const auto sample_idx : indices)
     {
@@ -189,6 +190,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
       auto err = fabs(ref_pix[i]-pix[i]);
       err_sim += err;
       err_per_band[i] += err;
+      rel_err_per_band[i] += err/fabs(ref_pix[i]+10e-4);
       }
 
     err_sim/=nb_bands;
@@ -223,6 +225,12 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   for(const auto e : err_per_band)
     std::cout << e/nb_samples << " ";
   std::cout << '\n';
+
+  std::cout << " Relative average error per band \n";
+  for(const auto e : rel_err_per_band)
+    std::cout << e/nb_samples << " ";
+  std::cout << '\n';
+
 
   average_error/=nb_samples;
   if(average_error>average_tolerance)
