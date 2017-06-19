@@ -295,7 +295,7 @@ private:
       auto input_end = input_start;
       std::advance(input_end, block_size);
       if(t==(num_threads-1)) 
-        std::advance(input_end, remainder-1);
+        std::advance(input_end, remainder);
       threads[t] = std::thread(simulator,
                                input_start,
                                input_end,
