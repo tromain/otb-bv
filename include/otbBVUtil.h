@@ -61,6 +61,17 @@ void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
 void WriteReflectanceDensity(vnl_matrix<double>& covariance,
                              vnl_vector<double>& mean_vector, 
                              std::string file_name);
+
+void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covariance,
+                            vnl_vector<double>& mean_vector);
+
+double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
+                                       vnl_matrix<double>& inv_conv);
+template<typename SampleType>
+bool IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
+                   vnl_vector<double>& mean_vector, double cov_det, 
+                   double confidence);
+
 }//namespace BV
 }//namespace otb
 // include the definition of the template functions

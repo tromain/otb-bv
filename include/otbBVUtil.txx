@@ -184,6 +184,29 @@ void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
   covariance /= nbSamples;
 }
 
+template<typename SampleType>
+bool IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
+                   vnl_vector<double>& mean_vector, double cov_det, 
+                   double confidence)
+{
+// evaluate if the sample probability is > 1-confidence
+
+  assert(sample.Size() == mean_vector.size());
+  assert(inv_cov.rows() == inv_cov.columns());
+
+  auto k = sample.Size();
+
+  vnl_vector<double> sample_v(sample.GetDataPointer(), k);
+  auto norm_factor = std::sqrt(std::pow(2*M_PI,k)*cov_det);
+  auto centered_sample = sample_v-mean_vector;
+  vnl_matrix<double> centered_sample_t(centered_sample.data_block(), 1, k);
+  auto exponent = 0.5*(centered_sample_t*inv_cov*centered_sample)(0);
+  auto probability = std::exp(exponent)/norm_factor;
+  
+
+  return (probability > 1-confidence);
+}
+
 }//namespace BV 
 }
 

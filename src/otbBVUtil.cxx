@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include "itkMacro.h"
 #include "otbBVUtil.h"
+#include <vnl/algo/vnl_matrix_inverse.h>
 
 namespace otb
 {
@@ -153,6 +154,20 @@ void WriteReflectanceDensity(vnl_matrix<double>& covariance,
       }
     covariancefile << '\n';
     }
+}
+
+void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covariance,
+                            vnl_vector<double>& mean_vector)
+{
+  throw std::runtime_error("Reading density not implemented!");
+}
+
+double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
+                                       vnl_matrix<double>& inv_conv)
+{
+  vnl_matrix_inverse<double> inverse_calc(cov);
+  auto inv_cov = inverse_calc.inverse();
+  return inverse_calc.determinant_magnitude();
 }
 
 }//namespace BV 
