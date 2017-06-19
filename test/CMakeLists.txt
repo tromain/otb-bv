@@ -57,7 +57,10 @@ otb_test_application(NAME appBvProSailSimCovar
   -solarzenith 33.469
   -sensorzenith 20.071
   -azimuth 169.0
-  -covariance ${TEMP}/appProSailCovarMatrix.txt)
+  -covariance ${TEMP}/appProSailCovarMatrix.txt
+  VALID   --compare-ascii ${EPSILON_3}
+  ${OTBBioVars_SOURCE_DIR}/data/appProSailCovarMatrix.txt
+  ${TEMP}/appProSailCovarMatrix.txt  )
 
 otb_test_application(NAME appBvProSailSimSoil
   APP ProSailSimulator

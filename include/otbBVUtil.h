@@ -68,7 +68,7 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
                             vnl_vector<double>& mean_vector);
 
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
-                                       vnl_matrix<double>& inv_conv);
+                                       vnl_matrix<double>& inv_cov);
 template<typename SampleType>
 bool IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
                    vnl_vector<double>& mean_vector, double cov_det, 

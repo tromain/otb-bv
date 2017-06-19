@@ -21,7 +21,6 @@
 #include <vnl/vnl_matrix.h>
 #include <vnl/vnl_vector.h>
 
-
 namespace otb
 {
 namespace BV
@@ -158,6 +157,7 @@ void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
                                 vnl_matrix<double>& covariance,
                                 vnl_vector<double>& mean_vector)
 {
+
   auto nbBands = simus[0].size()-2; //the last 2 values are fcover and fapar
   auto nbSamples = simus.size();
   covariance.set_size(nbBands, nbBands);

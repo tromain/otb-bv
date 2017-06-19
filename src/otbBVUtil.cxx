@@ -178,7 +178,7 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
   covariance.set_size(nb_bands, nb_bands);
   mean_vector.set_size(nb_bands);
 
-  for(auto b=0; b<nb_bands; ++b)
+  for(size_t b=0; b<nb_bands; ++b)
     {
     double val;
     ss >> val;
@@ -193,14 +193,14 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
     {
     throw std::runtime_error("Error in reflectance density file format : matrix header");
     }
-  for(auto l=0; l<nb_bands; ++l)
+  for(size_t l=0; l<nb_bands; ++l)
     {
     std::getline(covariancefile, line);
-    std::stringstream ss(line);
-    for(auto c=0; c<nb_bands; ++c)
+    std::stringstream ssm(line);
+    for(size_t c=0; c<nb_bands; ++c)
       {
       double val;
-      ss >> val;
+      ssm >> val;
       covariance(l,c) = val;
       }
     }
@@ -208,10 +208,10 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
 }
 
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
-                                       vnl_matrix<double>& inv_conv)
+                                       vnl_matrix<double>& inv_cov)
 {
   vnl_matrix_inverse<double> inverse_calc(cov);
-  auto inv_cov = inverse_calc.inverse();
+  inv_cov = inverse_calc.inverse();
   return inverse_calc.determinant_magnitude();
 }
 
