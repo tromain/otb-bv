@@ -122,7 +122,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     return EXIT_FAILURE;
     }
 
-  auto tolerance{10e-1};
+  auto tolerance{5*10e-2};
   auto average_tolerance{0.03};
   auto nb_bands = std::stoi(argv[6]);
   typedef double PrecisionType;
