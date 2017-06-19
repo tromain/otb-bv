@@ -22,4 +22,6 @@ void RegisterTests()
   REGISTER_TEST(bvMultiTemporalInversion);
   REGISTER_TEST(bvMultiTemporalInversionFromFile);
   REGISTER_TEST(bvCorrelateWithLAI); 
+  REGISTER_TEST(bvComputeCovarAndMean);
+  REGISTER_TEST(bvReadCovarianceFile);
 }

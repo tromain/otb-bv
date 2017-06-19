@@ -19,23 +19,28 @@
 
 namespace otb
 {
-size_t countColumns(std::string fileName)
+size_t countSpaces(std::string& line)
+{
+  size_t nbSpaces = 0;
+  boost::trim(line);
+  auto found = line.find(' ');
+  while(found!=std::string::npos)
+    {
+    ++nbSpaces;
+    found = line.find(' ', found+1);
+    }
+  return nbSpaces+1;
+}
+
+size_t countColumns(const std::string& fileName)
 {
   std::ifstream ifile(fileName.c_str());
   std::string line;
   if (ifile.is_open())
     {
-    size_t nbSpaces = 0;
     getline(ifile,line);
     ifile.close();
-    boost::trim(line);
-    auto found = line.find(' ');
-    while(found!=std::string::npos)
-      {
-      ++nbSpaces;
-      found = line.find(' ', found+1);
-      }
-    return nbSpaces+1;
+    return countSpaces(line);
     }
   else
     {
@@ -159,7 +164,47 @@ void WriteReflectanceDensity(vnl_matrix<double>& covariance,
 void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covariance,
                             vnl_vector<double>& mean_vector)
 {
-  throw std::runtime_error("Reading density not implemented!");
+  std::ifstream covariancefile(file_name);
+  std::string line{};
+  std::getline(covariancefile, line);
+  if(line != "# Mean vector ")
+    {
+    throw std::runtime_error("Error in reflectance density file format : mean header");
+    }
+  //Read the mean vector
+  std::getline(covariancefile, line);
+  std::stringstream ss(line);
+  const auto nb_bands = countSpaces(line);
+  covariance.set_size(nb_bands, nb_bands);
+  mean_vector.set_size(nb_bands);
+
+  for(auto b=0; b<nb_bands; ++b)
+    {
+    double val;
+    ss >> val;
+    mean_vector(b) = val;
+    }
+
+  std::cout << "Mean vector\n" << mean_vector << '\n';
+
+  //Read the covariance matrix
+  std::getline(covariancefile, line);
+  if(line != "# Covariance matrix ")
+    {
+    throw std::runtime_error("Error in reflectance density file format : matrix header");
+    }
+  for(auto l=0; l<nb_bands; ++l)
+    {
+    std::getline(covariancefile, line);
+    std::stringstream ss(line);
+    for(auto c=0; c<nb_bands; ++c)
+      {
+      double val;
+      ss >> val;
+      covariance(l,c) = val;
+      }
+    }
+  std::cout << "Covariance matrix\n" << covariance << '\n';
 }
 
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 

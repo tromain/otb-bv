@@ -20,7 +20,9 @@
 
 namespace otb
 {
-size_t countColumns(std::string fileName);
+size_t countSpaces(std::string& line);
+
+size_t countColumns(const std::string& fileName);
 
 namespace BV
 {
