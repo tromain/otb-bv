@@ -15,6 +15,8 @@
 #define __OTBBVUTIL_H
 
 #include "otbBVTypes.h"
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
 namespace otb
 {
@@ -46,10 +48,19 @@ T normalize(T x, U p);
 template<typename T, typename U>
 inline
 T denormalize(T x, U p);
+
 template<typename IS, typename OS, typename NVT>
 inline
 void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax);
 
+template<typename SimulationType>
+void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
+                                vnl_matrix<double>& covariance,
+                                vnl_vector<double>& mean_vector);
+
+void WriteReflectanceDensity(vnl_matrix<double>& covariance,
+                             vnl_vector<double>& mean_vector, 
+                             std::string file_name);
 }//namespace BV
 }//namespace otb
 // include the definition of the template functions

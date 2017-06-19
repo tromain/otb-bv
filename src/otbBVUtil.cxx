@@ -134,6 +134,27 @@ std::vector<BVType> parse_bv_sample_file(std::ifstream& sample_file)
   return bv_vec;
 }
 
+void WriteReflectanceDensity(vnl_matrix<double>& covariance,
+                             vnl_vector<double>& mean_vector, 
+                             std::string file_name)
+{
+  std::ofstream covariancefile(file_name);
+  covariancefile << "# Mean vector \n";
+  for(size_t i=0; i<mean_vector.size(); ++i)
+    {
+    covariancefile << mean_vector[i] << " ";
+    }
+  covariancefile << "\n# Covariance matrix \n";
+  for(size_t i=0; i<covariance.rows(); ++i)
+    {
+    for(size_t j=0; j<covariance.columns(); ++j)
+      {
+      covariancefile << covariance.get(i,j) << " ";
+      }
+    covariancefile << '\n';
+    }
+}
+
 }//namespace BV 
 }
 

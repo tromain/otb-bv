@@ -23,8 +23,6 @@
 #include <boost/lexical_cast.hpp>
 #include <random>
 
-#include <vnl/vnl_matrix.h>
-
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
 
@@ -138,57 +136,6 @@ private:
     for(size_t i=0; i<simu.size(); ++i)
       m_SimulationsFile << simu[i] << " " ;
     m_SimulationsFile << std::endl;
-  }
-
-  void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
-                                  vnl_matrix<double>& covariance,
-                                  vnl_vector<double>& mean_vector)
-  {
-    auto nbBands = simus[0].size()-2; //the last 2 values are fcover and fapar
-    auto nbSamples = simus.size();
-    covariance.set_size(nbBands, nbBands);
-    covariance.fill(0);
-    mean_vector.set_size(nbBands);
-    mean_vector.fill(0);
-
-    for(const auto& sample : simus)
-      {
-      for(size_t i=0; i<nbBands; ++i)
-        mean_vector[i] += sample[i];
-      }
-    mean_vector /= nbSamples;
-
-    for(const auto& sample : simus)
-      {
-      vnl_vector<double> v(sample.data(), nbBands);
-      v -= mean_vector;
-      vnl_matrix<double> x(v.data_block(), nbBands, 1);
-      vnl_matrix<double> xt(v.data_block(), 1, nbBands);
-      const auto tmpcov = x*xt;
-      covariance += tmpcov;
-      }
-    covariance /= nbSamples;
-  }
-
-  void WriteReflectanceDensity(vnl_matrix<double>& covariance,
-                               vnl_vector<double>& mean_vector, 
-                               std::string file_name)
-  {
-    std::ofstream covariancefile(file_name);
-    covariancefile << "# Mean vector \n";
-    for(size_t i=0; i<mean_vector.size(); ++i)
-      {
-      covariancefile << mean_vector[i] << " ";
-      }
-    covariancefile << "\n# Covariance matrix \n";
-    for(size_t i=0; i<covariance.rows(); ++i)
-      {
-      for(size_t j=0; j<covariance.columns(); ++j)
-        {
-        covariancefile << covariance.get(i,j) << " ";
-        }
-      covariancefile << '\n';
-      }
   }
   
   void DoExecute() override
@@ -370,15 +317,15 @@ private:
       vnl_matrix<double> covariance;
       vnl_vector<double> mean_vector;
 
-      EstimateReflectanceDensity(simus, covariance, mean_vector);
-      WriteReflectanceDensity(covariance, mean_vector, GetParameterString("covariance"));
+      BV::EstimateReflectanceDensity(simus, covariance, mean_vector);
+      BV::WriteReflectanceDensity(covariance, mean_vector, GetParameterString("covariance"));
       }
     
 
     otbAppLogINFO("Results saved in " << outFileName << std::endl);
   }
 
-    double m_Azimuth;
+  double m_Azimuth;
   double m_SolarZenith;
   double m_SolarZenith_Fapar;
   double m_SensorZenith;

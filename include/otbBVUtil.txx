@@ -18,6 +18,9 @@
 #include <limits>
 
 #include "otbBVTypes.h"
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
+
 
 namespace otb
 {
@@ -148,6 +151,37 @@ void normalize_variables(IS& isl, OS& osl, const NVT& var_minmax)
     ++ovIt;
     ++ivIt;
     }
+}
+
+template<typename SimulationType>
+void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
+                                vnl_matrix<double>& covariance,
+                                vnl_vector<double>& mean_vector)
+{
+  auto nbBands = simus[0].size()-2; //the last 2 values are fcover and fapar
+  auto nbSamples = simus.size();
+  covariance.set_size(nbBands, nbBands);
+  covariance.fill(0);
+  mean_vector.set_size(nbBands);
+  mean_vector.fill(0);
+
+  for(const auto& sample : simus)
+    {
+    for(size_t i=0; i<nbBands; ++i)
+      mean_vector[i] += sample[i];
+    }
+  mean_vector /= nbSamples;
+
+  for(const auto& sample : simus)
+    {
+    vnl_vector<double> v(sample.data(), nbBands);
+    v -= mean_vector;
+    vnl_matrix<double> x(v.data_block(), nbBands, 1);
+    vnl_matrix<double> xt(v.data_block(), 1, nbBands);
+    const auto tmpcov = x*xt;
+    covariance += tmpcov;
+    }
+  covariance /= nbSamples;
 }
 
 }//namespace BV 
