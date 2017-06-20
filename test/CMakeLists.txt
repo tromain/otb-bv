@@ -103,6 +103,14 @@ otb_test_application(NAME appBvInversion
   -model ${OTBBioVars_SOURCE_DIR}/data/appInvMod.txt
   -out ${TEMP}/appInvLai.txt)
 
+otb_test_application(NAME appBvInversionCovar
+  APP BVInversion
+  OPTIONS
+  -reflectances ${OTBBioVars_SOURCE_DIR}/data/relfs_sim.txt
+  -model ${OTBBioVars_SOURCE_DIR}/data/appInvMod.txt
+  -out ${TEMP}/appInvLaiCovar.txt
+  -covariance ${OTBBioVars_SOURCE_DIR}/data/appProSailCovarMatrix.txt)
+
 ### Test functions and classes
 otb_add_test(NAME bvProSailSimulatorFunctorPixel 
   COMMAND otbBioVarsTests bvProSailSimulatorFunctorPixel ${OTBBioVars_SOURCE_DIR}/data/formosat2_4b.rsr)
