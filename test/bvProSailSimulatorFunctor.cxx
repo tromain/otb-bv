@@ -238,7 +238,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     std::cout << e/nb_samples << " ";
   std::cout << '\n';
 
-  std::cout << "average ndvi error = " << average_ndvi_error/=nb_samples << '\n';
+  std::cout << "average ndvi error = " << (average_ndvi_error/=nb_samples) << '\n';
 
   average_error/=nb_samples;
   if(average_error>average_tolerance)
