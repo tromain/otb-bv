@@ -189,8 +189,7 @@ bool IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
                    vnl_vector<double>& mean_vector, double cov_det, 
                    double confidence)
 {
-// evaluate if the sample probability is > 1-confidence
-
+  // evaluate if the sample probability is > 1-confidence
   assert(sample.Size() == mean_vector.size());
   assert(inv_cov.rows() == inv_cov.columns());
 
