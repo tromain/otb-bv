@@ -219,12 +219,15 @@ private:
             }
 
           auto valid_sample{true};
+          auto proba{0.0};
           if(check_validity_domain)
-            {
-            valid_sample = BV::IsValidSample(inputValue, inv_covariance, 
+                {
+                auto res = BV::IsValidSample(inputValue, inv_covariance, 
                                              mean_vector, cov_det,
-                                             confidence_value).first;
-            }
+                                             confidence_value);
+                valid_sample = res.first;
+                proba = res.second;
+                }
 
           if(valid_sample)
             {
@@ -239,11 +242,17 @@ private:
             if( HasValue( "normalization" )==true )
               outputValue[0] = otb::BV::denormalize(outputValue[0],
                                                     var_minmax[nbInputVariables]);
-            outFile << outputValue[0] << std::endl;
+            outFile << outputValue[0];
+            if(check_validity_domain)
+              {
+              outFile << " " << proba;
+              }
+
+            outFile << std::endl;
             }
           else
             {
-            outFile << "NaN" << std::endl;
+            outFile << "NaN" << " " << proba << std::endl;
             }
           ++sampleCount;
           }
