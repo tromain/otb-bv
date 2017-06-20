@@ -216,7 +216,7 @@ private:
           {
           valid_sample = BV::IsValidSample(inputValue, inv_covariance, 
                                            mean_vector, cov_det,
-                                           confidence_value);
+                                           confidence_value).first;
           }
 
         if(valid_sample)

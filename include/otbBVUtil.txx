@@ -185,8 +185,8 @@ void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
 }
 
 template<typename SampleType>
-bool IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
-                   vnl_vector<double>& mean_vector, double cov_det, 
+std::pair<bool, double> IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
+                                      vnl_vector<double>& mean_vector, double cov_det, 
                    double confidence)
 {
   // evaluate if the sample probability is > 1-confidence
@@ -200,10 +200,10 @@ bool IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
   auto centered_sample = sample_v-mean_vector;
   vnl_matrix<double> centered_sample_t(centered_sample.data_block(), 1, k);
   auto exponent = 0.5*(centered_sample_t*inv_cov*centered_sample)(0);
-  auto probability = std::exp(exponent)/norm_factor;
+  auto probability = std::exp(-exponent)/norm_factor;
   
 
-  return (probability > 1-confidence);
+  return std::make_pair((probability > 1-confidence), probability);
 }
 
 }//namespace BV 
