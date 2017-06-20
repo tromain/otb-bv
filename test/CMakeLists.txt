@@ -137,6 +137,9 @@ otb_add_test(NAME bvReadCovarianceFile
 otb_add_test(NAME bvIsSampleValid1D
   COMMAND otbBioVarsTests bvIsSampleValid1D)
 
+otb_add_test(NAME bvIsSampleValid2D
+  COMMAND otbBioVarsTests bvIsSampleValid2D)
+
 otb_add_test(NAME bvCorrelateWithLAI 
   COMMAND otbBioVarsTests bvCorrelateWithLAI)
 

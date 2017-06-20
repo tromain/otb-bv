@@ -25,4 +25,5 @@ void RegisterTests()
   REGISTER_TEST(bvComputeCovarAndMean);
   REGISTER_TEST(bvReadCovarianceFile);
   REGISTER_TEST(bvIsSampleValid1D);
+  REGISTER_TEST(bvIsSampleValid2D);
 }
