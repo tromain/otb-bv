@@ -161,6 +161,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   indices.resize(nb_samples);
 
   auto average_error{0.0};
+  auto average_ndvi_error{0.0};
   std::vector<double> err_per_band(nb_bands,0.0);
   std::vector<double> rel_err_per_band(nb_bands,0.0);
 
@@ -195,8 +196,14 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
 
     err_sim/=nb_bands;
     average_error+=err_sim;
+
+    auto ndvi_ref = (ref_pix[5]-ref_pix[1])/(ref_pix[5]+ref_pix[1]+10e-5);
+    auto ndvi = (pix[5]-pix[1])/(pix[5]+pix[1]+10e-5);
+
+    auto ndvi_err = fabs(ndvi-ndvi_ref);
+    average_ndvi_error+=ndvi_err;
     std::cout << " Sample " << sample_idx << "/" << simuvector.size() << 
-      " error = " << err_sim << '\n';
+      " error = " << err_sim << " ndvi_err = " << ndvi_err << '\n';
 
     if(err_sim>tolerance)
       {
@@ -231,6 +238,7 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     std::cout << e/nb_samples << " ";
   std::cout << '\n';
 
+  std::cout << "average ndvi error = " << average_ndvi_error/=nb_samples << '\n';
 
   average_error/=nb_samples;
   if(average_error>average_tolerance)
