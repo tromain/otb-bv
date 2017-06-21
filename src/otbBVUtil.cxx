@@ -15,7 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include "itkMacro.h"
 #include "otbBVUtil.h"
-#include <vnl/algo/vnl_matrix_inverse.h>
+#include <vnl/algo/vnl_cholesky.h>
 
 namespace otb
 {
@@ -210,9 +210,19 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
                                        vnl_matrix<double>& inv_cov)
 {
-  vnl_matrix_inverse<double> inverse_calc(cov);
+  // We use Cholesky for the inverse, since only positive definite
+  // matrices have a Cholesky decomposition. This is an additional
+  // check for the conditioning of the covariance matrix.
+  vnl_cholesky inverse_calc(cov, vnl_cholesky::estimate_condition);
   inv_cov = inverse_calc.inverse();
-  return inverse_calc.determinant_magnitude();
+  const auto determinant = inverse_calc.determinant();
+  const auto k = cov.rows();
+  if(determinant < 1.0/std::pow(2*M_PI,k)) 
+    {
+    std::cout << determinant << '\n';
+    throw std::runtime_error("invalid determinant");
+    }
+  return determinant;
 }
 
 }//namespace BV 
