@@ -15,6 +15,7 @@
 #include "itkMacro.h"
 #include "otbBVUtil.h"
 #include "otbProSailSimulatorFunctor.h"
+#include <boost/algorithm/string.hpp>
 #include <cmath>
 
 int bvComputeCovarAndMean(int argc, char * argv[])
@@ -34,7 +35,9 @@ int bvComputeCovarAndMean(int argc, char * argv[])
   EstimateReflectanceDensity(simus, covariance, mean_vector);
 
   if(covariance(0,0) != 0.25) return EXIT_FAILURE;
+  if(covariance(1,1) != 0.25) return EXIT_FAILURE;
   if(mean_vector(0) != 1.5 ) return EXIT_FAILURE;
+  if(mean_vector(1) != 1.5 ) return EXIT_FAILURE;
 
   std::cout << "-- Covariance -- \n";
   std::cout << covariance << '\n';
@@ -43,6 +46,89 @@ int bvComputeCovarAndMean(int argc, char * argv[])
   std::cout << mean_vector << '\n';
 
   WriteReflectanceDensity(covariance, mean_vector, argv[1]);
+
+  return EXIT_SUCCESS;
+}
+
+int bvComputeCovarFromRefls(int argc, char * argv[])
+{
+
+  if(argc!=6)
+    {
+    std::cout << "Usage : " << argv[0] << "reflectance_file expected_0_0_covar_value expected_0_1_covar_value mean_value_1 expected_cov_det\n";
+    return EXIT_FAILURE;
+    }
+
+  using namespace otb::BV;
+
+  typedef double PrecisionType;
+  typedef otb::SatelliteRSR<PrecisionType, PrecisionType>  SatRSRType;
+  typedef otb::Functor::ProSailSimulator<SatRSRType> ProSailType;
+  typedef typename ProSailType::OutputType SimulationType;
+
+  std::vector<SimulationType> simus{};
+  vnl_matrix<double> covariance;
+  vnl_matrix<double> inv_covariance;
+  vnl_vector<double> mean_vector;
+
+  std::ifstream reflectancesFile(argv[1]);
+  if(!reflectancesFile)
+    {
+    std::cout << "Error opening file " << argv[1] << '\n';
+    return EXIT_FAILURE;
+    }
+  auto sample_count{0};
+  for(std::string line; std::getline(reflectancesFile, line); )
+    {
+    boost::trim(line);
+    std::cout << line << '\n';
+    if(line.size() > 1)
+      {
+      sample_count++;
+      std::istringstream ss(line);
+      auto nbInputVariables = otb::countSpaces(line);
+      std::cout << nbInputVariables << '\n';
+      SimulationType inputValue(nbInputVariables+2); //add dummy places for fcover and fapar which are discarded by the estimation
+      for(size_t var = 0; var < nbInputVariables; ++var)
+        {
+        ss >> inputValue[var];
+        }
+      simus.push_back(inputValue);
+      }
+    std::cout << sample_count << '\n';
+    if(sample_count>1000) return EXIT_FAILURE;
+    }
+  reflectancesFile.close();
+
+  EstimateReflectanceDensity(simus, covariance, mean_vector);
+  auto determinant = InverseCovarianceAndDeterminant(covariance, inv_covariance);
+
+  if(fabs(covariance(0,0) - std::stod(argv[2]))>10e-5) 
+    {
+    std::cout << "covar(0,0)\n";
+    return EXIT_FAILURE;
+    }
+  if(fabs(covariance(0,1) - std::stod(argv[3]))>10e-5) 
+    {
+    std::cout << "covar(0,1)\n";
+    return EXIT_FAILURE;
+    }
+  if(fabs(mean_vector(1) - std::stod(argv[4]))>10e-5) 
+    {
+    std::cout << "mean \n";
+    return EXIT_FAILURE;
+    }
+  if(fabs(determinant - std::stod(argv[5]))>10e-17) 
+    {
+    std::cout << "determinant" << argv[5] << " " << determinant <<" \n";
+    return EXIT_FAILURE;
+    }
+
+  std::cout << "-- Covariance -- \n";
+  std::cout << covariance << '\n';
+
+  std::cout << "-- Mean -- \n";
+  std::cout << mean_vector << '\n';
 
   return EXIT_SUCCESS;
 }

@@ -26,4 +26,5 @@ void RegisterTests()
   REGISTER_TEST(bvReadCovarianceFile);
   REGISTER_TEST(bvIsSampleValid1D);
   REGISTER_TEST(bvIsSampleValid2D);
+  REGISTER_TEST(bvComputeCovarFromRefls);
 }

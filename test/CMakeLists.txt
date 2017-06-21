@@ -130,6 +130,11 @@ otb_add_test(NAME bvComputeCovarAndMean
   COMMAND otbBioVarsTests bvComputeCovarAndMean
   ${TEMP}/bvComputeCovarAndMeanCovarFile.txt  )
 
+otb_add_test(NAME bvComputeCovarFromRefls
+  COMMAND otbBioVarsTests bvComputeCovarFromRefls
+  ${OTBBioVars_SOURCE_DIR}/data/relfs_sim.txt
+  0.00114548  0.00126964  0.05937116 1.23897068383e-15)
+
 otb_add_test(NAME bvReadCovarianceFile
   COMMAND otbBioVarsTests bvReadCovarianceFile
   ${OTBBioVars_SOURCE_DIR}/data/bvCovarFile.txt)
