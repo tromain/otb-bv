@@ -191,6 +191,7 @@ std::pair<bool, double> IsValidSample(SampleType sample, vnl_matrix<double>& inv
 {
   // evaluate if the sample probability is > 1-confidence
   assert(sample.Size() == mean_vector.size());
+  assert(sample.Size() == inv_cov.columns());
   assert(inv_cov.rows() == inv_cov.columns());
 
   auto k = sample.Size();
