@@ -145,6 +145,7 @@ double get_measure(bv_validation_point vp, MeasureType measure)
       return vp.otbv;
       break;
     }
+  return 0;
 }
 
 error_metrics compute_errors(const bv_validation_vec& bvv, 
@@ -236,7 +237,7 @@ int main(int argc, char* argv[])
     }
   std::vector<error_metrics> em{};
   std::vector<error_metrics> eminra{};
-  for(size_t i = 2; i<argc; ++i)
+  for(size_t i = 2; i<size_t(argc); ++i)
     {
     std::cout << argv[i] << '\n';
     em.push_back(retrieve_errors(argv[i]));

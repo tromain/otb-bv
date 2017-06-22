@@ -36,7 +36,7 @@ T compute_weight(T delta, T err)
 std::pair<VectorType, VectorType> 
 fit_csdm(VectorType dts, VectorType ts)
 {
-  assert(ts.size()==ets.size() && ts.size()==dts.size());
+  assert(ts.size()==dts.size());
   auto result = ts;
   auto result_flag = ts;
   // std::vector to vnl_vector
