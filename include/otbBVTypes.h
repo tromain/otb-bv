@@ -17,6 +17,13 @@
 #include <map>
 #include <vector>
 
+#include "otbMachineLearningModelFactory.h"
+#include "otbNeuralNetworkMachineLearningModel.h"
+#include "otbSVMMachineLearningModel.h"
+#include "otbRandomForestsMachineLearningModel.h"
+#include "otbMultiLinearRegressionModel.h"
+#include "itkListSample.h"
+
 namespace otb
 {
 
@@ -48,6 +55,22 @@ struct VarParams {
 };
   
 typedef std::map< IVNames, double > SampleType;
+
+
+typedef itk::FixedArray<PrecisionType, 1> OutputSampleType;
+typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
+typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
+typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
+typedef otb::MachineLearningModel<PrecisionType, PrecisionType> ModelType;
+typedef ModelType::Pointer ModelPointerType;
+typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
+                                               PrecisionType> 
+NeuralNetworkType;
+typedef otb::RandomForestsMachineLearningModel<PrecisionType, 
+                                               PrecisionType> RFRType;
+typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
+typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
+
 }//namespace BV
 }//namespace otb
 #endif

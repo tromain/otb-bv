@@ -21,28 +21,7 @@
 #include <memory>
 
 #include "otbBVUtil.h"
-
-#include "otbMachineLearningModelFactory.h"
-#include "otbNeuralNetworkMachineLearningModel.h"
-#include "otbSVMMachineLearningModel.h"
-#include "otbRandomForestsMachineLearningModel.h"
-#include "otbMultiLinearRegressionModel.h"
-#include "itkListSample.h"
-
-typedef double PrecisionType;
-typedef itk::FixedArray<PrecisionType, 1> OutputSampleType;
-typedef itk::VariableLengthVector<PrecisionType> InputSampleType;
-typedef itk::Statistics::ListSample<OutputSampleType> ListOutputSampleType;
-typedef itk::Statistics::ListSample<InputSampleType> ListInputSampleType;
-typedef otb::MachineLearningModel<PrecisionType, PrecisionType> ModelType;
-typedef ModelType::Pointer ModelPointerType;
-typedef otb::NeuralNetworkMachineLearningModel<PrecisionType, 
-                                                         PrecisionType> 
-NeuralNetworkType;
-typedef otb::RandomForestsMachineLearningModel<PrecisionType, 
-                                               PrecisionType> RFRType;
-typedef otb::SVMMachineLearningModel<PrecisionType, PrecisionType> SVRType;
-typedef otb::MultiLinearRegressionModel<PrecisionType> MLRType;
+#include "otbBVEstimation.h"
 
 namespace otb
 {
@@ -88,56 +67,6 @@ private:
 
 
 };
-template <typename InputPixelType, typename OutputPixelType>
-class BVEstimationFunctor
-{
-public:
-  BVEstimationFunctor() = default;
-  BVEstimationFunctor(ModelType* model, 
-                      const BV::NormalizationVectorType& normalization) : 
-    m_Model{model}, m_Normalization{normalization} {}
-
-  ~BVEstimationFunctor() {};
-  
-  inline
-  OutputPixelType operator ()(const InputPixelType& in_pix)
-  {
-    bool normalization{m_Normalization!=BV::NormalizationVectorType{}};
-    OutputPixelType pix{};
-    pix.SetSize(1);
-    auto nbInputVariables = in_pix.GetSize();
-    InputSampleType inputValue;
-    inputValue.Reserve(nbInputVariables);
-    for(size_t var = 0; var < nbInputVariables; ++var)
-      {
-      inputValue[var] = in_pix[var];
-      if( normalization )
-        inputValue[var] = BV::normalize(inputValue[var], m_Normalization[var]);
-      }
-    OutputSampleType outputValue = m_Model->Predict(inputValue);
-    pix[0] = outputValue[0];
-    if( normalization )
-      pix[0] = BV::denormalize(outputValue[0],
-                               m_Normalization[nbInputVariables]);
-    return pix;
-  }
-
-  bool operator !=(const BVEstimationFunctor& other) const
-  {
-    return (this->m_Model!=other.m_Model ||
-            this->m_Normalization!=other.m_Normalization);
-  }
-
-  bool operator ==(const BVEstimationFunctor& other) const
-  {
-    return !(*this!=other);
-  }
-
-protected:
-  ModelPointerType m_Model;
-  BV::NormalizationVectorType m_Normalization;
-
-};
 
 namespace Wrapper
 {
@@ -156,8 +85,8 @@ public:
   itkNewMacro(Self);
   itkTypeMacro(BVImageInversion, otb::Application);
 
-  using FunctorType = BVEstimationFunctor<FloatVectorImageType::PixelType, 
-                                          FloatVectorImageType::PixelType>;
+  using FunctorType = Functor::BVEstimation<FloatVectorImageType::PixelType, 
+                                            FloatVectorImageType::PixelType>;
   using FilterType = UnaryFunctorImageFilterWithNBands<FloatVectorImageType,
                                                        FloatVectorImageType,
                                                        FunctorType>;
@@ -222,29 +151,29 @@ private:
                     << std::endl)
         }
     auto model_file = GetParameterString("model");
-    ModelType* regressor;
-    auto nn_regressor = NeuralNetworkType::New();
-    auto svr_regressor = SVRType::New();
-    auto rfr_regressor = RFRType::New();
-    auto mlr_regressor = MLRType::New();
+    BV::ModelType* regressor;
+    auto nn_regressor = BV::NeuralNetworkType::New();
+    auto svr_regressor = BV::SVRType::New();
+    auto rfr_regressor = BV::RFRType::New();
+    auto mlr_regressor = BV::MLRType::New();
     if(nn_regressor->CanReadFile(model_file))
       {
-      regressor = dynamic_cast<ModelType*>(nn_regressor.GetPointer());
+      regressor = dynamic_cast<BV::ModelType*>(nn_regressor.GetPointer());
       otbAppLogINFO("Applying NN regression ..." << std::endl);
       }
     else if(svr_regressor->CanReadFile(model_file))
       {
-      regressor = dynamic_cast<ModelType*>(svr_regressor.GetPointer());
+      regressor = dynamic_cast<BV::ModelType*>(svr_regressor.GetPointer());
       otbAppLogINFO("Applying SVR regression ..." << std::endl);
       }
     else if(rfr_regressor->CanReadFile(model_file))
       {
-      regressor = dynamic_cast<ModelType*>(rfr_regressor.GetPointer());
+      regressor = dynamic_cast<BV::ModelType*>(rfr_regressor.GetPointer());
       otbAppLogINFO("Applying RF regression ..." << std::endl);
       }
     else if(mlr_regressor->CanReadFile(model_file))
       {
-      regressor = dynamic_cast<ModelType*>(mlr_regressor.GetPointer());
+      regressor = dynamic_cast<BV::ModelType*>(mlr_regressor.GetPointer());
       otbAppLogINFO("Applying MLR regression ..." << std::endl);
       }
     else
