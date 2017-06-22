@@ -169,12 +169,12 @@ public:
 
   bool operator !=(const ProSailSimulator& other) const
   {
-    return true;
+    return *this!=other;
   }
 
   bool operator ==(const ProSailSimulator& other) const
   {
-    return false;
+    return !(*this!=other);
   }
 
   inline
