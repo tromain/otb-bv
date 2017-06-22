@@ -217,11 +217,11 @@ double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov,
   inv_cov = inverse_calc.inverse();
   const auto determinant = inverse_calc.determinant();
   const auto k = cov.rows();
-  if(determinant < 1.0/std::pow(2*M_PI,k)) 
-    {
-    std::cout << determinant << '\n';
-    throw std::runtime_error("invalid determinant");
-    }
+  // if(determinant < 1.0/std::pow(2*M_PI,k)) 
+  //   {
+  //   std::cout << determinant << '\n';
+  //   throw std::runtime_error("invalid determinant");
+  //   }
   return determinant;
 }
 

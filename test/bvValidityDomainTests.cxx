@@ -78,6 +78,8 @@ int bvComputeCovarFromRefls(int argc, char * argv[])
     return EXIT_FAILURE;
     }
   auto sample_count{0};
+  using SampleType =   itk::VariableLengthVector<double>;
+  std::vector<SampleType> simu_vec{};
   for(std::string line; std::getline(reflectancesFile, line); )
     {
     boost::trim(line);
@@ -94,6 +96,8 @@ int bvComputeCovarFromRefls(int argc, char * argv[])
         ss >> inputValue[var];
         }
       simus.push_back(inputValue);
+      SampleType sample(inputValue.data(),nbInputVariables);
+      simu_vec.push_back(sample);
       }
     std::cout << sample_count << '\n';
     if(sample_count>1000) return EXIT_FAILURE;
@@ -102,6 +106,11 @@ int bvComputeCovarFromRefls(int argc, char * argv[])
 
   EstimateReflectanceDensity(simus, covariance, mean_vector);
   auto determinant = InverseCovarianceAndDeterminant(covariance, inv_covariance);
+  if(determinant < 1.0/std::pow(2*M_PI,covariance.rows())) 
+    {
+    std::cout << "outside " << determinant << '\n';
+    throw std::runtime_error("invalid determinant");
+    }
 
   if(fabs(covariance(0,0) - std::stod(argv[2]))>10e-5) 
     {
@@ -130,6 +139,11 @@ int bvComputeCovarFromRefls(int argc, char * argv[])
   std::cout << "-- Mean -- \n";
   std::cout << mean_vector << '\n';
 
+  for(const auto s : simu_vec)
+    {
+    auto result = IsValidSample(s, inv_covariance, mean_vector, 0.99);
+    std::cout << result.first << " " << result.second << '\n';
+    }
   return EXIT_SUCCESS;
 }
 
@@ -146,7 +160,7 @@ int bvReadCovarianceFile(int argc, char * argv[])
 
 double gaussian(double x, double m, double s)
 {
-  return exp(-(x-m)*(x-m)/(2*s*s))/std::sqrt(2*M_PI*s*s);
+  return (x-m)*(x-m)/(2*s*s);
 }
 
 int bvIsSampleValid1D(int argc, char * argv[])
@@ -164,14 +178,14 @@ int bvIsSampleValid1D(int argc, char * argv[])
     for(auto c=0u; c<100; ++c)
       {
       sample[0] = x/100.0;
-      auto confidence = c/100.0;
+      auto confidence = -std::log(c/100.0);
 
       auto proba = gaussian(sample[0], mean_vector(0), covariance(0,0));
-      auto valid = proba > 1-confidence;
+      auto valid = proba < confidence;
 
 
       auto result = IsValidSample(sample, covariance, mean_vector, 
-                                  covariance(0,0), confidence);
+                                  confidence);
 
       auto error = fabs(result.second - proba);
       if(error > 10e-3)
@@ -200,8 +214,8 @@ double gaussian2D(double x0,
   const auto v1 = inv_covariance(0,0)*x0+inv_covariance(0,1)*x1;
   const auto v2 = inv_covariance(1,0)*x0+inv_covariance(1,1)*x1;
   const auto v3 = x0*v1+x1*v2;
-  const auto v4 = -0.5*v3;
-  return std::exp(v4)/norm_factor;
+  const auto v4 = 0.5*v3;
+  return v4;
 }
 
 int bvIsSampleValid2D(int argc, char * argv[])
@@ -254,16 +268,15 @@ int bvIsSampleValid2D(int argc, char * argv[])
       {
       sample[0] = x/100.0;
       sample[1] = c/100.0;
-      auto confidence = c/100.0;
+      auto confidence = -std::log(c/100.0);
 
       auto proba = gaussian2D(sample[0]-mean_vector(0), 
                               sample[1]-mean_vector(1), 
                               inv_covariance, cov_det);
-      auto valid = proba > 1-confidence;
+      auto valid = proba < confidence;
 
 
-      auto result = IsValidSample(sample, inv_covariance, mean_vector, 
-                                  cov_det, confidence);
+      auto result = IsValidSample(sample, inv_covariance, mean_vector, confidence);
 
       std::cout << proba << "  " << result.second << '\n';
 

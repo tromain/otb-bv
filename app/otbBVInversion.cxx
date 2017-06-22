@@ -192,7 +192,7 @@ private:
     vnl_matrix<double> inv_covariance;
     double cov_det{0};
     vnl_vector<double> mean_vector;
-    auto confidence_value{0.99};
+    auto confidence_value{-std::log(10e-4)};
     if(HasValue("confidence"))
       {
       confidence_value = GetParameterFloat("confidence");
@@ -202,11 +202,12 @@ private:
         {
         vnl_matrix<double> covariance;
         BV::ReadReflectanceDensity(GetParameterString("covariance"), covariance, mean_vector);
-        cov_det = BV::InverseCovarianceAndDeterminant(covariance, inv_covariance);
+        BV::InverseCovarianceAndDeterminant(covariance, inv_covariance);
         check_validity_domain = true;
+        std::cout << "Inverse covariance matrix\n" << inv_covariance << '\n';
         }
-      auto sampleCount = 0;
-      for(std::string line; std::getline(reflectancesFile, line); )
+    auto sampleCount = 0;
+    for(std::string line; std::getline(reflectancesFile, line); )
         {
         if(line.size() > 1)
           {
@@ -223,10 +224,11 @@ private:
           if(check_validity_domain)
                 {
                 auto res = BV::IsValidSample(inputValue, inv_covariance, 
-                                             mean_vector, cov_det,
+                                             mean_vector,
                                              confidence_value);
                 valid_sample = res.first;
                 proba = res.second;
+                std::cout << proba << '\n';
                 }
 
           if(valid_sample)

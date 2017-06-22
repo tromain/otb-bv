@@ -69,10 +69,30 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
 
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
                                        vnl_matrix<double>& inv_cov);
+
+
+/** Evaluate how likely the sample is wrt the multivariate normal. We
+can't use the multivariate normal pdf as an estimation of the
+probability, since this function can locally have values much
+larger than 1 (if the covariance has very low values and
+therefore its determinant is very small. What we do here is to
+compute the ratio pdf(sample)/pdf(mean), that is, the likelihood
+of the sample relative to the mean vector (the max probability of
+the distribution). This is equivalent to drop the normalization
+factor of the pdf sqrt((2\pi)^{k}*det_covar). Therefore, only the
+exponential of the multivariate gaussian needs to be evaluated.
+If we take the option of a log-likelihood ratio, only
+(x-mean)'cov^{-1}(x-mean) has to be evaluated. The confidence
+value passed should be equal to -log(lr) where lr is the
+likelihood ratio threshold value. It is a positive value (since
+log(lr) is negative) value and the higher its value, the higher
+the likelihood of a sample to be considered as belonging to the
+distribution. For instance, if lr=0.01, confidence is 4.6. and
+lr=0.1 gives confidence=2.3.*/
 template<typename SampleType>
 std::pair<bool, double> IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
-                                      vnl_vector<double>& mean_vector, double cov_det, 
-                   double confidence);
+                                      vnl_vector<double>& mean_vector, 
+                                      double confidence);
 
 }//namespace BV
 }//namespace otb
