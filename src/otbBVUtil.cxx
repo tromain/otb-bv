@@ -213,15 +213,12 @@ double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov,
   // We use Cholesky for the inverse, since only positive definite
   // matrices have a Cholesky decomposition. This is an additional
   // check for the conditioning of the covariance matrix.
-  vnl_cholesky inverse_calc(cov, vnl_cholesky::estimate_condition);
+  vnl_matrix<double> ridge(cov.rows(), cov.columns(), 0);
+  ridge.fill_diagonal(10e-10);
+  vnl_cholesky inverse_calc(cov+ridge, vnl_cholesky::estimate_condition);
   inv_cov = inverse_calc.inverse();
   const auto determinant = inverse_calc.determinant();
   const auto k = cov.rows();
-  // if(determinant < 1.0/std::pow(2*M_PI,k)) 
-  //   {
-  //   std::cout << determinant << '\n';
-  //   throw std::runtime_error("invalid determinant");
-  //   }
   return determinant;
 }
 

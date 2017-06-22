@@ -106,11 +106,6 @@ int bvComputeCovarFromRefls(int argc, char * argv[])
 
   EstimateReflectanceDensity(simus, covariance, mean_vector);
   auto determinant = InverseCovarianceAndDeterminant(covariance, inv_covariance);
-  if(determinant < 1.0/std::pow(2*M_PI,covariance.rows())) 
-    {
-    std::cout << "outside " << determinant << '\n';
-    throw std::runtime_error("invalid determinant");
-    }
 
   if(fabs(covariance(0,0) - std::stod(argv[2]))>10e-5) 
     {
