@@ -68,7 +68,8 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
                             vnl_vector<double>& mean_vector);
 
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
-                                       vnl_matrix<double>& inv_cov);
+                                       vnl_matrix<double>& inv_cov,
+                                       double ridge_epsilon = 10e-10);
 
 
 /** Evaluate how likely the sample is wrt the multivariate normal. We

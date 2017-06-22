@@ -208,17 +208,18 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
 }
 
 double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
-                                       vnl_matrix<double>& inv_cov)
+                                       vnl_matrix<double>& inv_cov,
+                                       double ridge_epsilon)
 {
   // We use Cholesky for the inverse, since only positive definite
   // matrices have a Cholesky decomposition. This is an additional
-  // check for the conditioning of the covariance matrix.
+  // check for the conditioning of the covariance matrix. We also
+  // apply a ridge regression to the matrix before inversion.
   vnl_matrix<double> ridge(cov.rows(), cov.columns(), 0);
-  ridge.fill_diagonal(10e-10);
+  ridge.fill_diagonal(ridge_epsilon);
   vnl_cholesky inverse_calc(cov+ridge, vnl_cholesky::estimate_condition);
   inv_cov = inverse_calc.inverse();
   const auto determinant = inverse_calc.determinant();
-  const auto k = cov.rows();
   return determinant;
 }
 
