@@ -184,20 +184,21 @@ void EstimateReflectanceDensity(const std::vector<SimulationType>& simus,
   covariance /= nbSamples;
 }
 
-template<typename SampleType>
-std::pair<bool, double> IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
-                                      vnl_vector<double>& mean_vector, 
-                                      double confidence)
+template<typename FloatType>
+std::pair<bool, FloatType> IsValidSample(const itk::VariableLengthVector<FloatType>& sample, 
+                                         const vnl_matrix<FloatType>& inv_cov,
+                                      const vnl_vector<FloatType>& mean_vector, 
+                                      FloatType confidence)
 {
   assert(sample.Size() == mean_vector.size());
   assert(sample.Size() == inv_cov.columns());
   assert(inv_cov.rows() == inv_cov.columns());
   assert(confidence>0);
 
-  auto k = sample.Size();
-  vnl_vector<double> sample_v(sample.GetDataPointer(), k);
+  unsigned int k = sample.Size();
+  vnl_vector<FloatType> sample_v(sample.GetDataPointer(), k);
   auto centered_sample = sample_v-mean_vector;
-  vnl_matrix<double> centered_sample_t(centered_sample.data_block(), 1, k);
+  vnl_matrix<FloatType> centered_sample_t(centered_sample.data_block(), 1, k);
   auto loglr = 0.5*(centered_sample_t*(inv_cov)*centered_sample)(0);
   return std::make_pair((loglr < confidence), loglr);
 }

@@ -67,7 +67,7 @@ void WriteReflectanceDensity(vnl_matrix<double>& covariance,
 void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covariance,
                             vnl_vector<double>& mean_vector);
 
-double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
+double InverseCovarianceAndDeterminant(const vnl_matrix<double>& cov, 
                                        vnl_matrix<double>& inv_cov,
                                        double ridge_epsilon = 10e-10);
 
@@ -90,10 +90,11 @@ log(lr) is negative) value and the higher its value, the higher
 the likelihood of a sample to be considered as belonging to the
 distribution. For instance, if lr=0.01, confidence is 4.6. and
 lr=0.1 gives confidence=2.3.*/
-template<typename SampleType>
-std::pair<bool, double> IsValidSample(SampleType sample, vnl_matrix<double>& inv_cov,
-                                      vnl_vector<double>& mean_vector, 
-                                      double confidence);
+template<typename FloatType>
+std::pair<bool, FloatType> IsValidSample(const itk::VariableLengthVector<FloatType>& sample, 
+                                         const vnl_matrix<FloatType>& inv_cov,
+                                         const vnl_vector<FloatType>& mean_vector, 
+                                         FloatType confidence);
 
 }//namespace BV
 }//namespace otb

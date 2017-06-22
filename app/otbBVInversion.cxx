@@ -189,9 +189,8 @@ private:
     regressor->SetRegressionMode(true);
 
 
-    vnl_matrix<double> inv_covariance;
-    double cov_det{0};
-    vnl_vector<double> mean_vector;
+    vnl_matrix<PrecisionType> inv_covariance;
+    vnl_vector<PrecisionType> mean_vector;
     auto confidence_value{-std::log(10e-4)};
     if(HasValue("confidence"))
       {
@@ -199,13 +198,12 @@ private:
       }
     auto check_validity_domain{false};
     if(HasValue("covariance") == true)
-        {
-        vnl_matrix<double> covariance;
-        BV::ReadReflectanceDensity(GetParameterString("covariance"), covariance, mean_vector);
+      {
+      vnl_matrix<PrecisionType> covariance;
+      BV::ReadReflectanceDensity(GetParameterString("covariance"), covariance, mean_vector);
         BV::InverseCovarianceAndDeterminant(covariance, inv_covariance);
         check_validity_domain = true;
-        std::cout << "Inverse covariance matrix\n" << inv_covariance << '\n';
-        }
+      }
     auto sampleCount = 0;
     for(std::string line; std::getline(reflectancesFile, line); )
         {
@@ -228,7 +226,6 @@ private:
                                              confidence_value);
                 valid_sample = res.first;
                 proba = res.second;
-                std::cout << proba << '\n';
                 }
 
           if(valid_sample)

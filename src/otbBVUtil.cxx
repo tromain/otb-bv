@@ -207,7 +207,7 @@ void ReadReflectanceDensity(std::string file_name, vnl_matrix<double>& covarianc
   std::cout << "Covariance matrix\n" << covariance << '\n';
 }
 
-double InverseCovarianceAndDeterminant(vnl_matrix<double>& cov, 
+double InverseCovarianceAndDeterminant(const vnl_matrix<double>& cov, 
                                        vnl_matrix<double>& inv_cov,
                                        double ridge_epsilon)
 {
