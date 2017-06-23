@@ -145,12 +145,13 @@ public:
     
     VectorPairType hxSpectrum;
     for(size_t i=0;i<SimNbBands;i++)
-         {
-         PairType resp;
-         resp.first = static_cast<PrecisionType>((400.0+i)/1000);
-         resp.second = sailSim[i].second;
-         hxSpectrum.push_back(resp);
-         }
+      {
+      PairType resp;
+      const auto sail_wl_0= 400.0;
+      resp.first = static_cast<PrecisionType>((sail_wl_0+i)/1000);
+      resp.second = sailSim[i].second;
+      hxSpectrum.push_back(resp);
+      }
 
     auto aResponse = ResponseType::New();
     aResponse->SetResponse( hxSpectrum );
