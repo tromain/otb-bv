@@ -51,6 +51,7 @@ private:
   otb::BV::VarParams m_HsD ={0.1, 0.5, 0.2, 0.5, 0.1, 0.5, true, 1, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_N ={1.20, 2.20, 1.50, 0.30, 1.30, 1.80, true, 3, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_Cab ={20.0, 90.0, 45.0, 30.0, 45, 90, true, 4, otb::BV::DistType::GAUSSIAN};
+  /* m_Car distribution will not be used and Car=Cab/4, but we keep it here for future evolutions*/
   otb::BV::VarParams m_Car ={0.0, 25.0, 8.58, 3.95, 0, 0, true, 1, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_Cdm ={0.0030, 0.0110, 0.0050, 0.0050, 0.0050, 0.0110, true, 4, otb::BV::DistType::GAUSSIAN};
   otb::BV::VarParams m_CwRel ={0.60, 0.85, 0.75, 0.08, 0.70, 0.80, true, 4, otb::BV::DistType::UNIFORM};
