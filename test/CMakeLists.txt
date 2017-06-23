@@ -124,6 +124,7 @@ otb_add_test(NAME bvProSailSimulatorFunctor
   ${OTBBioVars_SOURCE_DIR}/data/NNETInOutTrue.csv #simulationFile 
   8 #nbBands
   100 #nbsamples
+  ${TEMP}/bvProSailSimulatorFunctorErrors.txt  #output file for analysis
   )
 
 otb_add_test(NAME bvComputeCovarAndMean

@@ -38,7 +38,7 @@ public:
                FloatType confidence ) : 
     m_Model{model}, m_Normalization{normalization},
     m_MeanVector{meanvec}, m_checkValidity{true}, m_Confidence{confidence}  {
-      InverseCovarianceAndDeterminant(covariance, m_InvCovariance);
+       InverseCovarianceAndDeterminant(covariance, m_InvCovariance);
     }
 
   ~BVEstimation() {};

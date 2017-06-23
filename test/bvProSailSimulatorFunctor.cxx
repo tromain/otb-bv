@@ -115,14 +115,15 @@ std::vector<std::vector<double>> parse_simu_file(std::ifstream& simu_file, size_
 }
 int bvProSailSimulatorFunctor(int argc, char * argv[])
 {
-  if(argc!=8)
+  if(argc!=9)
     {
     std::cout << "Usage: " << argv[0] << 
-      " RSRFile soilFile wlfactor bvVariableFile simulationFile nbBands nbSamples" << std::endl;
+      " RSRFile soilFile wlfactor bvVariableFile simulationFile nbBands nbSamples outputFile" << std::endl;
     return EXIT_FAILURE;
     }
 
   auto tolerance{5*10e-2};
+  auto per_band_tolerance{0.133};
   auto average_tolerance{0.03};
   auto nb_bands = std::stoi(argv[6]);
   typedef double PrecisionType;
@@ -165,6 +166,8 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
   std::vector<double> err_per_band(nb_bands,0.0);
   std::vector<double> rel_err_per_band(nb_bands,0.0);
 
+  std::ofstream out_file(argv[8]);
+  out_file << "# LAI; reference refls; simulated refls\n";
   for(const auto sample_idx : indices)
     {
     const auto bv_sample = bvvector[sample_idx];
@@ -189,10 +192,20 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
     for(size_t i=0; i<ref_pix.size(); i++)
       {
       auto err = fabs(ref_pix[i]-pix[i]);
+      if(err>per_band_tolerance)
+        {
+        std::cout << "Band " << i+1 << " error " << err << '\n';
+        return EXIT_FAILURE;
+        }
       err_sim += err;
       err_per_band[i] += err;
       rel_err_per_band[i] += err/fabs(ref_pix[i]+10e-4);
       }
+
+    out_file << bv_sample.at(IVNames::MLAI) << " ";
+    for(const auto x : ref_pix) out_file << x << " ";
+    for(const auto x : pix) out_file << x << " ";
+    out_file << '\n';
 
     err_sim/=nb_bands;
     average_error+=err_sim;
@@ -242,9 +255,9 @@ int bvProSailSimulatorFunctor(int argc, char * argv[])
 
   average_error/=nb_samples;
   if(average_error>average_tolerance)
-      {
-      std::cout << "average tolerance < " << average_error << '\n';
-      return EXIT_FAILURE;
-      }
+    {
+    std::cout << "average tolerance < " << average_error << '\n';
+    return EXIT_FAILURE;
+    }
   return EXIT_SUCCESS;
 }
