@@ -92,7 +92,9 @@ otb::BV::SampleType BVInputVariableGeneration::DrawSample()
                                  s[IVNames::MLAI], m_N, m_MLAI);
   s[IVNames::Cab] = CorrelateValue(Rng(m_Cab, m_RNG), 
                                    s[IVNames::MLAI], m_Cab, m_MLAI);
-  s[IVNames::Car] = s[IVNames::Cab]*0.25;
+  // We don't use the Car distribution to match INRA's approach and set it to Cab/4
+  (void)m_Car; // ugly way of removing unused var warning
+  s[IVNames::Car] = s[IVNames::Cab]*0.25; 
   s[IVNames::Cdm] = CorrelateValue(Rng(m_Cdm, m_RNG), 
                                    s[IVNames::MLAI], m_Cdm, m_MLAI);
   s[IVNames::CwRel] = CorrelateValue(Rng(m_CwRel, m_RNG), 
@@ -125,61 +127,61 @@ void BVInputVariableGeneration::DoExecute()
      
   */
 
-    m_MLAI.min = GetParameterFloat("minlai");
-    m_MLAI.max = GetParameterFloat("maxlai");
-    m_MLAI.mod = GetParameterFloat("modlai");
-    m_MLAI.std = GetParameterFloat("stdlai");
+  m_MLAI.min = GetParameterFloat("minlai");
+  m_MLAI.max = GetParameterFloat("maxlai");
+  m_MLAI.mod = GetParameterFloat("modlai");
+  m_MLAI.std = GetParameterFloat("stdlai");
 
-    if(IsParameterEnabled("distlai"))
+  if(IsParameterEnabled("distlai"))
+    {
+    if( GetParameterString("distlai") == "normal" )
       {
-      if( GetParameterString("distlai") == "normal" )
-        {
-        m_MLAI.dist = otb::BV::DistType::GAUSSIAN;
-        }
+      m_MLAI.dist = otb::BV::DistType::GAUSSIAN;
       }
-    if( m_MLAI.dist == otb::BV::DistType::GAUSSIAN)
-      {
-      otbAppLogINFO("LAI distribution is normal\n");
-      }
-    else
-      {
-      otbAppLogINFO("LAI distribution is lognormal\n");
-      }
+    }
+  if( m_MLAI.dist == otb::BV::DistType::GAUSSIAN)
+    {
+    otbAppLogINFO("LAI distribution is normal\n");
+    }
+  else
+    {
+    otbAppLogINFO("LAI distribution is lognormal\n");
+    }
 
-    m_ALA.min = GetParameterFloat("minala");
-    m_ALA.max = GetParameterFloat("maxala");
-    m_ALA.mod = GetParameterFloat("modala");
-    m_ALA.std = GetParameterFloat("stdala");
+  m_ALA.min = GetParameterFloat("minala");
+  m_ALA.max = GetParameterFloat("maxala");
+  m_ALA.mod = GetParameterFloat("modala");
+  m_ALA.std = GetParameterFloat("stdala");
 
-    try
-      {
-      m_SampleFile.open(GetParameterString("out").c_str(), std::ofstream::out);
-      }
-    catch(...)
-      {
-      itkGenericExceptionMacro(<< "Could not open file " << GetParameterString("out"));
-      }
+  try
+    {
+    m_SampleFile.open(GetParameterString("out").c_str(), std::ofstream::out);
+    }
+  catch(...)
+    {
+    itkGenericExceptionMacro(<< "Could not open file " << GetParameterString("out"));
+    }
 
-    m_SampleFile << std::setprecision(4);
-    m_SampleFile << std::setw(12) << std::left << "MLAI";
-    m_SampleFile << std::setw(12) << std::left<< "ALA";
-    m_SampleFile << std::setw(12) << std::left    << "CrownCover";
-    m_SampleFile << std::setw(12) << std::left    << "HsD";
-    m_SampleFile << std::setw(12) << std::left    << "N";
-    m_SampleFile << std::setw(12) << std::left    << "Cab";
-    m_SampleFile << std::setw(12) << std::left    << "Car";
-    m_SampleFile << std::setw(12) << std::left    << "Cdm";
-    m_SampleFile << std::setw(12) << std::left    << "CwRel";
-    m_SampleFile << std::setw(12) << std::left    << "Cbp";
-    m_SampleFile << std::setw(12) << std::left    << "Bs" << std::endl;
+  m_SampleFile << std::setprecision(4);
+  m_SampleFile << std::setw(12) << std::left << "MLAI";
+  m_SampleFile << std::setw(12) << std::left<< "ALA";
+  m_SampleFile << std::setw(12) << std::left    << "CrownCover";
+  m_SampleFile << std::setw(12) << std::left    << "HsD";
+  m_SampleFile << std::setw(12) << std::left    << "N";
+  m_SampleFile << std::setw(12) << std::left    << "Cab";
+  m_SampleFile << std::setw(12) << std::left    << "Car";
+  m_SampleFile << std::setw(12) << std::left    << "Cdm";
+  m_SampleFile << std::setw(12) << std::left    << "CwRel";
+  m_SampleFile << std::setw(12) << std::left    << "Cbp";
+  m_SampleFile << std::setw(12) << std::left    << "Bs" << std::endl;
     
-    auto maxSamples = GetParameterInt("samples");
-    auto sampleCount = 0;
+  auto maxSamples = GetParameterInt("samples");
+  auto sampleCount = 0;
 
-    m_RNG = std::mt19937(std::random_device{}());
+  m_RNG = std::mt19937(std::random_device{}());
 
-    otbAppLogINFO("Generating BV samples" << std::endl);
-    while(sampleCount < maxSamples)
+  otbAppLogINFO("Generating BV samples" << std::endl);
+  while(sampleCount < maxSamples)
       {
       this->WriteSample( this->DrawSample() );
       ++sampleCount;
