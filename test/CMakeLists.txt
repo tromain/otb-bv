@@ -121,7 +121,7 @@ otb_add_test(NAME bvProSailSimulatorFunctor
   ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Soils.csv  #soilFile 
   1  #wlfactor 
   ${OTBBioVars_SOURCE_DIR}/data/Sentinel2_Laws.txt #bvVariableFile 
-  ${OTBBioVars_SOURCE_DIR}/data/NNETInOutTrue.csv #simulationFile 
+  ${OTBBioVars_SOURCE_DIR}/data/InputNoNoise_2.csv #simulationFile 
   8 #nbBands
   100 #nbsamples
   ${TEMP}/bvProSailSimulatorFunctorErrors.txt  #output file for analysis
