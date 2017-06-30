@@ -141,20 +141,10 @@ public:
       }
     sail_fapar->Update();
 
-    auto fAPAR = this->ComputeFAPAR(sail_fapar->GetViewingAbsorptance());
-    
-    VectorPairType hxSpectrum;
-    for(size_t i=0;i<SimNbBands;i++)
-      {
-      PairType resp;
-      const auto sail_wl_0= 400.0;
-      resp.first = static_cast<PrecisionType>((sail_wl_0+i)/1000);
-      resp.second = sailSim[i].second;
-      hxSpectrum.push_back(resp);
-      }
+    auto fAPAR = this->ComputeFAPAR(sail_fapar->GetViewingAbsorptance()); 
 
     auto aResponse = ResponseType::New();
-    aResponse->SetResponse( hxSpectrum );
+    aResponse->SetResponse( sailSim );
     auto  reduceResponse = ReduceResponseType::New();
     reduceResponse->SetInputSatRSR(m_SatRSR);
     reduceResponse->SetInputSpectralResponse( aResponse );
