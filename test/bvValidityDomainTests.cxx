@@ -18,7 +18,7 @@
 #include <boost/algorithm/string.hpp>
 #include <cmath>
 
-int bvComputeCovarAndMean(int argc, char * argv[])
+int bvComputeCovarAndMean(int itkNotUsed(argc), char * argv[])
 {
 
   using namespace otb::BV;
@@ -142,7 +142,7 @@ int bvComputeCovarFromRefls(int argc, char * argv[])
   return EXIT_SUCCESS;
 }
 
-int bvReadCovarianceFile(int argc, char * argv[])
+int bvReadCovarianceFile(int itkNotUsed(argc), char * argv[])
 {
   using namespace otb::BV;
   vnl_matrix<double> covariance;
@@ -158,7 +158,7 @@ double gaussian(double x, double m, double s)
   return (x-m)*(x-m)/(2*s*s);
 }
 
-int bvIsSampleValid1D(int argc, char * argv[])
+int bvIsSampleValid1D(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   using namespace otb::BV;
   vnl_matrix<double> covariance(1,1);
@@ -203,9 +203,8 @@ int bvIsSampleValid1D(int argc, char * argv[])
 
 double gaussian2D(double x0, 
                   double x1, 
-                  vnl_matrix<double>& inv_covariance, double cov_det)
+                  vnl_matrix<double>& inv_covariance)
 {
-  const auto norm_factor = 2*M_PI*std::sqrt(cov_det);
   const auto v1 = inv_covariance(0,0)*x0+inv_covariance(0,1)*x1;
   const auto v2 = inv_covariance(1,0)*x0+inv_covariance(1,1)*x1;
   const auto v3 = x0*v1+x1*v2;
@@ -213,7 +212,7 @@ double gaussian2D(double x0,
   return v4;
 }
 
-int bvIsSampleValid2D(int argc, char * argv[])
+int bvIsSampleValid2D(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
   using namespace otb::BV;
   vnl_matrix<double> inv_covar(2,2);
@@ -267,7 +266,7 @@ int bvIsSampleValid2D(int argc, char * argv[])
 
       auto proba = gaussian2D(sample[0]-mean_vector(0), 
                               sample[1]-mean_vector(1), 
-                              inv_covariance, cov_det);
+                              inv_covariance);
       auto valid = proba < confidence;
 
 
