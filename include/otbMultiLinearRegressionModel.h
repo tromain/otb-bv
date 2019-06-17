@@ -18,7 +18,24 @@
 #include "gsl/gsl_multifit.h"
 #include <vector>
 #include "otbMachineLearningModel.h"
-
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wcast-align"
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wheader-guard"
+#pragma clang diagnostic ignored "-Wexpansion-to-defined"
+#else
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+#endif
 namespace otb{
 template <typename PrecisionType=double>
 class  MultiLinearRegressionModel : 
@@ -45,6 +62,7 @@ public:
   typedef itk::SmartPointer<Self>                         Pointer;
   typedef itk::SmartPointer<const Self>                   ConstPointer;
   typedef typename Superclass::ConfidenceValueType     ConfidenceValueType;
+  typedef typename Superclass::ProbaSampleType             ProbaSampleType;
 
   itkNewMacro(Self);
   itkTypeMacro(MultiLinearRegressionModel, itk::MachineLearningModel);
@@ -143,8 +161,9 @@ protected:
     return result;
   }
 
-  TargetSampleType DoPredict(const InputSampleType & input, 
-                             ConfidenceValueType *itkNotUsed(quality) = NULL) const ITK_OVERRIDE
+  TargetSampleType DoPredict(const InputSampleType& input, 
+                             ConfidenceValueType *quality=nullptr, 
+                             ProbaSampleType *proba=nullptr) const override
   {
     VectorType tmp_vec(this->SampleToVector(input));
     TargetSampleType target;
