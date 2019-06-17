@@ -69,7 +69,6 @@ private:
   {
     SetName("InverseModelLearning");
     SetDescription("Simulate reflectances using Prospect+Sail.");
-    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
 
     AddParameter(ParameterType_InputFilename, "training", 
                  "Input file containing the training samples.");

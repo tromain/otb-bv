@@ -51,8 +51,7 @@ private:
 
     SetName("ProfileReprocessing");
     SetDescription("Reprocess a BV time profile.");
-    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
-   
+       
     AddParameter(ParameterType_InputFilename, "ipf", "Input profile file.");
     SetParameterDescription( "ipf", "Input file containing the profile to process. This is an ASCII file where each line contains the date (YYYMMDD) the BV estimation and the error." );
     MandatoryOn("ipf");
