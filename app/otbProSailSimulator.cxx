@@ -54,7 +54,6 @@ private:
   {
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
-    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     SetDocLimitations("Simulations can be very long depending on the contents "
                       "of the RSR and the (optional) soil file. These should "
                       "contain only the spectral bands and the wavelength ranges "

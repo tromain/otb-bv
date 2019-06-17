@@ -26,12 +26,11 @@ void BVInputVariableGeneration::DoInit()
 {
   SetName("BVInputVariableGeneration");
   SetDescription("Generate random input variable distribution for ... .");
-  SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
   AddDocTag("Biophysical Variables");
   AddParameter(ParameterType_Int, "samples", "Sample size");
   SetDefaultParameterInt("samples", 1000);
   SetParameterDescription("samples", "Number of samples to be generated");
-    
+
   AddParameter(ParameterType_OutputFilename, "out", "Output file");
   SetParameterDescription( "out", "Filename where the variable sets are saved." );
   MandatoryOn("out");
