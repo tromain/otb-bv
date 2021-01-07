@@ -13,7 +13,7 @@
 # =========================================================================
 set(OTBBioVarsApps_LIBRARIES ${otb-module}
   ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${OTBPhenology_LIBRARIES} ${OTBSimulation_LIBRARIES}
-  ${OTBSupervised_LIBRARIES}
+  ${OTBSupervised_LIBRARIES} ${OTBApplicationEngine_LIBRARIES}
   )
 OTB_CREATE_APPLICATION(NAME           BVInputVariableGeneration
   SOURCES        otbBVInputVariableGeneration.cxx
