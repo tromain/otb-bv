@@ -14,7 +14,7 @@
 otb_module_test()
 
 set(${otb-module}Tests
-  otbBVTests.cxx
+  otbBVTestDriver.cxx
   bvProSailSimulatorFunctor.cxx
   bvMultiLinearFitting.cxx
   bvMultiTemporalInversion.cxx
