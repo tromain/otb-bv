@@ -14,7 +14,6 @@
 #
 # =========================================================================
 
-import string
 import os
 import sys
 from config import Config
@@ -36,44 +35,44 @@ from l8_no_pan_no_coastal_no_blue_fr_data import *
 from l8_4b_fr_data import *
 
 
-config_file = file(sys.argv[1])
+config_file = open(sys.argv[1],'r')
 cfg = Config(config_file)
 
-wdpath = cfg.paths.wdpath
-varName = cfg.paths.varName
+wdpath = cfg['paths.wdpath']
+varName = cfg['paths.varName']
 working_dir = wdpath+"/"+varName+"/"
-rsr_dir = cfg.paths.rsr_dir
-input_var_file = working_dir+cfg.paths.input_var_file
-input_var_file_test = working_dir+cfg.paths.input_var_file_test
-nbSamples_train = int(cfg.simulation.nbSamples_train)
-nbSamples_test = int(cfg.simulation.nbSamples_test)
-minlai = float(cfg.simulation.minlai)
-maxlai = float(cfg.simulation.maxlai)
-modlai = float(cfg.simulation.modlai)
-stdlai = float(cfg.simulation.stdlai)
-distlai = cfg.simulation.distlai
-noise_std = float(cfg.simulation.noise_std)
-simulate = bool(str(cfg.simulation.simulate)=="yes")
-useVI = bool(str(cfg.simulation.useVI)=="yes")
-nthreads = int(cfg.simulation.nthreads)
-bestof = int(cfg.inversion.bestof)
-regressor = cfg.inversion.regressor
-dummy = bool(str(cfg.sensors.dummy)=="yes")
-formosat = bool(str(cfg.sensors.formosat)=="yes")
-formosat_noblue = bool(str(cfg.sensors.formosat_noblue)=="yes")
-spot4 = bool(str(cfg.sensors.spot4)=="yes")
-landsat2013 = bool(str(cfg.sensors.landsat2013)=="yes")
-spot5 = bool(str(cfg.sensors.spot5)=="yes")
-landsat2015 = bool(str(cfg.sensors.landsat2015)=="yes")
-s2_10m_ukr = bool(str(cfg.sensors.s2_10m_ukr)=="yes")
-s2_10m_noblue_ukr = bool(str(cfg.sensors.s2_10m_noblue_ukr)=="yes")
-s2_allbands_noblue_ukr = bool(str(cfg.sensors.s2_allbands_noblue_ukr)=="yes")
-s2_allbands_noblue_fr = bool(str(cfg.sensors.s2_allbands_noblue_fr)=="yes")
-l8_no_pan_fr = bool(str(cfg.sensors.l8_no_pan_fr)=="yes")
-l8_no_pan_no_coastal_no_blue_fr = bool(str(cfg.sensors.l8_no_pan_no_coastal_no_blue_fr)=="yes")
-l8_4b_fr = bool(str(cfg.sensors.l8_4b_fr)=="yes")
+rsr_dir = cfg['paths.rsr_dir']
+input_var_file = working_dir+cfg['paths.input_var_file']
+input_var_file_test = working_dir+cfg['paths.input_var_file_test']
+nbSamples_train = int(cfg['simulation.nbSamples_train'])
+nbSamples_test = int(cfg['simulation.nbSamples_test'])
+minlai = float(cfg['simulation.minlai'])
+maxlai = float(cfg['simulation.maxlai'])
+modlai = float(cfg['simulation.modlai'])
+stdlai = float(cfg['simulation.stdlai'])
+distlai = cfg['simulation.distlai']
+noise_std = float(cfg['simulation.noise_std'])
+simulate = bool(str(cfg['simulation.simulate'])=="yes")
+useVI = bool(str(cfg['simulation.useVI'])=="yes")
+nthreads = int(cfg['simulation.nthreads'])
+bestof = int(cfg['inversion.bestof'])
+regressor = cfg['inversion.regressor']
+dummy = bool(str(cfg['sensors.dummy'])=="yes")
+formosat = bool(str(cfg['sensors.formosat'])=="yes")
+formosat_noblue = False # bool(str(cfg['sensors.formosat_noblue'])=="yes")
+spot4 = bool(str(cfg['sensors.spot4'])=="yes")
+landsat2013 = bool(str(cfg['sensors.landsat2013'])=="yes")
+spot5 = bool(str(cfg['sensors.spot5'])=="yes")
+landsat2015 = bool(str(cfg['sensors.landsat2015'])=="yes")
+#s2_10m_ukr = bool(str(cfg['sensors.s2_10m_ukr'])=="yes")
+#s2_10m_noblue_ukr = bool(str(cfg['sensors.s2_10m_noblue_ukr'])=="yes")
+#s2_allbands_noblue_ukr = bool(str(cfg['sensors.s2_allbands_noblue_ukr'])=="yes")
+s2_allbands_noblue_fr = bool(str(cfg['sensors.s2_allbands_noblue_fr'])=="yes")
+#l8_no_pan_fr = bool(str(cfg['sensors.l8_no_pan_fr'])=="yes")
+#l8_no_pan_no_coastal_no_blue_fr = bool(str(cfg['sensors.l8_no_pan_no_coastal_no_blue_fr'])=="yes")
+#l8_4b_fr = bool(str(cfg['sensors.l8_4b_fr'])=="yes")
 
-print "Working dir = ", working_dir
+print ("Working dir = ", working_dir)
 
 d = os.path.dirname(working_dir)
 if not os.path.exists(d):
@@ -94,8 +93,8 @@ if dummy :
     simus_list.append(dummy_data)
 if formosat :
     simus_list.append(fsat_data)
-if formosat_noblue :
-    simus_list.append(fsatnb_data)
+#if formosat_noblue :
+#    simus_list.append(fsatnb_data)
 if spot4 :
     simus_list.append(spot4_data)
 if landsat2013 :
@@ -104,20 +103,20 @@ if spot5 :
     simus_list.append(spot5_data)
 if landsat2015 :
     simus_list.append(lsat2015_data)
-if s2_10m_ukr:
-    simus_list.append(s2_10m_ukr_data)
-if s2_10m_noblue_ukr:
-    simus_list.append(s2_10m_noblue_ukr_data)
-if s2_allbands_noblue_ukr:
-    simus_list.append(s2_allbands_noblue_ukr_data)
+#if s2_10m_ukr:
+#    simus_list.append(s2_10m_ukr_data)
+#if s2_10m_noblue_ukr:
+#    simus_list.append(s2_10m_noblue_ukr_data)
+#if s2_allbands_noblue_ukr:
+#    simus_list.append(s2_allbands_noblue_ukr_data)
 if s2_allbands_noblue_fr:
     simus_list.append(s2_allbands_noblue_fr_data)
-if l8_no_pan_fr:
-    simus_list.append(l8_no_pan_fr_data)
-if l8_no_pan_no_coastal_no_blue_fr:
-    simus_list.append(l8_no_pan_no_coastal_no_blue_fr_data)
-if l8_4b_fr:
-    simus_list.append(l8_4b_fr_data)
+#if l8_no_pan_fr:
+#    simus_list.append(l8_no_pan_fr_data)
+#if l8_no_pan_no_coastal_no_blue_fr:
+#    simus_list.append(l8_no_pan_no_coastal_no_blue_fr_data)
+#if l8_4b_fr:
+#    simus_list.append(l8_4b_fr_data)
 
 for sat in simus_list:
     sat_name = sat[0]
@@ -155,9 +154,9 @@ for sat in simus_list:
         red_index = 1
         nir_index = 2
 
-    print useVI, red_index, nir_index
+    print (useVI, red_index, nir_index)
     for acqu in sat[2:]:
-        print "-------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor
+        print ("----------------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor+"----------------")
         reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
         training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
         reflectance_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_test"
@@ -177,20 +176,20 @@ for sat in simus_list:
         simuPars['solarSensorAzimuth'] = acqu['ps']-acqu['po']
         simuPars['soilFile'] = "whatever"
         simuPars['noisestd'] = noise_std
-        print "\tSimulation training"
-        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
+        print ("\tSimulation training")
+        bv.generateTrainingData(input_var_file, simuPars, training_file, bv.bvindex[varName], False, red_index, nir_index, nthreads)
         simuPars['outputFile'] = reflectance_file_test
-        print "\tSimulation testing data"
-        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], simulate, False, red_index, nir_index, nthreads)
-        print "\tLearning model"
+        print ("\tSimulation testing data")
+        bv.generateTrainingData(input_var_file_test, simuPars, training_file_test, bv.bvindex[varName], False, red_index, nir_index, nthreads)
+        print ("\tLearning model")
         bv.learnBVModel(training_file, model_file, regressor, normalization_file, bestof)
-        print "\tInversion for test data"
+        print ("\tInversion for test data")
         bv.invertBV(reflectance_file_test, model_file, normalization_file, inversion_file, True, red_index, nir_index)
         with open(inversion_file, 'r') as ivf:
             with open(training_file_test, 'r') as tft:
                 with open(validation_file, 'w') as vaf:
                     for(ivline, tftline) in zip(ivf.readlines(), tft.readlines()):
-                        outline = string.split(ivline)[0]+" "+string.split(tftline)[0]+"\n"
+                        outline = ivline.replace("\n"," ")+tftline
                         vaf.write(outline)
         var_values_gt = []
         var_values_bvnet = []
@@ -203,7 +202,7 @@ for sat in simus_list:
                 var_values_bvnet.append(gt_case[bv.bv_val_names[varName][1]])
         if useVI:
             bv.addVI(reflectances_gt_file, red_index, nir_index)
-        print "\tInversion for validation data"
+        print ("\tInversion for validation data")
         bv.invertBV(reflectances_gt_file, model_file, normalization_file, inversion_gt_file)
         with open(inversion_gt_file, 'r') as ivgtf:
             with open(validation_gt_file, 'w') as vgtf:

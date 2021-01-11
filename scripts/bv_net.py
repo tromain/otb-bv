@@ -66,7 +66,7 @@ def addVI(reflectances_file, red_index, nir_index):
         for l in allfields:
             rfls = str.split(l)
             if len(rfls)>red_index:
-                outline = str.join(str.split(l))
+                outline = l.replace("\n","")
                 red = float(rfls[red_index-1])
                 pir = float(rfls[nir_index-1])
                 epsilon = 0.001
@@ -113,13 +113,14 @@ def generateTrainingData(bvFile, simuPars, trainingFile, bvidx, add_angles=False
                 #the output line follows the format: outputvar inputvar1 inputvar2 ... inputvarN
                 for (refline, bvline) in zip(rf.readlines(), bvf.readlines()):
                     outline = ""
+                    separator = ' '
                     if bvidx == bvindex["FCOVER"] :
                         outline = str.split(refline)[-1]
                     elif bvidx == bvindex["FAPAR"] : 
                         outline = str.split(refline)[-2]
                     else:
                         outline = str.split(bvline)[bvidx]
-                    outline = outline+" "+refline[:-2]
+                    outline = outline+" "+separator.join(str.split(refline[:-1])[:-2])
                     outline.rstrip()
                     if add_angles:
                         angles = simuPars['solarZenithAngle']+" "+simuPars['sensorZenithAngle']+" "+simuPars['solarSensorAzimuth']
@@ -148,16 +149,16 @@ def invertBV(reflectanceFile, modelFile, normalizationFile, outputFile, removeFa
         rff = open(reflectanceFile)
         allfields = rff.readlines()
         rff.close()
+        separator = ' '
         with open(reflectanceFile, 'w') as rf:
             for l in allfields:
-                outline = str.join(l[:-2], ' ')+"\n"
+                outline = separator.join(str.split(l)[:-2])+"\n"
                 rf.write(outline)
 
     if red_index!=0 and nir_index!=0:
         print ("Adding VIs for inversion")
         addVI(reflectanceFile, red_index, nir_index)
 
-                
     app = otb.Registry.CreateApplication("BVInversion")
     app.SetParameterString("reflectances", reflectanceFile)
     app.SetParameterString("model", modelFile)
@@ -176,6 +177,6 @@ if __name__ == '__main__':
     (bvDistributionFileName, numberOfSamples, simulationParameters, trainingDataFileName, outputModelFileName,normFile) = parseConfigFile(cfg)
     generateInputBVDistribution(bvDistributionFileName, numberOfSamples, simulationParameters)
     generateTrainingData(bvDistributionFileName, simulationParameters, trainingDataFileName, bvindex[cfg['training.invertBV']])
-    learnBVModel(trainingDataFileName, outputModelFileName,"rfr",normFile)
+    learnBVModel(trainingDataFileName, outputModelFileName,cfg['training.regressor'],normFile)
 
 
