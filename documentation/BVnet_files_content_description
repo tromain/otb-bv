@@ -1,0 +1,93 @@
+************* BV-NET Input and Output Files description ************* 
+
+------------------------ generateInputBVDistribution -------------------- 
+
+Inputs :
+	******* SimuPars ******
+	 simulation parameters defined in config_*.cfg permits to determine the minimum and maximum of each variables to generate, as well as other parameters like noise (see config_example.cfg) 
+	
+	****** nbSamples *******
+	Number of samples to generate in the BV File
+	
+Outputs :
+
+
+	**** BV File (input_vars) *****
+	
+	      MLAI      |        ALA         |   CrownCover     |    HsD    |    N       |    Cab      |     Car    |       Cdm      |     CwRel    |      Cbp     |             Bs
+	----------------|--------------------|------------------|-----------|------------|-------------|------------|----------------|--------------|--------------|-----------------------------
+	Leaf area index | Average leaf angle | proportion of a  |  Hot-spot | structure  | Chlorophyll | Carotenoid | Leaf dry       |              |   CBrown :   | Soil reflectance properties
+			|		     |  stand covered   | parameter | coefficient|    content  |  content   | matter content |              | brown pigment|
+			|		     |  by the crowns   |           |            |             |            |                |              | content      |
+			|		     |  of live trees   |           |            |             |            |                |              |              |
+
+------------------------- generateTrainingData (generate the data associated with the BioVar to learn) ---------------------------
+
+Inputs :
+	bvFile => see generateInputBVDistribution output
+	simuPars => in config_*.cfg
+	bvidx => index of the BioVar to learn
+	add_angles=False (default value) => take into account the solar zenith, sensor Zenith Angle, and solar Sensor Azimuth angles in the training : {"MLAI": 0, "ALA": 1, "CrownCover": 2, "HsD": 3, "N": 4, "Cab": 5, "Car": 6, "Cdm": 7, "CwRel": 4, "Cbp": 9, "Bs": 10, "FAPAR": 11, "FCOVER": 12}
+	red_index=0 (default value) => index of the red band in the RSR file
+	nir_index=0 (default value) => index of the Infra red band in the RSR file
+	nthreads=2
+	
+	********** RSR File ******** (depends on the satellite program but follows this template)
+	RSR = Sensor's Relative Spectral Response
+
+	Wavelength | Solar Radiation | R | G | B | IR | Additional bands |
+	-----------|-----------------|---|---|---|----|-------------------
+
+Outputs :
+
+	********* Reflectances file simulated using ProSail (satName_reflectances when validation.py is used) *************
+	
+	    Band 1      |      Band 2    | ..... Band x
+	----------------|----------------|----------------
+          refl_value_b1 |  refl_value_b2 | ... 
+
+	******** Training file (satName_training when validation.py is used) ************ 
+        Note : the reflectance file contains FAPAR and FCOVER but BVNET don't use it by default so in the training file the last 2 values in the reflectance file are note present
+        
+	BioVar to learn | associated reflectance variables per band | 
+	----------------|-------------------------------------------|
+	"MLAI"
+
+------------------------ learnBVModel (Training to generate a regression model) -------------------------
+
+Inputs :
+	trainingFile => see above generateTrainingData output
+	modelOutputFile => filename of the output regression model
+	regressionType => "nn" Neural Network, svr "Support Vector Regression", rfr " ", mlr "Multi Linear Regression"
+	normalizationFile => filename of the output file with minimum and maximum value of each variable in the model
+	bestof=1 => Select the best model by default
+
+Outputs : 
+
+       ******** the Regression model file (satName_model_regressionType when validation.py is used) *********
+       Note : Uses OpenCV to generate the model, containing weights for each variable
+       
+       ******** the Regression model error estimation file (satName_model_regressionType_errest when validation.py is used) *********
+       Note : Uses OpenCV to generate the error estimation on each variable (RMSE)
+
+       ******** the normalization file (satName_normalization when validation.py is used) ***********
+       Min   |    Max  : each row corresponds to the min / max value of a variable in the trainingFile
+      -------|--------
+      
+
+---------------------- invertBV (Inversion of reflectance values for validation purposes) -----------------------
+Inputs : 
+	reflectanceFile => Output of generateTrainingData
+	modelFile => Output of LearnBVModel
+	normalizationFile => Output of LearnBVModel
+	outputFile => inversion file where the BioVar is inverted for each sample using the model
+	removeFaparFcover=False => the reflectance file contains FAPAR and FCOVER, this parameters permits to ommit or keep them
+	red_index=0 => Red band index
+	nir_index=0 => Infra red band index
+	
+Outputs :
+
+        ********** InversionFile (satName_inversion_regressorType) ************
+	Contains : the generated BioVar values guessed from the model for each sample
+        
+

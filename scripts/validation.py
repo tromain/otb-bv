@@ -157,17 +157,21 @@ for sat in simus_list:
     print (useVI, red_index, nir_index)
     for acqu in sat[2:]:
         print ("----------------"+sat_name+"_"+str(acqu['doy'])+"_"+regressor+"----------------")
-        reflectance_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances"
-        training_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_training"
-        reflectance_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_test"
-        training_file_test = working_dir+sat_name+"_"+str(acqu['doy'])+"_training_test"
-        normalization_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_normalization"
-        inversion_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_"+regressor
-        model_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_model_"+regressor
-        validation_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_"+regressor
-        reflectances_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_reflectances_gt"
-        inversion_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_inversion_gt_"+regressor
-        validation_gt_file = working_dir+sat_name+"_"+str(acqu['doy'])+"_validation_gt_"+regressor
+        tmpWd = working_dir+sat_name+"_"+str(acqu['doy'])+"/"
+        currWorkDir = os.path.dirname(tmpWd)
+        if not os.path.exists(currWorkDir):
+        	os.makedirs(currWorkDir)
+        reflectance_file = currWorkDir+"/reflectances"
+        training_file = currWorkDir+"/training"
+        reflectance_file_test = currWorkDir+"/reflectances_test"
+        training_file_test = currWorkDir+"/training_test"
+        normalization_file = currWorkDir+"/normalization"
+        inversion_file = currWorkDir+"/inversion_"+regressor
+        model_file = currWorkDir+"/model_"+regressor
+        validation_file = currWorkDir+"/validation_"+regressor
+        reflectances_gt_file = currWorkDir+"/reflectances_gt"
+        inversion_gt_file = currWorkDir+"/inversion_gt_"+regressor
+        validation_gt_file = currWorkDir+"/validation_gt_"+regressor
         simuPars = {}
         simuPars['rsrFile'] = rsr_dir+"/"+rsr_file
         simuPars['outputFile'] = reflectance_file
