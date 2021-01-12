@@ -17,9 +17,9 @@ Outputs :
 	      MLAI      |        ALA         |   CrownCover     |    HsD    |    N       |    Cab      |     Car    |       Cdm      |     CwRel    |      Cbp     |             Bs
 	----------------|--------------------|------------------|-----------|------------|-------------|------------|----------------|--------------|--------------|-----------------------------
 	Leaf area index | Average leaf angle | proportion of a  |  Hot-spot | structure  | Chlorophyll | Carotenoid | Leaf dry       |              |   CBrown :   | Soil reflectance properties
-			|		     |  stand covered   | parameter | coefficient|    content  |  content   | matter content |              | brown pigment|
-			|		     |  by the crowns   |           |            |             |            |                |              | content      |
-			|		     |  of live trees   |           |            |             |            |                |              |              |
+			        |		             |  stand covered   | parameter | coefficient|    content  |  content   | matter content |              | brown pigment|
+			        |		             |  by the crowns   |           |            |             |            |                |              | content      |
+			        |		             |  of live trees   |           |            |             |            |                |              |              |
 
 ------------------------- generateTrainingData (generate the data associated with the BioVar to learn) ---------------------------
 
@@ -44,7 +44,7 @@ Outputs :
 	
 	    Band 1      |      Band 2    | ..... Band x
 	----------------|----------------|----------------
-          refl_value_b1 |  refl_value_b2 | ... 
+      refl_value_b1 |  refl_value_b2 | ... 
 
 	******** Training file (satName_training when validation.py is used) ************ 
         Note : the reflectance file contains FAPAR and FCOVER but BVNET don't use it by default so in the training file the last 2 values in the reflectance file are note present
