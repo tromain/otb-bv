@@ -1,6 +1,6 @@
 ************* BV-NET Input and Output Files description ************* 
 
------------------------- generateInputBVDistribution -------------------- 
+------------------------ generateInputBVDistribution (Generate random input variable distribution for the Prospect and Sail simulator) -------------------- 
 
 Inputs :
 	******* SimuPars ******
@@ -35,8 +35,8 @@ Inputs :
 	********** RSR File ******** (depends on the satellite program but follows this template)
 	RSR = Sensor's Relative Spectral Response
 
-	Wavelength | Solar Radiation | R | G | B | IR | Additional bands |
-	-----------|-----------------|---|---|---|----|-------------------
+	Wavelength | Solar Radiation | B | G | R | NIR | Additional bands |
+	-----------|-----------------|---|---|---|-----|------------------|
 
 Outputs :
 
@@ -58,9 +58,9 @@ Outputs :
 Inputs :
 	trainingFile => see above generateTrainingData output
 	modelOutputFile => filename of the output regression model
-	regressionType => "nn" Neural Network, svr "Support Vector Regression", rfr " ", mlr "Multi Linear Regression"
+	regressionType => "nn" Neural Network, svr "Support Vector Regression", rfr "Random Forest Regressor", mlr "Multi Linear Regression"
 	normalizationFile => filename of the output file with minimum and maximum value of each variable in the model
-	bestof=1 => Select the best model by default
+	bestof=1 => Select the best of N models by default
 
 Outputs : 
 
@@ -88,6 +88,18 @@ Inputs :
 Outputs :
 
         ********** InversionFile (satName_inversion_regressorType) ************
-	Contains : the generated BioVar values guessed from the model for each sample
+	Contains : the estimated BioVar values guessed from the model for each sample
         
+        
+------------------- Validation ------------------------------
+Output Validation files : 
+    => validation_regressorType :
+         
+         Estimated BioVar (LAI for example) |     BioVar value used for training  | associated reflectances for each band |
+         -----------------------------------|-------------------------------------|---------------------------------------|
+    
+    => validation_gt_regressorType :
+    
+        Ground Measurement for the BioVar |    BVNet value (INRA BVNet implementation) |   Estimated BioVar (from inversion file) |
+       -----------------------------------|--------------------------------------------|------------------------------------------|
 
