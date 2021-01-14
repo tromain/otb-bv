@@ -18,6 +18,6 @@ for i = 3:size(allDirs)
     plot (validation_gt_nn)
     legend ("Ground Truth","BVNET","NN")
     title (currDir)
-    print (hf, "results.pdf", "-dpdflatex")
+    print (hf, "results_validation_gt.png", "-dpng")
   endif
 endfor
