@@ -26,6 +26,7 @@ namespace Wrapper
   {
     SetName("BVInputVariableGeneration");
     SetDescription("Generate random input variable distribution for the Prospect and Sail simulator");
+    SetDocAuthors("Jordi Inglada");
 
     AddDocTag(Tags::FeatureExtraction);
 

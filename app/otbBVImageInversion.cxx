@@ -75,7 +75,7 @@ protected:
   UnaryFunctorImageFilterWithNBands() {}
   virtual ~UnaryFunctorImageFilterWithNBands() {}
 
-  virtual void GenerateOutputInformation()
+  virtual void GenerateOutputInformation() override
   {
     Superclass::GenerateOutputInformation();
     this->GetOutput()->SetNumberOfComponentsPerPixel( m_NumberOfOutputBands );
@@ -167,15 +167,15 @@ private:
   {
     SetName("BVImageInversion");
     SetDescription("Estimate biophysical variables for every pixel of an image using an inversion of Prospect and Sail");
+    SetDocAuthors("Jordi Inglada");
 
     AddDocTag(Tags::FeatureExtraction);
-    AddDocTag("Description");
 
     AddParameter(ParameterType_InputImage, "in", "Input Image");
     SetParameterDescription("in","Input image.");
 
     AddParameter(ParameterType_InputFilename, "model", "File containing the regression model");
-    SetParameterDescription( "model", "File containing the regression model.");
+    SetParameterDescription( "model", "The regression model created by Inverse model learning");
     
     AddParameter(ParameterType_OutputImage, "out", "Output Image");
     SetParameterDescription("out","Output image.");
@@ -183,7 +183,7 @@ private:
     AddRAMParameter();
 
     AddParameter(ParameterType_InputFilename, "normalization", "Input file containing min and max values per sample component");
-    SetParameterDescription( "normalization", "Input file containing min and max values per sample component. This file can be produced by the invers model learning application. If no file is given as parameter, the variables are not normalized." );
+    SetParameterDescription( "normalization", "This file can be produced by the inverse model learning application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
 
     SetExampleComment("Example of use", 0);

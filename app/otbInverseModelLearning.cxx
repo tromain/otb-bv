@@ -77,31 +77,31 @@ private:
     AddParameter(ParameterType_InputFilename, "training",
                  "Input file containing the training samples");
     SetParameterDescription( "training", 
-                             "Input file containing the training samples. This is an ASCII file where each line is a training sample. A line is a set of fields containing numerical values. The first field is the value of the output variable and the other contain the values of the input variables." );
+                             "This is an ASCII file where each line is a training sample. The first field is the value of the output variable to learn and the next fields contain the values of the reflectances for each band" );
     MandatoryOn("training");
 
     AddParameter(ParameterType_OutputFilename, "out",
                  "Output regression model");
     SetParameterDescription( "out", 
-                             "Filename where the regression model will be saved." );
+                             "A file name where the regression model will be saved." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_OutputFilename, "errest", 
                  "Regression model for the error");
     SetParameterDescription( "errest", 
-                             "Filename where the regression model for the estimation of the regression error will be saved." );
+                             "A file name where the regression model for the estimation of the regression error will be saved." );
     MandatoryOff("errest");
 
     AddParameter(ParameterType_OutputFilename, "normalization", 
                  "Output file containing min and max values per sample component");
     SetParameterDescription( "normalization", 
-                             "Output file containing min and max values per sample component. This file can be used by the inversion application. If no file is given as parameter, the variables are not normalized." );
+                             "This file can be used by the inversion application for normalization purpose. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
 
     AddParameter(ParameterType_String, "regression", 
                  "Regression to use for the training (nn, svr, rfr, mlr)");
     SetParameterDescription("regression", 
-                            "Choice of the regression to use for the training: svr, rfr, nn, mlr.");
+                            "Choice of the regression to use for the training: svr (Support Vector Regression), rfr (Random Forest Regressor), nn (Neural Network), mlr (Multilinear Regression).");
     MandatoryOff("regression");
 
     AddParameter(ParameterType_Int, "bestof", "Select the best of N models.");

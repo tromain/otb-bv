@@ -89,30 +89,30 @@ private:
     AddDocTag(Tags::FeatureExtraction);
 
     AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples");
-    SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
+    SetParameterDescription( "bvfile", "A file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
     MandatoryOn("bvfile");
 
     AddParameter(ParameterType_InputFilename, "rsrfile", 
                  "Input file containing the relative spectral responses");
-    SetParameterDescription( "rsrfile", "Input file containing the relative spectral responses" );
+    SetParameterDescription( "rsrfile", "Input file containing the relative spectral responses for each band" );
     MandatoryOn("rsrfile");
     
     AddParameter(ParameterType_OutputFilename, "out", "Reflectances Output file");
     SetParameterDescription( "out", 
-                             "Filename where the simulations are saved, containing the simulated reflectance for each band. The last 2 bands are fcover and fapar." );
+                             "Filename where the simulated reflectances for each band are saved. The last 2 bands are fcover and fapar." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_Float, "solarzenith", "Solar zenith angle");
-    SetParameterDescription( "solarzenith", "." );
+    SetParameterDescription( "solarzenith", "Angle between the sun's rays and the vertical" );
     MandatoryOn("solarzenith");
 
     AddParameter(ParameterType_Float, "solarzenithf", "Solar zenith angle for FAPAR");
     SetParameterDescription( "solarzenithf", 
-                             "Solar zenith for the fAPAR simulation" );
+                             "Solar zenith angle for the fAPAR simulation" );
     MandatoryOff("solarzenithf");
     
     AddParameter(ParameterType_Float, "sensorzenith", "Sensor zenith angle");
-    SetParameterDescription( "sensorzenith", "." );
+    SetParameterDescription( "sensorzenith", "Angle between the sensor and the vertical" );
     MandatoryOn("sensorzenith");
 
     AddParameter(ParameterType_Float, "azimuth", "Sensor azimuth");
@@ -132,7 +132,7 @@ private:
     MandatoryOff("threads");
 
     SetExampleComment("Example of use", 0);
-    SetDocExampleParameterValue("bvfile", "inputBV-vars.txt");
+    SetDocExampleParameterValue("bvfile", "prosail-input-vars.txt");
     SetDocExampleParameterValue("rsrfile", "sentinel2.rsr");
     SetDocExampleParameterValue("out", "reflectances.txt");
     SetDocExampleParameterValue("solarzenith", "25");

@@ -51,16 +51,17 @@ private:
 
     SetName("ProfileReprocessing");
     SetDescription("Reprocess a BV time profile");
-       
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     SetDocAuthors("Jordi Inglada");
+
     AddDocTag(Tags::FeatureExtraction);
 
     AddParameter(ParameterType_InputFilename, "ipf", "Input profile file");
-    SetParameterDescription( "ipf", "Input file containing the profile to process. This is an ASCII file where each line contains the date (YYYMMDD) the BV estimation and the error." );
+    SetParameterDescription( "ipf", "This is an ASCII file where each line contains the date (YYYMMDD), the BV estimation, and the error." );
     MandatoryOn("ipf");
 
     AddParameter(ParameterType_OutputFilename, "opf", "Output profile file");
-    SetParameterDescription( "opf", "Filename where the reprocessed profile saved. This is an ASCII file where each line contains the date (YYYMMDD) the new BV estimation and a boolean information which is 0 if the value has not been reprocessed." );
+    SetParameterDescription( "opf", "A file where the reprocessed profile is saved. This is an ASCII file where each line contains the date (YYYMMDD) the new BV estimation and a boolean information which is 0 if the value has not been reprocessed." );
     MandatoryOn("opf");
 
     AddParameter(ParameterType_Choice, "algo", 

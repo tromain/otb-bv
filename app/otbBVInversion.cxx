@@ -65,25 +65,26 @@ private:
   void DoInit() override
   {
     SetName("BVInversion");
-    SetDescription("Estimate biophysical variables using aninversion of Prospect and Sail");
+    SetDescription("Estimate biophysical variables using an inversion of Prospect+Sail");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
+    SetDocAuthors("Jordi Inglada");
 
     AddDocTag(Tags::FeatureExtraction);
-    AddDocTag("Description");
 
     AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert");
-    SetParameterDescription( "reflectances", "Input file containing the reflectances to invert. This is an ASCII file where each line is a sample. A line is a set of fields containing numerical values. The order of the fields must respect the one used for the training." );
+    SetParameterDescription( "reflectances", "This is an ASCII file where each line is a sample. The order of the fields must respect the one used for the training. Each field is a reflectance value for the corresponding band" );
     MandatoryOn("reflectances");
 
     AddParameter(ParameterType_InputFilename, "model", "File containing the regression model");
-    SetParameterDescription( "model", "File containing the regression model.");
+    SetParameterDescription( "model", "File containing the regression model which comes from the Inverse model learning.");
     MandatoryOn("model");
     
-    AddParameter(ParameterType_OutputFilename, "out", "Output estimated variable");
-    SetParameterDescription( "out", "Filename where the estimated variables will be saved." );
+    AddParameter(ParameterType_OutputFilename, "out", "Output file containing the estimated variables");
+    SetParameterDescription( "out", "Filename where the estimated bio variables will be saved." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_InputFilename, "normalization", "Input file containing min and max values per sample component");
-    SetParameterDescription( "normalization", "Input file containing min and max values per sample component. This file can be produced by the invers model learning application. If no file is given as parameter, the variables are not normalized." );
+    SetParameterDescription( "normalization", "This file can be produced by the inverse model learning application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
 
     SetExampleComment("Example of use", 0);
