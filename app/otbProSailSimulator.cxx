@@ -83,36 +83,40 @@ private:
   {
     SetName("ProSailSimulator");
     SetDescription("Simulate reflectances, fcover and fapar using Prospect+Sail.");
-    
-    AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
+    SetDocAuthors("Jordi Inglada");
+
+    AddDocTag(Tags::FeatureExtraction);
+
+    AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples");
     SetParameterDescription( "bvfile", "Input file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );
     MandatoryOn("bvfile");
 
     AddParameter(ParameterType_InputFilename, "rsrfile", 
-                 "Input file containing the relative spectral responses.");
-    SetParameterDescription( "rsrfile", "Input file containing ." );
+                 "Input file containing the relative spectral responses");
+    SetParameterDescription( "rsrfile", "Input file containing the relative spectral responses" );
     MandatoryOn("rsrfile");
     
-    AddParameter(ParameterType_OutputFilename, "out", "Output file");
+    AddParameter(ParameterType_OutputFilename, "out", "Reflectances Output file");
     SetParameterDescription( "out", 
-                             "Filename where the simulations are saved. The last 2 bands are fcover and fapar." );
+                             "Filename where the simulations are saved, containing the simulated reflectance for each band. The last 2 bands are fcover and fapar." );
     MandatoryOn("out");
 
-    AddParameter(ParameterType_Float, "solarzenith", "");
+    AddParameter(ParameterType_Float, "solarzenith", "Solar zenith angle");
     SetParameterDescription( "solarzenith", "." );
     MandatoryOn("solarzenith");
 
-    AddParameter(ParameterType_Float, "solarzenithf", "");
+    AddParameter(ParameterType_Float, "solarzenithf", "Solar zenith angle for FAPAR");
     SetParameterDescription( "solarzenithf", 
                              "Solar zenith for the fAPAR simulation" );
     MandatoryOff("solarzenithf");
     
-    AddParameter(ParameterType_Float, "sensorzenith", "");
+    AddParameter(ParameterType_Float, "sensorzenith", "Sensor zenith angle");
     SetParameterDescription( "sensorzenith", "." );
     MandatoryOn("sensorzenith");
 
-    AddParameter(ParameterType_Float, "azimuth", "");
-    SetParameterDescription( "azimuth", "." );
+    AddParameter(ParameterType_Float, "azimuth", "Sensor azimuth");
+    SetParameterDescription( "azimuth", "Relative azimuth between sensor and Sun" );
     MandatoryOn("azimuth");
 
     AddParameter(ParameterType_StringList, "noisestd", 
@@ -121,13 +125,24 @@ private:
                             "Standard deviation of the noise to be added per band.");
     MandatoryOff("noisestd");
 
-    AddParameter(ParameterType_Int, "threads", 
+    AddParameter(ParameterType_Int, "threads",
                  "Number of parallel threads for the simulation");
     SetParameterDescription("threads", 
                             "Number of parallel threads for the simulation");
     MandatoryOff("threads");
 
+    SetExampleComment("Example of use", 0);
+    SetDocExampleParameterValue("bvfile", "inputBV-vars.txt");
+    SetDocExampleParameterValue("rsrfile", "sentinel2.rsr");
+    SetDocExampleParameterValue("out", "reflectances.txt");
+    SetDocExampleParameterValue("solarzenith", "25");
+    SetDocExampleParameterValue("solarzenithf", "25");
+    SetDocExampleParameterValue("sensorzenith", "25");
+    SetDocExampleParameterValue("azimuth", "10");
+    SetDocExampleParameterValue("noisestd", "{0.001,0.003,0.001}");
+    SetDocExampleParameterValue("threads", "2");
 
+    SetOfficialDocLink();
   }
 
   virtual ~ProSailSimulator() override

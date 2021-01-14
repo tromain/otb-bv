@@ -166,12 +166,15 @@ private:
   void DoInit() override
   {
     SetName("BVImageInversion");
-    SetDescription("Estimate biophysical variables for every pixel of an image using an inversion of Prospect+Sail.");
+    SetDescription("Estimate biophysical variables for every pixel of an image using an inversion of Prospect and Sail");
+
+    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Description");
 
     AddParameter(ParameterType_InputImage, "in", "Input Image");
     SetParameterDescription("in","Input image.");
 
-    AddParameter(ParameterType_InputFilename, "model", "File containing the regression model.");
+    AddParameter(ParameterType_InputFilename, "model", "File containing the regression model");
     SetParameterDescription( "model", "File containing the regression model.");
     
     AddParameter(ParameterType_OutputImage, "out", "Output Image");
@@ -179,9 +182,17 @@ private:
 
     AddRAMParameter();
 
-    AddParameter(ParameterType_InputFilename, "normalization", "Input file containing min and max values per sample component.");
+    AddParameter(ParameterType_InputFilename, "normalization", "Input file containing min and max values per sample component");
     SetParameterDescription( "normalization", "Input file containing min and max values per sample component. This file can be produced by the invers model learning application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
+
+    SetExampleComment("Example of use", 0);
+    SetDocExampleParameterValue("in", "input_image.tif");
+    SetDocExampleParameterValue("model", "reg_model.txt");
+    SetDocExampleParameterValue("out", "estimated_BioVar_image.tif");
+    SetDocExampleParameterValue("normalization", "norm.txt");
+
+    SetOfficialDocLink();
 
   }
 

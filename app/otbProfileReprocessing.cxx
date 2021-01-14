@@ -50,25 +50,28 @@ private:
   {
 
     SetName("ProfileReprocessing");
-    SetDescription("Reprocess a BV time profile.");
+    SetDescription("Reprocess a BV time profile");
        
-    AddParameter(ParameterType_InputFilename, "ipf", "Input profile file.");
+    SetDocAuthors("Jordi Inglada");
+    AddDocTag(Tags::FeatureExtraction);
+
+    AddParameter(ParameterType_InputFilename, "ipf", "Input profile file");
     SetParameterDescription( "ipf", "Input file containing the profile to process. This is an ASCII file where each line contains the date (YYYMMDD) the BV estimation and the error." );
     MandatoryOn("ipf");
 
-    AddParameter(ParameterType_OutputFilename, "opf", "Output profile file.");
+    AddParameter(ParameterType_OutputFilename, "opf", "Output profile file");
     SetParameterDescription( "opf", "Filename where the reprocessed profile saved. This is an ASCII file where each line contains the date (YYYMMDD) the new BV estimation and a boolean information which is 0 if the value has not been reprocessed." );
     MandatoryOn("opf");
 
     AddParameter(ParameterType_Choice, "algo", 
-                 "Reprocessing algorithm: local, fit.");
+                 "Reprocessing algorithm: local, fit");
     SetParameterDescription("algo", 
                             "Reprocessing algorithm: local uses a window around the current date, fit is a double logisting fitting of the complete profile.");
 
-    AddChoice("algo.fit", "Double logistic fitting of the complete profile.");
+    AddChoice("algo.fit", "Double logistic fitting of the complete profile");
     SetParameterDescription("algo.fit", "This group of parameters allows to set fit window parameters. ");
 
-    AddChoice("algo.local", "Uses a window around the current date.");
+    AddChoice("algo.local", "Uses a window around the current date");
     SetParameterDescription("algo.local", "This group of parameters allows to set local window parameters. ");
 
     AddParameter(ParameterType_Int, "algo.local.bwr", "Local window backward radius");
@@ -80,6 +83,15 @@ private:
     SetParameterDescription("algo.local.fwr", "Forward radius of the local window. ");
 
     MandatoryOff("algo");
+
+    SetExampleComment("Example of use", 0);
+    SetDocExampleParameterValue("ipf", "inputProfile.txt");
+    SetDocExampleParameterValue("opf", "outputProfile.txt");
+    SetDocExampleParameterValue("algo", "algo.fit");
+    SetDocExampleParameterValue("algo.local.bwr", "5");
+    SetDocExampleParameterValue("algo.local.fwr", "5");
+
+    SetOfficialDocLink();
   }
 
   void DoUpdateParameters() override

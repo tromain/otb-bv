@@ -68,28 +68,32 @@ private:
   void DoInit() override
   {
     SetName("InverseModelLearning");
-    SetDescription("Simulate reflectances using Prospect+Sail.");
+    SetDescription("Simulate reflectances using Prospect and Sail.");
+    SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
+    SetDocAuthors("Jordi Inglada");
 
-    AddParameter(ParameterType_InputFilename, "training", 
-                 "Input file containing the training samples.");
+    AddDocTag(Tags::FeatureExtraction);
+
+    AddParameter(ParameterType_InputFilename, "training",
+                 "Input file containing the training samples");
     SetParameterDescription( "training", 
                              "Input file containing the training samples. This is an ASCII file where each line is a training sample. A line is a set of fields containing numerical values. The first field is the value of the output variable and the other contain the values of the input variables." );
     MandatoryOn("training");
 
-    AddParameter(ParameterType_OutputFilename, "out", 
-                 "Output regression model.");
+    AddParameter(ParameterType_OutputFilename, "out",
+                 "Output regression model");
     SetParameterDescription( "out", 
                              "Filename where the regression model will be saved." );
     MandatoryOn("out");
 
     AddParameter(ParameterType_OutputFilename, "errest", 
-                 "Regression model for the error.");
+                 "Regression model for the error");
     SetParameterDescription( "errest", 
                              "Filename where the regression model for the estimation of the regression error will be saved." );
     MandatoryOff("errest");
 
     AddParameter(ParameterType_OutputFilename, "normalization", 
-                 "Output file containing min and max values per sample component.");
+                 "Output file containing min and max values per sample component");
     SetParameterDescription( "normalization", 
                              "Output file containing min and max values per sample component. This file can be used by the inversion application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
@@ -104,6 +108,15 @@ private:
     SetParameterDescription("bestof", "");
     MandatoryOff("bestof");
 
+    SetExampleComment("Example of use", 0);
+    SetDocExampleParameterValue("training", "training.txt");
+    SetDocExampleParameterValue("out", "reg_model.txt");
+    SetDocExampleParameterValue("errest", "reg_model_errest.txt");
+    SetDocExampleParameterValue("normalization", "norm.txt");
+    SetDocExampleParameterValue("regression", "nn");
+    SetDocExampleParameterValue("bestof", "1");
+
+    SetOfficialDocLink();
   }
 
   virtual ~InverseModelLearning() override
@@ -301,7 +314,7 @@ private:
                                    ListOutputSampleType::Pointer ols, 
                                    unsigned int nbModels)
   {
-    otbAppLogINFO("Support vectors");
+    otbAppLogINFO("Random Forest Regressor");
     auto regression = RFRType::New();
     regression->SetMaxDepth(10);
     regression->SetMinSampleCount(1000);

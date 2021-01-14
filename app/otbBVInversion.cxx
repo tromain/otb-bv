@@ -65,23 +65,34 @@ private:
   void DoInit() override
   {
     SetName("BVInversion");
-    SetDescription("Estimate biophysical variables using aninversion of Prospect+Sail.");
+    SetDescription("Estimate biophysical variables using aninversion of Prospect and Sail");
 
-    AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert.");
+    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Description");
+
+    AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert");
     SetParameterDescription( "reflectances", "Input file containing the reflectances to invert. This is an ASCII file where each line is a sample. A line is a set of fields containing numerical values. The order of the fields must respect the one used for the training." );
     MandatoryOn("reflectances");
 
-    AddParameter(ParameterType_InputFilename, "model", "File containing the regression model.");
+    AddParameter(ParameterType_InputFilename, "model", "File containing the regression model");
     SetParameterDescription( "model", "File containing the regression model.");
     MandatoryOn("model");
     
-    AddParameter(ParameterType_OutputFilename, "out", "Output estimated variable.");
+    AddParameter(ParameterType_OutputFilename, "out", "Output estimated variable");
     SetParameterDescription( "out", "Filename where the estimated variables will be saved." );
     MandatoryOn("out");
 
-    AddParameter(ParameterType_InputFilename, "normalization", "Input file containing min and max values per sample component.");
+    AddParameter(ParameterType_InputFilename, "normalization", "Input file containing min and max values per sample component");
     SetParameterDescription( "normalization", "Input file containing min and max values per sample component. This file can be produced by the invers model learning application. If no file is given as parameter, the variables are not normalized." );
     MandatoryOff("normalization");
+
+    SetExampleComment("Example of use", 0);
+    SetDocExampleParameterValue("reflectances", "reflectances.txt");
+    SetDocExampleParameterValue("model", "reg_model.txt");
+    SetDocExampleParameterValue("out", "estimated_BioVar.txt");
+    SetDocExampleParameterValue("normalization", "norm.txt");
+
+    SetOfficialDocLink();
   }
 
   virtual ~BVInversion() override

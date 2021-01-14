@@ -25,8 +25,10 @@ namespace Wrapper
   void BVInputVariableGeneration::DoInit()
   {
     SetName("BVInputVariableGeneration");
-    SetDescription("Generate random input variable distribution for ... .");
-    AddDocTag("Biophysical Variables");
+    SetDescription("Generate random input variable distribution for the Prospect and Sail simulator");
+
+    AddDocTag(Tags::FeatureExtraction);
+
     AddParameter(ParameterType_Int, "samples", "Sample size");
     SetDefaultParameterInt("samples", 1000);
     SetParameterDescription("samples", "Number of samples to be generated");
@@ -71,6 +73,21 @@ namespace Wrapper
     AddParameter(ParameterType_Float, "stdala", "Standard deviation value for ALA");
     SetDefaultParameterFloat("stdala", 20.0);
     SetParameterDescription("stdala", "Standard deviation value for ALA");
+
+    SetExampleComment("Example of use", 0);
+    SetDocExampleParameterValue("samples", "50");
+    SetDocExampleParameterValue("out", "prosail_input_vars.txt");
+    SetDocExampleParameterValue("minlai", "0.0");
+    SetDocExampleParameterValue("maxlai", "15.0");
+    SetDocExampleParameterValue("modlai", "2");
+    SetDocExampleParameterValue("stdlai", "2");
+    SetDocExampleParameterValue("distlai", "normal");
+    SetDocExampleParameterValue("minala", "30.0");
+    SetDocExampleParameterValue("maxala", "80.0");
+    SetDocExampleParameterValue("modala", "60.0");
+    SetDocExampleParameterValue("stdala", "20.0");
+
+    SetOfficialDocLink();
 
   }
 
