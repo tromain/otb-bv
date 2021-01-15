@@ -1,0 +1,21 @@
+{
+   "nb_samples": 1000, 
+   "noisestd": 0.01, 
+   "minlai": 0.0, 
+   "maxlai": 8.0, 
+   "modlai": 2.0, 
+   "stdlai": 2.0, 
+   "distlai": "normal", 
+   "useVI": "no", 
+   "simulate": 1,
+   "add_angles": 0,
+   "red_index": 0,
+   "nir_index": 0,
+   "nthreads": 4, 
+   "invert_bv": "MLAI", 
+   "bestof": 1, 
+   "regressor": "nn",
+   "vrt_name": "_vrt.vrt"
+}
+
+
