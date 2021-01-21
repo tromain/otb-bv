@@ -1,0 +1,39 @@
+language: cpp
+
+services:
+  - docker
+
+git:
+  depth: 3
+
+env:
+  global:
+    - OTB_BV_URL=https://gitlab.orfeo-toolbox.org/thibrom/otb-bv.git
+
+matrix:
+  include:
+  - os: linux
+    dist: bionic
+    compiler: gcc
+    sudo: required
+    before_install:
+      - docker pull 
+    env:
+      - OTB_OS=Linux64
+      - OTB_PKG_EXT=run
+
+install:
+  - cd /opt/otb-bv && git pull
+  - mkdir build && cd build
+  - cmake .. -DOTB_DIR=/opt/otb -DCMAKE_INSTALL_PREFIX=/opt/otb -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -DBUILD_TESTING=ON -DOTB_BUILD_MODULE_AS_STANDALONE=ON -GNinja \
+  - ninja install
+  - rm -r /opt/otb-bv/build
+  - cd /opt/otb-bv/scripts
+  - source activate_env_ci.sh
+  - mv /opt/otb/lib/otbapp_* /opt/otb/lib/otb/applications/
+
+  # LFS install needed if you use OTB/Data
+  # - git lfs install
+
+script:
+  - cd /opt/otb-bv/scripts && python3 test_generate_LAI.py
