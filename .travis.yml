@@ -31,4 +31,4 @@ install:
   # - git lfs install
 
 script:
-  - ctest -VV -S ci.cmake -Dci_skip_submit=1 -DINSTALL_DIR=/opt/otb
+  - ctest -VV -S ci.cmake -Dci_skip_submit=1
