@@ -29,6 +29,7 @@ add_executable(otbBioVarsTests ${${otb-module}Tests})
 target_link_libraries(otbBioVarsTests ${${otb-module}-Test_LIBRARIES} ${OTBBioVars_TEST_LINK_LIBS})
 otb_module_target_label(otbBioVarsTests)
 
+set(TEMP "/tmp")
 
 ### Test the applications
 otb_test_application(NAME appBvGenInputVars
@@ -106,3 +107,8 @@ target_link_libraries(testSimus ${OTB_LIBRARIES} ${OTBBioVars_LIBRARIES} ${GSL_L
 
 add_executable(an-par-sweep an-par-sweep.cxx)
 #target_link_libraries(an-par-sweep )
+# Test a Python script using OTB Applications bindings.
+
+otb_add_test(NAME otbGenerateLAIScriptTest
+  COMMAND otbTestDriver Execute python3 ${OTBBioVars_SOURCE_DIR}/scripts/test_generated_LAI.py)
+

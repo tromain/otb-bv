@@ -157,7 +157,11 @@ file ( WRITE
 
 if ( NOT _configure_rv EQUAL 0 )
   # stop processing here
-  ctest_submit()
+  if(ci_skip_submit)
+    message(STATUS "Skip submit")
+  else()
+    ctest_submit()
+  endif()
   message( FATAL_ERROR "An error occurs during ctest_configure.")
 endif()
 

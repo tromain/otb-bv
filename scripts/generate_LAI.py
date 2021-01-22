@@ -207,7 +207,7 @@ class ConfigFile:
         self.noisestd = None
         self.bestof = None
         self.regressor = None
-        self.model_file = 'model'
+        self.model_file = 'model.txt'
 
         # default values - retirer du config?
         self.simulate = True
@@ -261,7 +261,11 @@ def parse_xml(xml, type_of_xml, path_to_rsr, extract_rsr=True):
 
 def create_vrt(product, vrt_name, res, option_fre_sre='FRE'):
 
-    output_vrt = os.path.join(os.environ.get('OTB_RESULT_DIR'), product.name + vrt_name)
+    if not res:
+        output_vrt = os.path.join(os.environ.get('OTB_RESULT_DIR'), product.name + vrt_name)
+    else:
+        output_vrt = os.path.join(os.environ.get('OTB_RESULT_DIR'), product.name + "_vrt_" + "{}".format(res) +".vrt") 
+
     img_list = None
     if product.xml_type == 'Muscate_Metadata':
         if option_fre_sre:

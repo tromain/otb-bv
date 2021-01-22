@@ -17,8 +17,7 @@ matrix:
     compiler: gcc
     sudo: required
     before_install:
-      - docker pull registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb_for_bv:v2
-      - docker run --rm -it -v $PWD:$PWD -w $PWD otb-for-bv:v2 /bin/bash
+      - docker run --rm -it -v $PWD:$PWD -w $PWD registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-BV /bin/bash
     env:
       - OTB_OS=Linux64
       - OTB_PKG_EXT=run
