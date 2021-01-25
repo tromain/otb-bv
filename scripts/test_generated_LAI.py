@@ -4,6 +4,8 @@ import json
 from osgeo import gdal
 import unittest
 import sys
+import os
+import inspect
 
 class GenerateLaiTest(unittest.TestCase):
 
@@ -16,7 +18,9 @@ class GenerateLaiTest(unittest.TestCase):
         """Initialisation des tests."""
         self.xml_muscate = self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_MTD_ALL.xml'
         self.xml_sen2cor = self.original_images_folder + 'S2A_MSIL2A_20190108T031111_N0211_R075_T48MVV_20190108T071022.SAFE/MTD_MSIL2A.xml'
-        self.cfgFile = 'config.json'
+        filename = inspect.getframeinfo(inspect.currentframe()).filename
+        path     = os.path.dirname(os.path.abspath(filename))
+        self.cfgFile = path + '/config.json'
         self.bandList_muscate = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12']
         self.bandList_sen2cor = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8A', 'B9', 'B11', 'B12']
         self.resolution = [10, 20, 60]
