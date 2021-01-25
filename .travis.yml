@@ -3,31 +3,18 @@ language: cpp
 services:
   - docker
 
-git:
-  depth: 3
-
-env:
-  global:
-    - OTB_BV_URL=https://gitlab.orfeo-toolbox.org/thibrom/otb-bv.git
-
-matrix:
+jobs:
   include:
   - os: linux
     dist: bionic
     compiler: gcc
     sudo: required
-    before_install:
-      - docker run --rm -it -v $PWD:$PWD -w $PWD registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv /bin/bash
     env:
       - OTB_OS=Linux64
       - OTB_PKG_EXT=run
 
-install:
-  - cd /opt/otb-bv && git pull
-  - source CI/activate_env_ci.sh
-
-  # LFS install needed if you use OTB/Data
-  # - git lfs install
+before_script:
+  - docker pull registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv:latest
 
 script:
-  - ctest -VV -S ci.cmake -Dci_skip_submit=1
+  - docker run --rm -it --name OTBBV -v $PWD:$PWD -w $PWD registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv:latest /bin/bash -c "cd /opt/otb-bv && git pull;source CI/activate_env_ci.sh;ctest -VV -S ci.cmake -Dci_skip_submit=1"
