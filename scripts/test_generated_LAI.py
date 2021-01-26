@@ -16,7 +16,7 @@ class GenerateLaiTest(unittest.TestCase):
 
     def setUp(self):
         """Initialisation des tests."""
-        self.xml_muscate = self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_MTD_ALL.xml'
+        self.xml_muscate = self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_MTD_ALL.xml'
         self.xml_sen2cor = self.original_images_folder + 'S2A_MSIL2A_20190108T031111_N0211_R075_T48MVV_20190108T071022.SAFE/MTD_MSIL2A.xml'
         filename = inspect.getframeinfo(inspect.currentframe()).filename
         path     = os.path.dirname(os.path.abspath(filename))
@@ -84,30 +84,30 @@ class GenerateLaiTest(unittest.TestCase):
 
         prod = genLAI.parse_xml(self.xml_muscate, 'Muscate_Metadata', None, True)
 
-        img_SRE = [['B11', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B11.tif'],
-                   ['B12', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B12.tif'],
-                   ['B2', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B2.tif'],
-                   ['B3', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B3.tif'],
-                   ['B4', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B4.tif'],
-                   ['B5', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B5.tif'],
-                   ['B6', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B6.tif'],
-                   ['B7', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B7.tif'],
-                   ['B8', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B8.tif'],
-                   ['B8A', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B8A.tif']]
+        img_SRE = [['B11', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B11.tif'],
+                   ['B12', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B12.tif'],
+                   ['B2', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B2.tif'],
+                   ['B3', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B3.tif'],
+                   ['B4', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B4.tif'],
+                   ['B5', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B5.tif'],
+                   ['B6', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B6.tif'],
+                   ['B7', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B7.tif'],
+                   ['B8', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B8.tif'],
+                   ['B8A', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_SRE_B8A.tif']]
 
-        img_FRE = [['B11', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B11.tif'],
-                   ['B12', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B12.tif'],
-                   ['B2', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B2.tif'],
-                   ['B3', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B3.tif'],
-                   ['B4', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B4.tif'],
-                   ['B5', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B5.tif'],
-                   ['B6', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B6.tif'],
-                   ['B7', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B7.tif'],
-                   ['B8', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B8.tif'],
-                   ['B8A', self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B8A.tif']]
+        img_FRE = [['B11', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B11.tif'],
+                   ['B12', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B12.tif'],
+                   ['B2', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B2.tif'],
+                   ['B3', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B3.tif'],
+                   ['B4', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B4.tif'],
+                   ['B5', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B5.tif'],
+                   ['B6', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B6.tif'],
+                   ['B7', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B7.tif'],
+                   ['B8', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B8.tif'],
+                   ['B8A', self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_FRE_B8A.tif']]
 
         self.assertIsInstance(prod, genLAI.Muscate)
-        self.assertEqual(prod.xml_path, self.original_images_folder + 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_MTD_ALL.xml')
+        self.assertEqual(prod.xml_path, self.original_images_folder + 'SENTINEL2A_Toulouse/SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D_V1-8_MTD_ALL.xml')
         self.assertEqual(prod.name, 'SENTINEL2A_20180819-105124-182_L2A_T31TCJ_D')
         self.assertEqual(prod.platform, 'SENTINEL2A')
         self.assertEqual(prod.authority, 'THEIA')
@@ -295,15 +295,16 @@ if __name__ == '__main__':
         orig = sys.argv[1]
         dest = sys.argv[2]
     else:
-        orig = '/opt/otb-bv/data/ImagesTest/'
-        dest = '/opt/otb-bv/data/OutputTest/'
+        orig = '/home/travis/build/tromain/otb-bv/data/ImagesTest/'
+        dest = '/home/travis/build/tromain/otb-bv/data/OutputTest/'
     
     test_loader = unittest.TestLoader()
     test_names = test_loader.getTestCaseNames(GenerateLaiTest)
 
     suite = unittest.TestSuite()
     for test_name in test_names:
-        suite.addTest(GenerateLaiTest(test_name, orig, dest))
+        if "muscate" in test_name:
+            suite.addTest(GenerateLaiTest(test_name, orig, dest))
 
     result = unittest.TextTestRunner().run(suite)
     sys.exit(not result.wasSuccessful())

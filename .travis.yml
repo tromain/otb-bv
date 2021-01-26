@@ -1,7 +1,6 @@
 language: cpp
 
 git:
-  lfs_skip_smudge: true
   depth: 3
 
 services:
@@ -18,10 +17,10 @@ jobs:
       - OTB_PKG_EXT=run
 
 before_script:
+  - mkdir $HOME/build/tromain/otb-bv/data/ImagesTest && mkdir $HOME/build/tromain/otb-bv/data/OutputTest
+  - curl -k https://sandbox.zenodo.org/record/720288/files/DATA-BV.tar.gz?download=1 -o $HOME/build/tromain/otb-bv/data/ImagesTest/DATA-BV.tar.gz
+  - cd $HOME/build/tromain/otb-bv/data/ImagesTest && tar -xf DATA-BV.tar.gz && cd $HOME/build/tromain/otb-bv
   - docker pull registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv:latest
 
 script:
-  - docker run -itd --name OTBBV -v $PWD:$PWD -w $PWD registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv /bin/bash
-  - docker exec OTBBV cd /opt/otb-bv && git pull
-  - docker exec OTBBV source CI/activate_env_ci.sh
-  - docker exec OTBBV ctest -VV -S ci.cmake -Dci_skip_submit=1
+  - docker run -it -v $PWD:$PWD -w $PWD registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv /bin/bash -c "source CI/activate_env_ci.sh;ctest -VV -S ci.cmake -Dci_skip_submit=1"
