@@ -306,5 +306,7 @@ if __name__ == '__main__':
         suite.addTest(GenerateLaiTest(test_name, orig, dest))
 
     result = unittest.TextTestRunner().run(suite)
+    sys.exit(not result.wasSuccessful())
+
 
 
