@@ -442,7 +442,7 @@ class Product:
 
         rsr_values = collections.OrderedDict()
 
-        if self.platform == 'Sentinel-2A' or self.platform == 'SENTINEL2A':
+        if self.platform == 'Sentinel-2A' or self.platform == 'SENTINEL2A' or self.platform == 'LANDSAT8':
             with open(path_to_rsr) as rsr:
                 reader = csv.reader(rsr, delimiter=' ')
                 header = next(reader, None)
