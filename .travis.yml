@@ -18,7 +18,7 @@ jobs:
 
 before_script:
   - mkdir $HOME/build/tromain/otb-bv/data/ImagesTest && mkdir $HOME/build/tromain/otb-bv/data/OutputTest
-  - curl -k https://sandbox.zenodo.org/record/720288/files/DATA-BV.tar.gz?download=1 -o $HOME/build/tromain/otb-bv/data/ImagesTest/DATA-BV.tar.gz
+  - curl -k https://sandbox.zenodo.org/record/721273/files/DATA-BV.tar.gz?download=1 -o $HOME/build/tromain/otb-bv/data/ImagesTest/DATA-BV.tar.gz
   - cd $HOME/build/tromain/otb-bv/data/ImagesTest && tar -xf DATA-BV.tar.gz && cd $HOME/build/tromain/otb-bv
   - docker pull registry.orfeo-toolbox.org/orfeotoolbox/otb-build-env/otb-ubuntu-native-develop-bv:latest
 

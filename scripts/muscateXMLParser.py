@@ -83,7 +83,13 @@ class GeometricInformation:
             self.solar_zenith_angle = 0
             self.solar_azimuth_angle = 0
 
-        sensor_angles = geom_info.find('Mean_Value_List/Mean_Viewing_Incidence_Angle_List')
+        prodname = self.xml_content.find('Product_Characteristics/PLATFORM').text
+        if "SENTINEL2A" in prodname :
+            sensor_angles = geom_info.find('Mean_Value_List/Mean_Viewing_Incidence_Angle_List')
+        elif "LANDSAT8" in prodname :
+            sensor_angles = geom_info.find('Mean_Value_List/Incidence_Angles')
+        else :
+            logging.ingo("XML file does not contain sensor angles information")
 
         mean_angle_list = []
         nb_zenith = 0.0
@@ -92,17 +98,24 @@ class GeometricInformation:
         mean_azimuth = 0.0
         for a in range(0, len(list(sensor_angles))):
             mean_angle = list(sensor_angles)[a]
-            mean_angle_list.append(
-                Angle(mean_angle.attrib.get('band_id'), float(mean_angle.find('ZENITH_ANGLE').text),
-                      float(mean_angle.find('AZIMUTH_ANGLE').text), mean_angle.attrib.get('unit')))
+            if "SENTINEL2A" in prodname:
+                mean_angle_list.append(
+                    Angle(mean_angle.attrib.get('band_id'), float(mean_angle.find('ZENITH_ANGLE').text),
+                        float(mean_angle.find('AZIMUTH_ANGLE').text), mean_angle.attrib.get('unit')))
+            elif "LANDSAT8" in prodname:
+                mean_angle_list.append(Angle("B1",0.0,0.0,"deg"));
 
             if not np.isnan(mean_angle_list[a].zenith_value):
                 nb_zenith += 1.0
                 mean_zenith += mean_angle_list[a].zenith_value
+            else:
+                nb_zenith = 1.0
 
             if not np.isnan(mean_angle_list[a].azimuth_value):
                 nb_azimuth += 1.0
                 mean_azimuth += mean_angle_list[a].azimuth_value
+            else:
+                nb_azimuth = 1.0
 
         self.sensor_zenith_angle = math.floor(mean_zenith / nb_zenith)
         # THETA_V in S2A <=> getSensorMeanAngles().zenith
