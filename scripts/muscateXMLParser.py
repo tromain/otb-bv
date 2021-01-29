@@ -88,6 +88,8 @@ class GeometricInformation:
             sensor_angles = geom_info.find('Mean_Value_List/Mean_Viewing_Incidence_Angle_List')
         elif "LANDSAT8" in prodname :
             sensor_angles = geom_info.find('Mean_Value_List/Incidence_Angles')
+        elif "VENUS" in prodname :
+            sensor_angles = geom_info.find('Mean_Value_List/Mean_Viewing_Incidence_Angle_List')
         else :
             logging.ingo("XML file does not contain sensor angles information")
 
@@ -104,6 +106,10 @@ class GeometricInformation:
                         float(mean_angle.find('AZIMUTH_ANGLE').text), mean_angle.attrib.get('unit')))
             elif "LANDSAT8" in prodname:
                 mean_angle_list.append(Angle("B1",0.0,0.0,"deg"));
+            elif "VENUS" in prodname:
+                mean_angle_list.append(
+                    Angle(mean_angle.attrib.get('detector_id'), float(mean_angle.find('ZENITH_ANGLE').text),
+                        float(mean_angle.find('AZIMUTH_ANGLE').text), mean_angle.attrib.get('unit')))
 
             if not np.isnan(mean_angle_list[a].zenith_value):
                 nb_zenith += 1.0
