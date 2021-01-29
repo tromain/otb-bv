@@ -28,7 +28,7 @@ namespace Wrapper
     SetDescription("Generate random input variable distribution for the Prospect and Sail simulator");
     SetDocAuthors("Jordi Inglada");
 
-    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Biophysical Variable Estimation");
 
     AddParameter(ParameterType_Int, "samples", "Sample size");
     SetDefaultParameterInt("samples", 1000);

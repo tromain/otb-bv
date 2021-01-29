@@ -69,7 +69,7 @@ private:
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     SetDocAuthors("Jordi Inglada");
 
-    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Biophysical Variable Estimation");
 
     AddParameter(ParameterType_InputFilename, "reflectances", "Input file containing the reflectances to invert");
     SetParameterDescription( "reflectances", "This is an ASCII file where each line is a sample. The order of the fields must respect the one used for the training. Each field is a reflectance value for the corresponding band" );

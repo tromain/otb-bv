@@ -54,7 +54,7 @@ private:
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     SetDocAuthors("Jordi Inglada");
 
-    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Biophysical Variable Estimation");
 
     AddParameter(ParameterType_InputFilename, "ipf", "Input profile file");
     SetParameterDescription( "ipf", "This is an ASCII file where each line contains the date (YYYMMDD), the BV estimation, and the error." );

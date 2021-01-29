@@ -86,7 +86,7 @@ private:
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     SetDocAuthors("Jordi Inglada");
 
-    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Biophysical Variable Estimation");
 
     AddParameter(ParameterType_InputFilename, "bvfile", "Input file containing the bv samples");
     SetParameterDescription( "bvfile", "A file containing the biophysical variable samples. It can be generated using the BVInputVariableGeneration application." );

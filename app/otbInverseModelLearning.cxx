@@ -72,7 +72,7 @@ private:
     SetDocLink("http://tully.ups-tlse.fr/jordi/otb-bv#tab-readme");
     SetDocAuthors("Jordi Inglada");
 
-    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Biophysical Variable Estimation");
 
     AddParameter(ParameterType_InputFilename, "training",
                  "Input file containing the training samples");

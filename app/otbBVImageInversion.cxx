@@ -169,7 +169,7 @@ private:
     SetDescription("Estimate biophysical variables for every pixel of an image using an inversion of Prospect and Sail");
     SetDocAuthors("Jordi Inglada");
 
-    AddDocTag(Tags::FeatureExtraction);
+    AddDocTag("Biophysical Variable Estimation");
 
     AddParameter(ParameterType_InputImage, "in", "Input Image");
     SetParameterDescription("in","Input image.");
