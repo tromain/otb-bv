@@ -21,10 +21,10 @@ class GenerateLaiTest(unittest.TestCase):
         self.xml_muscate_venus = self.original_images_folder + 'VENUS_Toulouse/VENUS-XS_20201017-105222-000_L2A_SUDOUE-1_C_V2-2_MTD_ALL.xml'
         self.xml_sen2cor = self.original_images_folder + 'Sen2Cor_campagne/MTD_MSIL2A.xml'
         filename = inspect.getframeinfo(inspect.currentframe()).filename
-        self.projectDir     = os.path.dirname(os.path.abspath(filename))
-        self.cfgFile = self.projectDir + '/config.json'
-        self.landsat8_rsr = self.projectDir + "/../data/landsat8_generateLAI.rsr"
-        self.venus_rsr = self.projectDir + "/../data/Venus_generateLAI.rsr"
+        self.scriptDir     = os.path.dirname(os.path.abspath(filename))
+        self.cfgFile = self.scriptDir + '/config.json'
+        self.landsat8_rsr = self.scriptDir.replace('/scripts','') + "/data/landsat8_generateLAI.rsr"
+        self.venus_rsr = self.scriptDir.replace('/scripts','') + "/data/Venus_generateLAI.rsr"
         self.bandList_muscate_s2A = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12']
         self.bandList_muscate_l8 = ['B1','B2', 'B3', 'B4', 'B5', 'B6', 'B7']
         self.bandList_muscate_venus = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7','B8','B9','B10','B11','B12']
@@ -403,13 +403,17 @@ class GenerateLaiTest(unittest.TestCase):
             self.assertEqual(abs(gt[5]), res)
 
 if __name__ == '__main__':
+    
+    scriptname = inspect.getframeinfo(inspect.currentframe()).filename
+    scriptDir = os.path.dirname(os.path.abspath(scriptname))
+    projectDir = scriptDir.replace('/scripts','')
 
     if(len(sys.argv)==3):
         orig = sys.argv[1]
         dest = sys.argv[2]
     else:
-        orig = '/home/travis/build/tromain/otb-bv/data/ImagesTest/'
-        dest = '/home/travis/build/tromain/otb-bv/data/OutputTest/'
+        orig = projectDir + '/data/ImagesTest/'
+        dest = projectDir + '/data/OutputTest/'
     
     test_loader = unittest.TestLoader()
     test_names = test_loader.getTestCaseNames(GenerateLaiTest)
