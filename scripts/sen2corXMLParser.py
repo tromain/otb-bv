@@ -1,3 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# =========================================================================
+#   Program:   sen2corXMLParser
+#   Language:  python
+#
+#   Copyright (c) CS Group France. All rights reserved.
+#
+#   See otb-bv-copyright.txt for details.
+#
+#   This software is distributed WITHOUT ANY WARRANTY; without even
+#   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#   PURPOSE.  See the above copyright notices for more information.
+#
+# =========================================================================
 import collections
 import logging
 import math

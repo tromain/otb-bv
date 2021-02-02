@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # =========================================================================
-#   Program:   otb-bv
+#   Program:   generate LAI
 #   Language:  python
 #
-#   Copyright (c) CESBIO. All rights reserved.
+#   Copyright (c) CS Group France. All rights reserved.
 #
 #   See otb-bv-copyright.txt for details.
 #

@@ -1,3 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# =========================================================================
+#   Program:   tester for genLAI
+#   Language:  python
+#
+#   Copyright (c) CS Group France. All rights reserved.
+#
+#   See otb-bv-copyright.txt for details.
+#
+#   This software is distributed WITHOUT ANY WARRANTY; without even
+#   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#   PURPOSE.  See the above copyright notices for more information.
+#
+# =========================================================================
+
 import filecmp
 import generate_LAI as genLAI
 import json
@@ -424,6 +440,3 @@ if __name__ == '__main__':
 
     result = unittest.TextTestRunner().run(suite)
     sys.exit(not result.wasSuccessful())
-
-
-

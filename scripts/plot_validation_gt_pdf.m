@@ -1,3 +1,17 @@
+% =========================================================================
+%   Program:   plot validation data
+%   Language:  Octave/MATLAB
+%
+%   Copyright (c) CS Group France. All rights reserved.
+%
+%   See otb-bv-copyright.txt for details.
+%
+%   This software is distributed WITHOUT ANY WARRANTY; without even
+%   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+%   PURPOSE.  See the above copyright notices for more information.
+%
+% =========================================================================
+
 satnames = {"formosat2","s2","landsat8","spot4","spot5"};
 cd "/tmp/MLAI/"
 allDirs = dir("/tmp/MLAI");
