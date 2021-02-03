@@ -1,7 +1,7 @@
 **SCRIPT 'bv_net.py'**
 ======================
 
-Note : Pour avoir le détail de ce que contient chaque fichier généré par les fonctions qui suivent, veuillez vous reporter au document bv_io_files_content_description.txt présent dans le dossier documentation
+Note : Pour avoir le détail de ce que contient chaque fichier généré par les fonctions qui suivent, veuillez vous reporter au document script_io_files_content.txt présent dans le dossier documentation
 
 Quatre fonctions sont exécutées succcessivement:
 1. **<code>parseConfigFile()</code>** récupère les infos contenus dans le fichier *config.cfg* fournit en entrée et les stocke:
