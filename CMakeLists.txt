@@ -15,6 +15,7 @@ cmake_minimum_required(VERSION 3.0)
 project(OTBBioVars)
 
 set(CMAKE_MODULE_PATH ${OTBBioVars_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
+set(OTBBioVars_LIBRARIES OTBBioVars)
 
 message("-- Using OTBBioVars. Your OTB will be under the Affero GNU GPL License or better.")
 
@@ -29,13 +30,8 @@ if(NOT OTB_SOURCE_DIR)
 
   find_package(OTB REQUIRED)
   list(APPEND CMAKE_MODULE_PATH ${OTB_CMAKE_DIR})
+  include(UseOTB)
   include(OTBModuleExternal)
 else()
   otb_module_impl()
 endif()
-
-
-
-
-
-
